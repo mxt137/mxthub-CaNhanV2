@@ -1,6 +1,5 @@
 /* =========================================================
-   TỆP: style.css - ĐỊNH HÌNH UI/UX "QUIET LUXURY"
-   Màu chủ đạo: Lục bảo thẫm (#146654)
+   TỆP: style.css - UI/UX "QUIET LUXURY" MXT HUB
    ========================================================= */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
@@ -10,102 +9,39 @@
   --tblr-font-sans-serif: 'Inter', sans-serif !important;
   --sidebar-bg: #0f172a; 
   --sidebar-text: #94a3b8;
-  --sidebar-hover-bg: rgba(255, 255, 255, 0.05);
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.04);
 }
 
-body { 
-  font-family: var(--tblr-font-sans-serif); 
-  -webkit-font-smoothing: antialiased; 
-  background-color: #f8fafc; 
-}
+body { font-family: var(--tblr-font-sans-serif); -webkit-font-smoothing: antialiased; background-color: #f8fafc; }
 
-/* ================= 1. NÚT BẤM CÓ HIỆU ỨNG (ACTION BUTTONS) ================= */
-.btn-brand { 
-  background: linear-gradient(135deg, #146654 0%, #0d4639 100%) !important; 
-  color: white !important; 
-  font-weight: 600; 
-  border: none;
-  border-radius: 12px;
-  padding: 10px 24px;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
-  box-shadow: 0 4px 12px rgba(20, 102, 84, 0.2);
-}
-.btn-brand:hover { 
-  transform: translateY(-2px) scale(1.02); 
-  box-shadow: 0 8px 20px rgba(20, 102, 84, 0.35); 
-}
-.btn-brand:active { transform: translateY(1px) scale(0.98); }
+/* Các nút bấm */
+.btn-brand { background-color: var(--tblr-primary) !important; color: white !important; font-weight: 600; transition: all 0.2s ease; border-radius: 12px; }
+.btn-brand:hover { background-color: #0f4f41 !important; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(20, 102, 84, 0.3); }
+.btn-brand:active { transform: translateY(0); box-shadow: none; }
+.btn-icon { transition: all 0.2s; border-radius: 8px; }
+.btn-icon:hover { transform: scale(1.1); }
 
-.btn-icon { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 10px; }
-.btn-icon:hover { transform: scale(1.15); }
-.btn-icon:active { transform: scale(0.9); }
+/* Sidebar */
+.navbar-vertical { background-color: var(--sidebar-bg) !important; border-right: 1px solid rgba(255, 255, 255, 0.05) !important; box-shadow: 4px 0 24px rgba(15, 23, 42, 0.15) !important; }
+.navbar-vertical .navbar-brand { padding: 20px 24px !important; font-size: 20px !important; font-weight: 800 !important; color: #2ae1b2 !important; }
+.navbar-vertical .nav-link { color: var(--sidebar-text) !important; font-weight: 500 !important; font-size: 14px !important; padding: 12px 16px !important; border-radius: 10px !important; margin: 4px 12px !important; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; }
+.navbar-vertical .nav-link:hover { color: #ffffff !important; background-color: var(--sidebar-hover-bg) !important; transform: translateX(4px); }
+.navbar-vertical .nav-link.active { color: #ffffff !important; background: linear-gradient(135deg, #146654 0%, #0d4639 100%) !important; font-weight: 600 !important; box-shadow: 0 4px 12px rgba(20, 102, 84, 0.3) !important; }
 
-/* ================= 2. SIDEBAR NAVIGATION ================= */
-.navbar-vertical { 
-  background-color: var(--sidebar-bg) !important; 
-  border-right: 1px solid rgba(255, 255, 255, 0.05) !important; 
-  box-shadow: 4px 0 24px rgba(15, 23, 42, 0.15) !important; 
-}
-.navbar-vertical .navbar-brand { 
-  padding: 24px !important; font-size: 20px !important; font-weight: 800 !important; color: #2ae1b2 !important; 
-}
-.navbar-vertical .nav-link { 
-  color: var(--sidebar-text) !important; font-weight: 500 !important; font-size: 14px !important; 
-  padding: 12px 18px !important; border-radius: 10px !important; margin: 4px 16px !important; 
-  transition: all 0.3s ease !important; 
-}
-.navbar-vertical .nav-link:hover { 
-  color: #ffffff !important; background-color: var(--sidebar-hover-bg) !important; transform: translateX(6px); 
-}
-.navbar-vertical .nav-link.active { 
-  color: #ffffff !important; background: linear-gradient(135deg, #146654 0%, #0d4639 100%) !important; 
-  font-weight: 600 !important; box-shadow: 0 6px 16px rgba(20, 102, 84, 0.3) !important; 
-}
+/* Giao diện Login & Form */
+.login-wrapper { background-color: var(--tblr-primary); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.login-card { background: #ffffff; border-radius: 32px; box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15); width: 100%; max-width: 420px; padding: 40px 30px 30px 30px; text-align: center; position: relative; margin-top: 40px; }
+.login-logo-box { background-color: var(--tblr-primary); color: white; width: 80px; height: 80px; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: -80px auto 20px auto; box-shadow: 0 10px 20px rgba(20, 102, 84, 0.3); }
+.input-modern { position: relative; margin-bottom: 16px; }
+.input-modern .input-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 20px; }
+.input-modern input { width: 100%; background-color: #f8fafc; border: 1px solid transparent; border-radius: 16px; padding: 16px 20px 16px 50px; font-size: 15px; font-weight: 500; color: #1e293b; outline: none; transition: all 0.2s ease; }
+.input-modern input:focus { border: 1px solid rgba(20, 102, 84, 0.3); background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
 
-/* ================= 3. THẺ HIỂN THỊ (CARDS & DASHBOARD) ================= */
-.card-luxury {
-  background: #ffffff;
-  border-radius: 20px;
-  border: 1px solid rgba(0,0,0,0.04);
-  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.card-luxury:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 32px rgba(149, 157, 165, 0.12);
-}
+/* Bảng Dữ Liệu */
+.table thead th { background-color: var(--tblr-primary) !important; color: #ffffff !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; border-bottom: none !important; padding: 12px 16px !important; }
+.table thead tr th:first-child { border-top-left-radius: 8px !important; }
+.table thead tr th:last-child { border-top-right-radius: 8px !important; }
+.card-luxury { background: #ffffff; border-radius: 20px; border: 1px solid rgba(0,0,0,0.03); box-shadow: 0 8px 24px rgba(149, 157, 165, 0.08); }
 
-/* ================= 4. HIỆU ỨNG CHUYỂN TRANG (ROUTER ANIMATION) ================= */
-.fade-in { animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-@keyframes fadeIn { 
-  from { opacity: 0; transform: translateY(15px); } 
-  to { opacity: 1; transform: translateY(0); } 
-}
-
-/* ================= 5. FORM INPUTS & BỘ LỌC THÔNG MINH ================= */
-.form-control, .form-select {
-  border-radius: 12px !important;
-  border: 1px solid #e2e8f0;
-  padding: 12px 16px;
-  font-weight: 500;
-  transition: all 0.25s ease;
-  background-color: #f8fafc;
-}
-.form-control:focus, .form-select:focus {
-  background-color: #ffffff;
-  border-color: var(--tblr-primary) !important;
-  box-shadow: 0 0 0 4px rgba(20, 102, 84, 0.1) !important;
-}
-
-/* ================= 6. BẢNG DỮ LIỆU & KANBAN (KẾ THỪA TỪ SOURCE CŨ) ================= */
-.table thead th { 
-  background-color: var(--tblr-primary) !important; color: #ffffff !important; 
-  font-weight: 700 !important; text-transform: uppercase !important; 
-  letter-spacing: 0.5px !important; padding: 14px 16px !important; border-bottom: none !important;
-}
-.cv-task-card { 
-  background: #ffffff; border-radius: 16px; padding: 18px; margin-bottom: 16px; 
-  border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); 
-  transition: all 0.3s; position: relative; 
-}
-.cv-task-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px -8px rgba(0,0,0,0.1); border-color: #cbd5e1; }
+.fade-in { animation: fadeIn 0.4s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }

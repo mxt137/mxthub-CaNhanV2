@@ -1,10 +1,10 @@
 <!-- =========================================================
-     TỆP: pages/page_dashboard.html - GIAO DIỆN & LOGIC MODULE
+     TỆP: pages/page_dashboard.html
+     (Gộp Giao diện HTML và File js/page_dashboard.js cũ)
      ========================================================= -->
 <div class="container-xl py-4 fade-in">
-  
-  <!-- HÀNG 1: LỜI TRÚC TẠO ĐỘNG LỰC ĐẦU NGÀY -->
-  <div class="card-luxury p-4 mb-4 text-center text-white position-relative overflow-hidden" style="background: linear-gradient(135deg, #146654 0%, #0d4639 100%); border: none;">
+  <!-- KHỐI 1: LỜI TRÚC TRUYỀN ĐỘNG LỰC -->
+  <div class="card-luxury p-4 mb-4 text-center text-white position-relative overflow-hidden" style="background: linear-gradient(135deg, #146654 0%, #0d4639 100%);">
     <i class="ti ti-quote position-absolute opacity-10" style="font-size: 150px; left: -20px; top: -30px; transform: rotate(-15deg);"></i>
     <div class="position-relative z-index-1">
       <h3 class="mb-1" style="font-weight: 300; letter-spacing: 2px;">THOUGHT OF THE DAY</h3>
@@ -15,45 +15,34 @@
   </div>
 
   <div class="row g-4">
-    <!-- CỘT TRÁI: GHI CHÚ NHANH (NOTES) -->
+    <!-- KHỐI 2: SỔ TAY GHI CHÚ -->
     <div class="col-md-7">
       <div class="card-luxury p-4 h-100">
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <h2 class="m-0 fw-bold d-flex align-items-center" style="color: var(--tblr-primary);">
-            <i class="ti ti-notebook me-2 fs-1"></i> Sổ Tay Ghi Chú
-          </h2>
-          <button class="btn btn-brand" onclick="window.mxtOpenNoteEditModal()">
-            <i class="ti ti-plus me-2"></i> Tạo mới
-          </button>
+          <h2 class="m-0 fw-bold" style="color: var(--tblr-primary);"><i class="ti ti-notebook me-2 fs-1"></i> Sổ Tay Ghi Chú</h2>
+          <button class="btn btn-brand" onclick="window.mxtOpenNoteModal()"><i class="ti ti-plus me-2"></i> Tạo mới</button>
         </div>
-        <!-- Vùng hiển thị danh sách ghi chú -->
         <div id="notesList" class="d-flex flex-column gap-3"></div>
       </div>
     </div>
 
-    <!-- CỘT PHẢI: SỰ KIỆN (EVENTS) -->
+    <!-- KHỐI 3: SỰ KIỆN -->
     <div class="col-md-5">
-      <div class="card-luxury p-4 h-100">
+      <div class="card-luxury p-4 h-100 bg-white">
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <h2 class="m-0 fw-bold d-flex align-items-center text-dark">
-            <i class="ti ti-calendar-event me-2 fs-1 text-info"></i> Lịch Sự Kiện
-          </h2>
-          <button class="btn btn-light fw-bold btn-icon" onclick="window.mxtOpenEventModal()">
-            <i class="ti ti-plus"></i>
-          </button>
+          <h2 class="m-0 fw-bold text-dark"><i class="ti ti-calendar-event me-2 fs-1 text-info"></i> Lịch Sự Kiện</h2>
+          <button class="btn btn-light fw-bold btn-icon" onclick="window.mxtOpenEventModal()"><i class="ti ti-plus"></i></button>
         </div>
-        <!-- Vùng hiển thị sự kiện -->
         <ul id="eventsList" class="list-group list-group-flush gap-2 p-0"></ul>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ================= MODALS DÀNH RIÊNG CHO MODULE NÀY ================= -->
-<!-- Modal: Sửa Ghi Chú -->
+<!-- ================= MODAL CỦA DASHBOARD ================= -->
 <div class="modal modal-blur fade" id="modal-note-edit" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+    <div class="modal-content shadow-lg border-0" style="border-radius: 20px;">
       <div class="modal-header text-white" style="background: var(--tblr-primary); border-radius: 20px 20px 0 0;">
         <h5 class="modal-title fw-bold fs-3" id="noteEditTitle">Tạo Ghi Chú</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -62,7 +51,7 @@
         <input type="hidden" id="nId">
         <div class="mb-3">
           <label class="form-label fw-bold">Tiêu đề ghi chú</label>
-          <input type="text" id="nTitle" class="form-control bg-white" placeholder="Tên ý tưởng..." required>
+          <input type="text" id="nTitle" class="form-control" placeholder="Tên ý tưởng..." required>
         </div>
         <div class="mb-2">
           <label class="form-label fw-bold">Nội dung</label>
@@ -77,18 +66,16 @@
   </div>
 </div>
 
-<!-- ================= LOGIC XỬ LÝ (JAVASCRIPT) ================= -->
+<!-- ================= LOGIC JAVASCRIPT (Thay thế file page_dashboard.js) ================= -->
 <script>
-  // Đóng gói logic bằng IIFE để tự động thực thi ngay khi HTML được nạp vào DOM
+  // Kỹ thuật IIFE: Hàm sẽ TỰ ĐỘNG CHẠY ngay lập tức khi file HTML này được Router fetch về
   (async function initDashboardModule() {
-    
-    // BIẾN CỤC BỘ DÀNH RIÊNG CHO DASHBOARD
     let dbQuotes = [];
     let allNotes = [];
     let quillNoteEditor = null;
     let quoteInterval = null;
 
-    // 1. LOGIC TRUYỀN ĐỘNG LỰC
+    // 1. LOGIC QUOTES (Động lực)
     async function loadQuotes() {
       const { data } = await window.sbClient.from('quotes').select('*');
       dbQuotes = data || [];
@@ -99,7 +86,7 @@
 
     function triggerQuoteChange() {
       const quoteEl = document.getElementById('quoteText');
-      if (!quoteEl) { clearInterval(quoteInterval); return; } // Bảo vệ: Dừng lặp nếu rời khỏi trang
+      if (!quoteEl) { clearInterval(quoteInterval); return; } // Bảo vệ khi người dùng chuyển trang
       
       quoteEl.style.opacity = 0;
       setTimeout(() => {
@@ -107,13 +94,13 @@
           const rand = dbQuotes[Math.floor(Math.random() * dbQuotes.length)];
           quoteEl.innerHTML = `"${rand.content}"`;
         } else {
-          quoteEl.innerHTML = '"Dữ liệu rỗng, hãy nhập tư duy của bạn!"';
+          quoteEl.innerHTML = '"Dữ liệu rỗng, hãy lập trình tư duy tích cực!"';
         }
         quoteEl.style.opacity = 1;
       }, 500);
     }
 
-    // 2. LOGIC SỔ TAY GHI CHÚ
+    // 2. LOGIC NOTES (Ghi chú)
     async function loadNotes() {
       const { data, error } = await window.sbClient.from('notes').select('*').order('updated_at', { ascending: false });
       if(!error) { allNotes = data || []; renderNotes(); }
@@ -134,7 +121,7 @@
               <div class="text-muted" style="font-size: 13px;">${preview}</div>
             </div>
             <div class="d-flex flex-column gap-2 ms-3">
-              <button class="btn btn-sm btn-icon bg-light text-primary border-0" onclick="window.mxtOpenNoteEditModal('${n.id}')"><i class="ti ti-pencil"></i></button>
+              <button class="btn btn-sm btn-icon bg-light text-primary border-0" onclick="window.mxtOpenNoteModal('${n.id}')"><i class="ti ti-pencil"></i></button>
               <button class="btn btn-sm btn-icon bg-light text-danger border-0" onclick="window.mxtDeleteNote('${n.id}')"><i class="ti ti-trash"></i></button>
             </div>
           </div>
@@ -142,20 +129,13 @@
       }).join('');
     }
 
-    function initQuill() {
-      if(!quillNoteEditor) {
-        quillNoteEditor = new Quill('#nContentEditor', {
-          theme: 'snow', placeholder: 'Soạn thảo nội dung...',
-          modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']] }
-        });
-      }
-    }
-
-    // Đẩy hàm kích hoạt bởi HTML (onclick) ra biến window toàn cục
-    window.mxtOpenNoteEditModal = function(id = '') {
+    // Gắn các hàm tương tác ra biến window để HTML gọi được (do chúng ta dùng IIFE)
+    window.mxtOpenNoteModal = function(id = '') {
       document.getElementById('nId').value = id;
       document.getElementById('nTitle').value = '';
-      initQuill();
+      if(!quillNoteEditor) {
+        quillNoteEditor = new Quill('#nContentEditor', { theme: 'snow' });
+      }
       quillNoteEditor.root.innerHTML = '';
       
       if(id) {
@@ -166,7 +146,7 @@
           quillNoteEditor.root.innerHTML = note.content || ''; 
         }
       } else {
-        document.getElementById('noteEditTitle').innerHTML = '<i class="ti ti-plus me-2"></i>Tạo Ghi Chú Mới';
+        document.getElementById('noteEditTitle').innerHTML = '<i class="ti ti-plus me-2"></i>Tạo Ghi Chú';
       }
       new bootstrap.Modal(document.getElementById('modal-note-edit')).show();
     };
@@ -180,7 +160,7 @@
         updated_at: new Date().toISOString()
       };
 
-      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Đang lưu...'; btn.disabled = true;
+      btn.innerHTML = 'Đang lưu...'; btn.disabled = true;
       try {
         if(id) await window.sbClient.from('notes').update(payload).eq('id', id);
         else { payload.user_id = window.currentUser.id; await window.sbClient.from('notes').insert([payload]); }
@@ -198,7 +178,7 @@
       }
     };
 
-    // KHỞI CHẠY LẤY DỮ LIỆU
+    // TỰ ĐỘNG CHẠY LOAD DỮ LIỆU KHI VÀO TRANG NÀY
     loadQuotes();
     loadNotes();
   })();

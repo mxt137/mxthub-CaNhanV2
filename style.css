@@ -1,0 +1,103 @@
+/* =========================================
+   TỆP: style.css - HỆ THỐNG GIAO DIỆN MXT HUB
+   ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --tblr-primary: #146654 !important; /* Màu thương hiệu lục bảo thẫm */
+  --tblr-primary-rgb: 20, 102, 84 !important;
+  --tblr-font-sans-serif: 'Inter', sans-serif !important;
+  --sidebar-bg: #0f172a; 
+  --sidebar-text: #94a3b8;
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.06);
+}
+
+body { 
+  font-family: var(--tblr-font-sans-serif); 
+  -webkit-font-smoothing: antialiased; 
+  background-color: #f8fafc; 
+}
+
+/* NÚT BẤM (BUTTONS) & HIỆU ỨNG THAO TÁC */
+.btn-brand { 
+  background: linear-gradient(135deg, #146654 0%, #0d4639 100%) !important; 
+  color: white !important; 
+  font-weight: 600; 
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+  box-shadow: 0 4px 12px rgba(20, 102, 84, 0.2);
+}
+.btn-brand:hover { 
+  transform: translateY(-2px); 
+  box-shadow: 0 8px 20px rgba(20, 102, 84, 0.35); 
+}
+.btn-brand:active { 
+  transform: translateY(1px); 
+  box-shadow: 0 2px 5px rgba(20, 102, 84, 0.2); 
+}
+
+.btn-icon {
+  transition: all 0.2s;
+  border-radius: 8px;
+}
+.btn-icon:hover { transform: scale(1.1); }
+.btn-icon:active { transform: scale(0.9); }
+
+/* SIDEBAR ĐIỀU HƯỚNG */
+.navbar-vertical { 
+  background-color: var(--sidebar-bg) !important; 
+  border-right: 1px solid rgba(255, 255, 255, 0.05) !important; 
+  box-shadow: 4px 0 24px rgba(15, 23, 42, 0.15) !important; 
+}
+.navbar-vertical .navbar-brand { 
+  padding: 24px !important; 
+  font-size: 20px !important; 
+  font-weight: 800 !important; 
+}
+.navbar-vertical .nav-link { 
+  color: var(--sidebar-text) !important; 
+  font-weight: 500 !important; 
+  font-size: 14px !important; 
+  padding: 12px 18px !important; 
+  border-radius: 10px !important; 
+  margin: 6px 16px !important; 
+  transition: all 0.3s ease !important; 
+}
+.navbar-vertical .nav-link:hover { 
+  color: #ffffff !important; 
+  background-color: var(--sidebar-hover-bg) !important; 
+  transform: translateX(6px); 
+}
+.navbar-vertical .nav-link.active { 
+  color: #ffffff !important; 
+  background: linear-gradient(135deg, #146654 0%, #0d4639 100%) !important; 
+  font-weight: 600 !important; 
+  box-shadow: 0 6px 16px rgba(20, 102, 84, 0.3) !important; 
+}
+
+/* THẺ HIỂN THỊ (CARDS) */
+.card-luxury {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(0,0,0,0.03);
+  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-luxury:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(149, 157, 165, 0.15);
+}
+
+/* HIỆU ỨNG CHUYỂN TRANG (SPA ANIMATION) */
+.fade-in { animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+@keyframes fadeIn { 
+  from { opacity: 0; transform: translateY(15px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+/* BỘ GÕ QUILL.JS TÙY CHỈNH */
+.ql-toolbar { border-radius: 12px 12px 0 0 !important; border-color: #e2e8f0 !important; background: #f8fafc; }
+.ql-container { border-radius: 0 0 12px 12px !important; border-color: #e2e8f0 !important; min-height: 150px; font-family: var(--tblr-font-sans-serif) !important; font-size: 14px; }
+.ql-editor:focus { box-shadow: inset 0 0 0 2px rgba(20, 102, 84, 0.1); }

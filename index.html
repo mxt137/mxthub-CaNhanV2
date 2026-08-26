@@ -1,0 +1,186 @@
+<!-- =========================================
+     TỆP: index.html - BỘ KHUNG ĐIỀU HƯỚNG SPA
+     ========================================= -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="hub.png">
+  <title>MXT HUB - Quản Trị Hệ Thống</title>
+  
+  <!-- CDN Core & UI -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
+  <!-- Nạp tệp CSS toàn cục -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ================= MÀN HÌNH LOGIN ================= -->
+  <div id="screen-login" style="display: none; background-color: var(--tblr-primary); min-height: 100vh; align-items: center; justify-content: center; padding: 20px;">
+    <div class="card-luxury fade-in p-5 text-center" style="width: 100%; max-width: 420px; position: relative; margin-top: 40px;">
+      
+      <div style="background-color: var(--tblr-primary); color: white; width: 80px; height: 80px; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: -80px auto 20px auto; box-shadow: 0 10px 20px rgba(20, 102, 84, 0.3);">
+        <i class="ti ti-shield-lock"></i>
+      </div>
+      
+      <h2 style="color: var(--tblr-primary); font-weight: 800; font-size: 24px; text-transform: uppercase; margin: 0;">Mai Xuân Thành</h2>
+      <div style="color: #64748b; font-size: 11px; font-weight: 700; letter-spacing: 1px; margin-top: 4px; margin-bottom: 30px;">THOUGHT LEADER DASHBOARD</div>
+      
+      <form id="frmLogin" onsubmit="event.preventDefault(); processLogin();">
+        <div class="mb-3 position-relative">
+          <i class="ti ti-user position-absolute text-muted" style="left: 16px; top: 14px; font-size: 20px;"></i>
+          <input type="email" id="loginEmail" class="form-control bg-light border-0" placeholder="Email đăng nhập..." required autocomplete="email" style="border-radius: 12px; padding: 14px 16px 14px 48px; font-weight: 500;">
+        </div>
+        
+        <div class="mb-4 position-relative">
+          <i class="ti ti-lock position-absolute text-muted" style="left: 16px; top: 14px; font-size: 20px;"></i>
+          <input type="password" id="loginPass" class="form-control bg-light border-0" placeholder="Mật khẩu..." required autocomplete="current-password" style="border-radius: 12px; padding: 14px 16px 14px 48px; font-weight: 500;">
+        </div>
+
+        <button type="submit" id="btnLogin" class="btn-brand w-100 fs-3 py-3 d-flex justify-content-center align-items-center">
+          <span>ĐĂNG NHẬP</span><i class="ti ti-arrow-right ms-2"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MÀN HÌNH ỨNG DỤNG ================= -->
+  <div id="screen-app" class="page" style="display: none;">
+    
+    <!-- SIDEBAR BÊN TRÁI -->
+    <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
+      <div class="container-fluid">
+        <h1 class="navbar-brand mt-lg-3">
+          <span style="color: #2ae1b2; display: flex; align-items: center; gap: 8px;">
+            <i class="ti ti-shield-check fs-1"></i> MXT HUB
+          </span>
+        </h1>
+        <div class="collapse navbar-collapse mt-lg-4" id="sidebar-menu">
+          <ul class="navbar-nav pt-lg-3 w-100">
+            <!-- Khai báo Menu -->
+            <li class="nav-item">
+              <a class="nav-link nav-menu active" id="nav-dashboard" onclick="switchPage('dashboard')" style="cursor: pointer;">
+                <i class="ti ti-smart-home me-3 fs-2"></i> Bảng Tổng Quan
+              </a>
+            </li>
+            <!-- Các menu khác (Thu chi, CRM...) thêm vào đây tương tự... -->
+            
+            <li class="nav-item mt-auto mb-3">
+              <a class="nav-link text-danger" onclick="handleLogout()" style="cursor: pointer; background: rgba(239, 68, 68, 0.08);">
+                <i class="ti ti-logout me-3 fs-2"></i> Đăng Xuất
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <!-- WRAPPER NỘI DUNG CHÍNH -->
+    <div class="page-wrapper">
+      <!-- Vùng SPA Router sẽ nhúng mã HTML tĩnh vào đây -->
+      <div id="dynamic-content">
+        <div class="text-center py-5 text-muted mt-5">
+          <span class="spinner-border spinner-border-sm me-2"></span> Khởi động hệ thống...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= LOGIC TOÀN CỤC ================= -->
+  <script>
+    // 1. KẾT NỐI SUPABASE
+    const SUPABASE_URL = 'https://hwdpfyooxbblwybbfxpk.supabase.co'; 
+    const SUPABASE_KEY = 'sb_publishable_lDIh4gJWaWmnoAJUfUSCxQ_MMCo3LBS'; 
+    window.sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    window.currentUser = null;
+
+    // Bộ thông báo giao diện
+    window.UI = {
+      toast: Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true }),
+      success: (msg) => window.UI.toast.fire({ icon: 'success', title: msg }),
+      error: (msg) => Swal.fire({ icon: 'error', title: 'Đã xảy ra lỗi', text: msg, confirmButtonColor: '#146654' })
+    };
+
+    // 2. CHỨC NĂNG ĐĂNG NHẬP
+    async function processLogin() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPass').value.trim();
+      const btn = document.getElementById('btnLogin');
+      if (!email || !password) { window.UI.error('Nhập đủ Email và Pass!'); return; }
+      
+      const originHtml = btn.innerHTML;
+      btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> ĐANG XỬ LÝ...';
+
+      try {
+        const { data, error } = await window.sbClient.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        
+        window.currentUser = { id: data.user.id, email: data.user.email };
+        document.getElementById('screen-login').style.display = 'none';
+        document.getElementById('screen-app').style.display = 'block';
+        switchPage('dashboard');
+      } catch (err) { 
+        window.UI.error(err.message === 'Invalid login credentials' ? 'Sai thông tin đăng nhập!' : err.message); 
+      } finally { 
+        btn.disabled = false; btn.innerHTML = originHtml; 
+      }
+    }
+
+    // Kiểm tra phiên đăng nhập tự động
+    window.onload = async function() {
+      const { data: { session } } = await window.sbClient.auth.getSession();
+      if (session) {
+        window.currentUser = { id: session.user.id, email: session.user.email };
+        document.getElementById('screen-login').style.display = 'none';
+        document.getElementById('screen-app').style.display = 'block';
+        switchPage('dashboard');
+      } else {
+        document.getElementById('screen-login').style.display = 'flex';
+      }
+    };
+
+    async function handleLogout() {
+      await window.sbClient.auth.signOut();
+      window.location.reload();
+    }
+
+    // 3. BỘ ĐỊNH TUYẾN (SPA ROUTER ENGINE)
+    async function switchPage(pageId) {
+      // Đổi trạng thái màu menu
+      document.querySelectorAll('.nav-menu').forEach(el => el.classList.remove('active'));
+      const activeNavLink = document.getElementById('nav-' + pageId);
+      if(activeNavLink) activeNavLink.classList.add('active');
+
+      const contentDiv = document.getElementById('dynamic-content');
+      contentDiv.innerHTML = '<div class="text-center py-5 text-muted mt-5"><span class="spinner-border spinner-border-sm me-2"></span> Đang nạp module...</div>';
+
+      try {
+        // Tải HTML tĩnh của module con
+        const response = await fetch(`pages/page_${pageId}.html`);
+        if (!response.ok) throw new Error("Tính năng chưa được triển khai!");
+        
+        contentDiv.innerHTML = await response.text();
+
+        // Kích hoạt Javascript bên trong đoạn HTML vừa nạp
+        Array.from(contentDiv.querySelectorAll("script")).forEach(oldScript => {
+          const newScript = document.createElement("script");
+          Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+          newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+          oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+      } catch (error) {
+        contentDiv.innerHTML = `<div class="container-xl mt-4"><div class="alert alert-warning border-0 shadow-sm">${error.message}</div></div>`;
+      }
+    }
+  </script>
+</body>
+</html>

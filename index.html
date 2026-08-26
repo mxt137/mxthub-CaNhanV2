@@ -1,288 +1,259 @@
-<!-- =========================================================
-     TỆP: index.html - CORE SPA ROUTER & AUTHENTICATION
-     ========================================================= -->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
   <link rel="icon" type="image/png" href="hub.png">
-  <title>MXT HUB - Thought Leader Dashboard</title>
+  <title>MXT HUB V2 - Personal Assistant System</title>
   
+  <!-- CDN Thư viện UI & Core -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
   
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
+  <!-- Nạp CSS Toàn cục -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- ================= MÀN HÌNH LOGIN (Phục hồi 100% nguyên bản) ================= -->
-  <div id="screen-login" style="display: none;">
-    <div class="login-wrapper w-100">
-      <div class="login-card fade-in">
-        <div class="login-logo-box"><i class="ti ti-fingerprint"></i></div>
-        <h2 class="login-title" style="color: var(--tblr-primary); font-weight: 800; font-size: 24px; margin: 0;">MAI XUÂN THÀNH</h2>
-        <div class="login-subtitle">PERSONAL ASSISTANT SYSTEM</div>
-        
-        <form id="frmLogin" onsubmit="event.preventDefault(); processLogin();">
-          <!-- Input Email -->
-          <div class="input-modern mb-3">
-            <i class="ti ti-user input-icon"></i>
-            <input type="email" id="loginEmail" placeholder="Email đăng nhập..." required autocomplete="email">
-          </div>
-          
-          <!-- Input Mật khẩu & Quên Mật Khẩu -->
-          <div class="mb-4 text-start">
-            <div class="input-modern" style="margin-bottom: 8px;">
-              <i class="ti ti-lock input-icon"></i>
-              <input type="password" id="loginPass" placeholder="Mật khẩu..." required autocomplete="current-password">
-            </div>
-            <div class="d-flex justify-content-end px-2">
-              <a href="javascript:void(0)" onclick="handleForgotPassword()" class="text-muted" style="text-decoration: none; font-weight: 600; font-size: 12px; transition: color 0.2s;" onmouseover="this.style.color='#146654'" onmouseout="this.style.color='#64748b'">Quên mật khẩu?</a>
-            </div>
-          </div>
+  <!-- 1. MÀN HÌNH ĐĂNG NHẬP -->
+  <div id="screen-login" style="display: none;"></div>
 
-          <button type="submit" id="btnLogin" class="btn-brand w-100 fs-3 py-3 d-flex justify-content-center align-items-center">
-            <span>ĐĂNG NHẬP HỆ THỐNG</span><i class="ti ti-arrow-right ms-2"></i>
-          </button>
-        </form>
-        <div class="login-footer mt-4">&copy; 2026 SECURED BY SUPABASE & VERCEL</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= MÀN HÌNH ỨNG DỤNG ================= -->
+  <!-- 2. MÀN HÌNH ỨNG DỤNG CHÍNH -->
   <div id="screen-app" class="page" style="display: none;">
-    <!-- SIDEBAR BÊN TRÁI -->
+    
+    <!-- SIDEBAR VERTICAL -->
     <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
       <div class="container-fluid">
-        <h1 class="navbar-brand mt-lg-3">
-          <span><i class="ti ti-shield-check" style="color: #2ae1b2;"></i> MXT HUB</span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu" aria-expanded="false">
+          <i class="ti ti-menu-2 fs-1"></i>
+        </button>
+        <h1 class="navbar-brand navbar-brand-autodark mt-lg-3">
+          <span style="font-size: 20px; font-weight: 800; letter-spacing: 0.5px;">
+            <i class="ti ti-shield-check" style="color: #2ae1b2;"></i> MXT HUB V2
+          </span>
         </h1>
         <div class="collapse navbar-collapse mt-lg-4" id="sidebar-menu">
-          <ul class="navbar-nav pt-lg-3 w-100">
-            <!-- CÁC MODULE MENU NHƯ CŨ -->
-            <li class="nav-item">
-              <a class="nav-link nav-menu active" id="nav-dashboard" onclick="switchPage('dashboard')" style="cursor: pointer;"><i class="ti ti-smart-home me-3 fs-2"></i> Trang Chủ</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link nav-menu" id="nav-task" onclick="switchPage('task')" style="cursor: pointer;"><i class="ti ti-layout-kanban me-3 fs-2"></i> Quản lý Công việc</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link nav-menu" id="nav-thuchi" onclick="switchPage('thuchi')" style="cursor: pointer;"><i class="ti ti-wallet me-3 fs-2"></i> Quản Lý Tài Chính</a>
-            </li>
-            <!-- Các menu khác (SEO, Phim ảnh, CRM...) bạn bổ sung thêm vào đây -->
+          <ul class="navbar-nav pt-lg-3 w-100 h-100 d-flex flex-column">
             
-            <li class="nav-item mt-auto mb-2">
-              <a class="nav-link nav-menu" data-bs-toggle="modal" data-bs-target="#modal-change-password" style="cursor: pointer;"><i class="ti ti-key me-3 fs-2"></i> Đổi Mật Khẩu</a>
+            <li class="nav-item">
+              <a class="nav-link nav-menu" id="nav-dashboard" onclick="switchPage('dashboard')" style="cursor: pointer;">
+                <i class="ti ti-smart-home me-2 fs-2 nav-link-icon"></i> Trang Chủ
+              </a>
             </li>
-            <li class="nav-item mb-3">
-              <a class="nav-link text-danger" onclick="handleLogout()" style="cursor: pointer; background: rgba(239, 68, 68, 0.05);"><i class="ti ti-logout me-3 fs-2 text-danger"></i> Đăng Xuất</a>
+            <li class="nav-item">
+              <a class="nav-link nav-menu" id="nav-congviec" onclick="switchPage('congviec')" style="cursor: pointer;">
+                <i class="ti ti-calendar-check me-2 fs-2 nav-link-icon"></i> Lịch Làm Việc
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-menu" id="nav-task" onclick="switchPage('task')" style="cursor: pointer;">
+                <i class="ti ti-layout-kanban me-2 fs-2 nav-link-icon"></i> Quản lý Dự án (Kanban)
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-menu" id="nav-seo" onclick="switchPage('seo')" style="cursor: pointer;">
+                <i class="ti ti-sitemap me-2 fs-2 nav-link-icon"></i> Hệ thống SEO
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-menu" id="nav-crm" onclick="switchPage('crm')" style="cursor: pointer;">
+                <i class="ti ti-users me-2 fs-2 nav-link-icon"></i> CRM Khách Hàng
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-menu" id="nav-thuchi" onclick="switchPage('thuchi')" style="cursor: pointer;">
+                <i class="ti ti-wallet me-2 fs-2 nav-link-icon"></i> Quản Lý Tài Chính
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-menu" id="nav-matkhau" onclick="switchPage('matkhau')" style="cursor: pointer;">
+                <i class="ti ti-key me-2 fs-2 nav-link-icon"></i> Kho Mật Khẩu
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-menu" id="nav-phimanh" onclick="switchPage('phimanh')" style="cursor: pointer;">
+                <i class="ti ti-movie me-2 fs-2 nav-link-icon"></i> Thư Viện Phim
+              </a>
+            </li>
+
+            <!-- Khối Đăng xuất đẩy xuống đáy -->
+            <li class="nav-item mt-auto mb-3">
+              <a class="nav-link text-danger" onclick="forceLogout()" style="cursor: pointer; background: rgba(239, 68, 68, 0.08);">
+                <i class="ti ti-logout me-2 fs-2 text-danger"></i> Đăng Xuất
+              </a>
             </li>
           </ul>
         </div>
       </div>
     </aside>
 
-    <!-- WRAPPER VÀ VÙNG CHỨA DỮ LIỆU ĐỘNG -->
+    <!-- WRAPPER NỘI DUNG ĐỘNG -->
     <div class="page-wrapper">
-      <div id="dynamic-content">
-        <div class="text-center py-5 text-muted mt-5">
-          <span class="spinner-border spinner-border-sm me-2"></span> Đang khởi động hệ thống...
-        </div>
-      </div>
+      <header id="global-topbar"></header>
+      
+      <!-- CÁC MODULE CON HỨNG HTML TỪ THƯ MỤC PAGES/ -->
+      <div id="module-dashboard" class="app-module" style="display: none;"></div>
+      <div id="module-congviec" class="app-module" style="display: none;"></div>
+      <div id="module-task" class="app-module" style="display: none;"></div>
+      <div id="module-seo" class="app-module" style="display: none;"></div>
+      <div id="module-crm" class="app-module" style="display: none;"></div>
+      <div id="module-thuchi" class="app-module" style="display: none;"></div>
+      <div id="module-matkhau" class="app-module" style="display: none;"></div>
+      <div id="module-phimanh" class="app-module" style="display: none;"></div>
     </div>
   </div>
 
-  <!-- ================= MODAL ĐỔI MẬT KHẨU ================= -->
-  <div class="modal modal-blur fade" id="modal-change-password" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content shadow-lg border-0" style="border-radius: 16px;">
-        <div class="modal-header text-white" style="background: var(--tblr-primary); border-radius: 16px 16px 0 0;">
-          <h5 class="modal-title fw-bold"><i class="ti ti-key me-2"></i>Đổi Mật Khẩu</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <form id="frmChangePass" onsubmit="event.preventDefault(); processChangePassword();">
-          <div class="modal-body p-4">
-            <div class="mb-3">
-              <label class="form-label text-muted fw-bold">Mật khẩu hiện tại <span class="text-danger">*</span></label>
-              <input type="password" id="cpOldPass" class="form-control" required placeholder="Nhập mật khẩu cũ...">
-            </div>
-            <div class="mb-3">
-              <label class="form-label text-muted fw-bold">Mật khẩu mới <span class="text-danger">*</span></label>
-              <input type="password" id="cpNewPass" class="form-control" required placeholder="Nhập mật khẩu mới...">
-            </div>
-          </div>
-          <div class="modal-footer bg-light" style="border-radius: 0 0 16px 16px;">
-            <button type="button" class="btn btn-light fw-bold" data-bs-dismiss="modal">Hủy</button>
-            <button type="submit" id="btnChangePass" class="btn btn-brand fw-bold px-4"><i class="ti ti-check me-2"></i>Xác nhận đổi</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= LOGIC TOÀN CỤC CỦA CORE ROUTER ================= -->
+  <!-- LOGIC HỆ THỐNG GLOBAL -->
   <script>
-    const SUPABASE_URL = 'https://hwdpfyooxbblwybbfxpk.supabase.co'; 
-    const SUPABASE_KEY = 'sb_publishable_lDIh4gJWaWmnoAJUfUSCxQ_MMCo3LBS'; 
+    // 1. CẤU HÌNH SUPABASE CLIENT (API MXT HUB)
+    const SUPABASE_URL = 'https://hwdpfyooxbblwybbfxpk.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_lDIh4gJWaWmnoAJUfUSCxQ_MMCo3LBS';
     window.sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     window.currentUser = null;
-    window.mxt_lastResetTime = 0; // Biến chống Spam phục hồi từ bản cũ
 
+    // SweetAlert2 Toàn cục
     window.UI = {
       toast: Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true }),
       success: (msg) => window.UI.toast.fire({ icon: 'success', title: msg }),
       error: (msg) => window.UI.toast.fire({ icon: 'error', title: msg })
     };
 
-    // 1. LẮNG NGHE LINK KHÔI PHỤC TỪ EMAIL
-    window.sbClient.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        const { value: newPassword } = await Swal.fire({
-          title: 'Khôi Phục Mật Khẩu', text: 'Vui lòng nhập mật khẩu mới.', input: 'password',
-          showCancelButton: false, allowOutsideClick: false, confirmButtonColor: '#146654', confirmButtonText: 'Lưu mật khẩu',
-          inputValidator: (value) => { if (!value || value.length < 6) return 'Tối thiểu 6 ký tự!'; }
-        });
-
-        if (newPassword) {
-          Swal.fire({ title: 'Đang cập nhật...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
-          const { error } = await window.sbClient.auth.updateUser({ password: newPassword });
-          if (error) { Swal.fire('Lỗi', error.message, 'error'); } 
-          else {
-            Swal.fire({ icon: 'success', title: 'Thành công!', confirmButtonColor: '#146654', timer: 2000 }).then(() => {
-              window.location.hash = ''; window.location.reload();
-            });
-          }
-        }
-      }
-    });
-
-    // 2. LOGIC QUÊN MẬT KHẨU & CHỐNG SPAM
-    window.handleForgotPassword = async function() {
-      const now = Date.now();
-      if (now - window.mxt_lastResetTime < 60000) {
-        const MathLeft = Math.ceil((60000 - (now - window.mxt_lastResetTime)) / 1000);
-        return Swal.fire({ icon: 'warning', title: 'Thao tác quá nhanh!', text: `Vui lòng đợi ${MathLeft} giây.`, confirmButtonColor: '#146654' });
-      }
-
-      const emailInput = document.getElementById('loginEmail').value.trim();
-      const { value: email } = await Swal.fire({
-        title: 'Quên mật khẩu', input: 'email', inputValue: emailInput, placeholder: 'Nhập email...',
-        showCancelButton: true, confirmButtonColor: '#146654', confirmButtonText: 'Gửi liên kết'
-      });
-
-      if (email) {
-        Swal.fire({ title: 'Đang gửi...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
-        const { error } = await window.sbClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + window.location.pathname });
-        if (error) { Swal.fire('Lỗi', error.message, 'error'); } 
-        else {
-          window.mxt_lastResetTime = Date.now();
-          Swal.fire({ icon: 'success', title: 'Đã gửi Email!', text: 'Vui lòng kiểm tra hộp thư.', confirmButtonColor: '#146654' });
-        }
-      }
-    };
-
-    // 3. LOGIC ĐĂNG NHẬP VÀ ĐỔI MẬT KHẨU
-    async function processLogin() {
-      const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPass').value.trim();
-      const btn = document.getElementById('btnLogin');
-      if (!email || !password) return window.UI.error('Nhập đủ thông tin!');
-      
-      const originalBtnContent = btn.innerHTML;
-      btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> ĐANG XÁC THỰC...';
-
-      try {
-        const { data, error } = await window.sbClient.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        
-        const { data: profileData } = await window.sbClient.from('profiles').select('display_name').eq('id', data.user.id).single();
-        window.currentUser = { id: data.user.id, email: data.user.email, display_name: profileData ? profileData.display_name : 'User' };
-        
-        window.UI.success(`Chào mừng ${window.currentUser.display_name}!`);
-        document.getElementById('screen-login').style.display = 'none';
-        document.getElementById('screen-app').style.display = 'block';
-        switchPage('dashboard');
-      } catch (err) { window.UI.error(err.message === 'Invalid login credentials' ? 'Sai thông tin!' : err.message); } 
-      finally { btn.disabled = false; btn.innerHTML = originalBtnContent; }
-    }
-
-    window.processChangePassword = async function() {
-      const oldPass = document.getElementById('cpOldPass').value.trim();
-      const newPass = document.getElementById('cpNewPass').value.trim();
-      const btn = document.getElementById('btnChangePass');
-      if (oldPass === newPass || newPass.length < 6) return Swal.fire('Lưu ý', 'Mật khẩu mới phải khác mật khẩu cũ và từ 6 ký tự!', 'warning');
-
-      btn.disabled = true; btn.innerHTML = 'Đang xử lý...';
-      try {
-        const { error: signInError } = await window.sbClient.auth.signInWithPassword({ email: window.currentUser.email, password: oldPass });
-        if (signInError) throw new Error('Mật khẩu hiện tại không chính xác!');
-        
-        const { error: updateError } = await window.sbClient.auth.updateUser({ password: newPass });
-        if (updateError) throw updateError;
-
-        bootstrap.Modal.getInstance(document.getElementById('modal-change-password')).hide();
-        document.getElementById('frmChangePass').reset();
-        Swal.fire({ icon: 'success', title: 'Đổi mật khẩu thành công', confirmButtonColor: '#146654' });
-      } catch (err) { Swal.fire('Lỗi', err.message, 'error'); } 
-      finally { btn.disabled = false; btn.innerHTML = '<i class="ti ti-check me-2"></i>Xác nhận đổi'; }
-    };
-
-    window.onload = async function() {
-      const { data: { session } } = await window.sbClient.auth.getSession();
-      if (session) {
-        try {
-          const { data: profile } = await window.sbClient.from('profiles').select('display_name').eq('id', session.user.id).single();
-          window.currentUser = { id: session.user.id, email: session.user.email, display_name: profile ? profile.display_name : 'User' };
-          document.getElementById('screen-login').style.display = 'none';
-          document.getElementById('screen-app').style.display = 'block';
-          switchPage('dashboard');
-        } catch (e) { handleLogout(); }
-      } else { document.getElementById('screen-login').style.display = 'flex'; }
-    };
-
-    async function handleLogout() {
+    // 2. ÉP ĐĂNG XUẤT
+    async function forceLogout(msg = '') {
       await window.sbClient.auth.signOut();
-      window.location.reload();
+      window.currentUser = null;
+      document.querySelectorAll('.app-module').forEach(el => el.style.display = 'none');
+      document.getElementById('screen-app').style.display = 'none';
+      document.getElementById('screen-login').style.display = 'flex';
+      if (msg) Swal.fire({ icon: 'warning', title: 'Phiên bản hết hạn', text: msg, confirmButtonColor: '#146654' });
     }
 
-    // 4. BỘ ĐỊNH TUYẾN MÔ-ĐUN MỚI (Tự động kích hoạt JS của trang con)
+    // 3. RENDER TOPBAR CÁ NHÂN HÓA
+    function renderTopbar() {
+      const user = window.currentUser;
+      if (!user) return;
+      
+      const topbarEl = document.getElementById('global-topbar'); 
+      if (topbarEl) {
+        topbarEl.className = "navbar navbar-expand-md d-none d-lg-flex d-print-none bg-white border-bottom";
+        topbarEl.innerHTML = `
+          <div class="container-xl d-flex justify-content-between align-items-center w-100 py-2">
+            <div class="d-flex align-items-center gap-3">
+              <span class="badge badge-outline text-success fw-bold d-flex align-items-center gap-1">
+                <span class="status-dot status-dot-animated bg-success me-1"></span> Hệ thống mã hóa 256-bit
+              </span>
+            </div>
+            <div class="navbar-nav flex-row order-md-last align-items-center gap-3">
+              <div class="d-flex align-items-center p-1 pe-3" style="background: #f8fafc; border-radius: 50px; border: 1px solid #e2e8f0;">
+                <span class="avatar avatar-sm rounded-circle shadow-sm" style="background-image: url(https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.display_name)}&backgroundType=gradientLinear&fontSize=45)"></span>
+                <div class="ps-2 fw-bolder text-dark" style="font-size: 14px; letter-spacing: -0.2px;">${user.display_name}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // 4. BỘ ĐỊNH TUYẾN CHUYỂN MODULE (SPA ROUTER)
     async function switchPage(pageId) {
+      if (!window.currentUser) return; 
+
+      // Đóng menu Mobile tự động
+      const sidebarMenu = document.getElementById('sidebar-menu');
+      if (window.innerWidth < 992 && sidebarMenu && sidebarMenu.classList.contains('show')) {
+          document.querySelector('.navbar-toggler').click();
+      }
+
+      const moduleDiv = document.getElementById('module-' + pageId);
+      if (!moduleDiv) return;
+      
+      // Load file HTML động từ thư mục pages/
+      if (moduleDiv.innerHTML.trim() === '') {
+        moduleDiv.innerHTML = '<div class="text-center py-5 text-muted mt-5"><span class="spinner-border spinner-border-sm me-2"></span> Đang nạp module...</div>';
+        try {
+          const response = await fetch(`pages/page_${pageId}.html`);
+          if (response.ok) {
+            moduleDiv.innerHTML = await response.text();
+            
+            // Ép trình duyệt thực thi thẻ Script
+            Array.from(moduleDiv.querySelectorAll("script")).forEach(oldScript => {
+              const newScript = document.createElement("script");
+              Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+              newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+              oldScript.parentNode.replaceChild(newScript, oldScript);
+            });
+          } else {
+            moduleDiv.innerHTML = `<div class="container-xl mt-5"><div class="alert alert-warning border-0">Tính năng [${pageId}] đang được cập nhật!</div></div>`;
+          }
+        } catch (error) { console.error('Lỗi tải giao diện module:', error); }
+      }
+
+      // Ẩn các module khác
+      document.querySelectorAll('.app-module').forEach(el => el.style.display = 'none');
+      moduleDiv.style.display = 'block';
+
+      // Kích hoạt menu
       document.querySelectorAll('.nav-menu').forEach(el => el.classList.remove('active'));
       const activeNavLink = document.getElementById('nav-' + pageId);
       if(activeNavLink) activeNavLink.classList.add('active');
 
-      const contentDiv = document.getElementById('dynamic-content');
-      contentDiv.innerHTML = '<div class="text-center py-5 text-muted mt-5"><span class="spinner-border spinner-border-sm me-2"></span> Đang nạp phân hệ...</div>';
+      // Khởi chạy hàm Init của từng Module (Sẽ code trong từng file page tương ứng)
+      if (pageId === 'dashboard' && typeof initDashboard === 'function') initDashboard();
+      if (pageId === 'congviec' && typeof initCongViec === 'function') initCongViec();
+      if (pageId === 'task' && typeof initTaskManager === 'function') initTaskManager();
+      if (pageId === 'seo' && typeof initSEO === 'function') initSEO();
+      if (pageId === 'crm' && typeof initCRM === 'function') initCRM();
+      if (pageId === 'thuchi' && typeof loadFinancialDashboard === 'function') {
+         loadFinancialDashboard();
+         if (typeof initTransactionsTab === 'function') initTransactionsTab();
+      }
+      if (pageId === 'matkhau' && typeof loadPasswords === 'function') loadPasswords();
+      if (pageId === 'phimanh' && typeof loadMovies === 'function') loadMovies();
+    }
 
-      try {
-        // Fetch mã HTML từ trang con (VD: pages/page_dashboard.html)
-        const response = await fetch(`pages/page_${pageId}.html`);
-        if (!response.ok) throw new Error(`Tính năng [${pageId}] đang được lập trình!`);
-        
-        contentDiv.innerHTML = await response.text();
-
-        // Kỹ thuật này sẽ bóc thẻ <script> bên trong file HTML con và chạy nó.
-        // NHỜ VẬY, BẠN KHÔNG CẦN VIẾT CÁC LỆNH `if (pageId === 'dashboard') initDashboard()` Ở ĐÂY NỮA.
-        Array.from(contentDiv.querySelectorAll("script")).forEach(oldScript => {
+    // 5. KHỞI CHẠY HỆ THỐNG
+    window.onload = async function() {
+      // Load giao diện Login
+      const loginRes = await fetch('pages/page_login.html');
+      const loginContainer = document.getElementById('screen-login');
+      loginContainer.innerHTML = await loginRes.text();
+      Array.from(loginContainer.querySelectorAll("script")).forEach(oldScript => {
           const newScript = document.createElement("script");
-          Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
           newScript.appendChild(document.createTextNode(oldScript.innerHTML));
           oldScript.parentNode.replaceChild(newScript, oldScript);
-        });
-      } catch (error) {
-        contentDiv.innerHTML = `<div class="container-xl mt-4"><div class="alert alert-warning border-0">${error.message}</div></div>`;
+      });
+
+      // Kiểm tra Session Supabase
+      const { data: { session } } = await window.sbClient.auth.getSession();
+      
+      if (session) {
+        try {
+          const { data: profile } = await window.sbClient.from('profiles').select('display_name').eq('id', session.user.id).single();
+          window.currentUser = { 
+            id: session.user.id, 
+            email: session.user.email, 
+            display_name: profile ? profile.display_name : 'Quản trị viên' 
+          };
+          
+          document.getElementById('screen-login').style.display = 'none';
+          document.getElementById('screen-app').style.display = 'block';
+          renderTopbar();
+          switchPage('dashboard');
+        } catch (e) { forceLogout(); }
+      } else {
+        document.getElementById('screen-login').style.display = 'flex';
+        document.getElementById('screen-app').style.display = 'none';
       }
-    }
+    };
   </script>
 </body>
 </html>

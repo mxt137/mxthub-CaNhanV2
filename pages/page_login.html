@@ -1,0 +1,116 @@
+<div class="w-100" style="background: #f8fafc; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;">
+  
+  <div class="fade-in" style="background: #ffffff; border-radius: 32px; box-shadow: 0 24px 48px rgba(0, 0, 0, 0.08); border: 1px solid #e2e8f0; width: 100%; max-width: 420px; padding: 40px 30px 30px 30px; text-align: center; position: relative; margin-top: 40px;">
+    
+    <!-- Logo Box -->
+    <div style="background: linear-gradient(135deg, var(--tblr-primary) 0%, #0d4639 100%); color: white; width: 80px; height: 80px; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: -80px auto 20px auto; box-shadow: 0 10px 20px rgba(20, 102, 84, 0.3);">
+      <i class="ti ti-fingerprint"></i>
+    </div>
+    
+    <h2 style="color: var(--tblr-primary); font-weight: 800; font-size: 24px; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">MAI XUÂN THÀNH</h2>
+    <div style="color: #64748b; font-size: 11px; font-weight: 700; letter-spacing: 1px; margin-top: 4px; margin-bottom: 30px;">PERSONAL ASSISTANT SYSTEM</div>
+    
+    <form id="frmLogin" onsubmit="event.preventDefault(); processLogin();">
+      <!-- Input Email -->
+      <div class="input-icon-premium mb-3" style="position: relative;">
+        <span class="input-icon-addon" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); z-index: 10;"><i class="ti ti-user"></i></span>
+        <input type="email" id="loginEmail" class="form-control premium-input w-100" placeholder="Email truy cập hệ thống..." required autocomplete="email">
+      </div>
+      
+      <!-- Input Password -->
+      <div class="mb-4 text-start">
+        <div class="input-icon-premium" style="position: relative; margin-bottom: 8px;">
+          <span class="input-icon-addon" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); z-index: 10;"><i class="ti ti-lock"></i></span>
+          <input type="password" id="loginPass" class="form-control premium-input w-100" placeholder="Mật khẩu bảo mật..." required autocomplete="current-password">
+        </div>
+        <div class="d-flex justify-content-end px-2">
+          <a href="javascript:void(0)" onclick="handleForgotPassword()" class="text-muted" style="text-decoration: none; font-weight: 600; font-size: 12px; transition: color 0.2s;" onmouseover="this.style.color='#146654'" onmouseout="this.style.color='#64748b'">Quên mật khẩu?</a>
+        </div>
+      </div>
+
+      <button type="submit" id="btnLogin" class="btn btn-brand w-100 py-3" style="border-radius: 16px; font-size: 15px;">
+        ĐĂNG NHẬP HỆ THỐNG <i class="ti ti-arrow-right ms-2"></i>
+      </button>
+    </form>
+
+    <div class="mt-4" style="font-size: 10px; color: #94a3b8; font-weight: 600; letter-spacing: 0.5px;">&copy; 2026 SECURED BY SUPABASE & VERCEL</div>
+  </div>
+</div>
+
+<script>
+  // XỬ LÝ ĐĂNG NHẬP BẰNG SUPABASE AUTH
+  async function processLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPass').value.trim();
+    const btn = document.getElementById('btnLogin');
+    
+    if (!email || !password) { window.UI.error('Vui lòng nhập đủ thông tin!'); return; }
+    
+    const originalBtnContent = btn.innerHTML;
+    btn.disabled = true; 
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> ĐANG XÁC THỰC...';
+
+    try {
+      const { data, error } = await window.sbClient.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      
+      // Lấy Profile Name
+      const { data: profileData } = await window.sbClient.from('profiles').select('display_name').eq('id', data.user.id).single();
+      
+      window.currentUser = { 
+        id: data.user.id, 
+        email: data.user.email, 
+        display_name: profileData ? profileData.display_name : 'Quản trị viên' 
+      };
+      
+      window.UI.success(`Chào mừng ${window.currentUser.display_name} trở lại!`);
+      
+      document.getElementById('frmLogin').reset();
+      document.getElementById('screen-login').style.display = 'none';
+      document.getElementById('screen-app').style.display = 'block';
+      
+      // Render Topbar và chuyển sang Dashboard
+      renderTopbar();
+      switchPage('dashboard');
+
+    } catch (err) { 
+      window.UI.error(err.message === 'Invalid login credentials' ? 'Sai tài khoản hoặc mật khẩu!' : err.message); 
+    } finally { 
+      btn.disabled = false; 
+      btn.innerHTML = originalBtnContent; 
+    }
+  }
+
+  // XỬ LÝ QUÊN MẬT KHẨU
+  window.mxt_lastResetTime = 0;
+  async function handleForgotPassword() {
+    const now = Date.now();
+    if (now - window.mxt_lastResetTime < 60000) {
+      return Swal.fire({ icon: 'warning', title: 'Thao tác quá nhanh!', text: `Vui lòng đợi 60 giây nữa trước khi gửi lại yêu cầu.`, confirmButtonColor: '#146654' });
+    }
+
+    const emailInput = document.getElementById('loginEmail').value.trim();
+    const { value: email } = await Swal.fire({
+      title: 'Quên mật khẩu',
+      text: 'Hệ thống sẽ gửi Link khôi phục vào Email của bạn.',
+      input: 'email',
+      inputValue: emailInput,
+      inputPlaceholder: 'Nhập email...',
+      showCancelButton: true,
+      confirmButtonColor: '#146654',
+      confirmButtonText: '<i class="ti ti-send me-1"></i> Gửi',
+      cancelButtonText: 'Hủy'
+    });
+
+    if (email) {
+      Swal.fire({ title: 'Đang xử lý...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
+      const { error } = await window.sbClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + window.location.pathname });
+      if (error) {
+        Swal.fire('Lỗi', error.message, 'error');
+      } else {
+        window.mxt_lastResetTime = Date.now();
+        Swal.fire({ icon: 'success', title: 'Đã gửi!', text: 'Vui lòng kiểm tra hộp thư đến (và mục Spam).', confirmButtonColor: '#146654' });
+      }
+    }
+  }
+</script>

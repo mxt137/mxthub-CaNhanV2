@@ -99,3 +99,41 @@ body {
   .navbar-vertical .container-fluid { height: 60px !important; padding: 0 16px !important; }
   .navbar-toggler { border: none !important; color: white !important; }
 }
+/* ==========================================
+   TABS MENU CRM & THU CHI - TRƯỢT NGANG (MOBILE)
+   ========================================== */
+.crm-nav-pills { 
+  background: #f1f5f9; 
+  padding: 6px; 
+  border-radius: 16px; 
+  display: flex; 
+  gap: 5px; 
+  flex-wrap: nowrap; 
+  overflow-x: auto; 
+  -webkit-overflow-scrolling: touch; 
+  scrollbar-width: none; 
+}
+.crm-nav-pills::-webkit-scrollbar { display: none; }
+.crm-nav-pills .nav-link { 
+  border: none !important; 
+  color: #64748b; 
+  font-weight: 600; 
+  padding: 10px 22px; 
+  border-radius: 12px; 
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+  display: flex; 
+  align-items: center; 
+  white-space: nowrap; 
+}
+.crm-nav-pills .nav-link:hover { color: var(--tblr-primary); background: rgba(20, 102, 84, 0.08); }
+.crm-nav-pills .nav-link.active { 
+  background: var(--tblr-primary) !important; 
+  color: white !important; 
+  box-shadow: 0 4px 12px rgba(20, 102, 84, 0.25); 
+  transform: translateY(-1px); 
+}
+
+/* Kéo thả Sortable cho Bảng Ví */
+.drag-handle { cursor: grab; }
+.drag-handle:active { cursor: grabbing; }
+.color-preview { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }

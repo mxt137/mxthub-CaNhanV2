@@ -50,18 +50,18 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link nav-menu" id="nav-congviec" onclick="switchPage('congviec')" style="cursor: pointer;">
-                <i class="ti ti-calendar-check me-2 fs-2 nav-link-icon"></i> Lịch Làm Việc
-              </a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link nav-menu" id="nav-task" onclick="switchPage('task')" style="cursor: pointer;">
-                <i class="ti ti-layout-kanban me-2 fs-2 nav-link-icon"></i> Quản lý Dự án (Kanban)
+                <i class="ti ti-layout-kanban me-2 fs-2 nav-link-icon"></i> Quản lý Công việc
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link nav-menu" id="nav-seo" onclick="switchPage('seo')" style="cursor: pointer;">
-                <i class="ti ti-sitemap me-2 fs-2 nav-link-icon"></i> Hệ thống SEO
+                <i class="ti ti-sitemap me-2 fs-2 nav-link-icon"></i> Hỗ trợ SEO
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-menu" id="nav-congviec" onclick="switchPage('congviec')" style="cursor: pointer;">
+                <i class="ti ti-calendar-check me-2 fs-2 nav-link-icon"></i> Lịch Làm Việc
               </a>
             </li>
             <li class="nav-item">
@@ -85,8 +85,13 @@
               </a>
             </li>
 
-            <!-- Khối Đăng xuất đẩy xuống đáy -->
-            <li class="nav-item mt-auto mb-3">
+            <!-- Khối Tùy chọn Tài khoản đẩy xuống đáy -->
+            <li class="nav-item mt-auto mb-2">
+              <a class="nav-link nav-menu" data-bs-toggle="modal" data-bs-target="#modal-change-password" style="cursor: pointer;">
+                <i class="ti ti-key me-2 fs-2 nav-link-icon"></i> Đổi Mật Khẩu
+              </a>
+            </li>
+            <li class="nav-item mb-3">
               <a class="nav-link text-danger" onclick="forceLogout()" style="cursor: pointer; background: rgba(239, 68, 68, 0.08);">
                 <i class="ti ti-logout me-2 fs-2 text-danger"></i> Đăng Xuất
               </a>
@@ -102,9 +107,9 @@
       
       <!-- CÁC MODULE CON HỨNG HTML TỪ THƯ MỤC PAGES/ -->
       <div id="module-dashboard" class="app-module" style="display: none;"></div>
-      <div id="module-congviec" class="app-module" style="display: none;"></div>
       <div id="module-task" class="app-module" style="display: none;"></div>
       <div id="module-seo" class="app-module" style="display: none;"></div>
+      <div id="module-congviec" class="app-module" style="display: none;"></div>
       <div id="module-crm" class="app-module" style="display: none;"></div>
       <div id="module-thuchi" class="app-module" style="display: none;"></div>
       <div id="module-matkhau" class="app-module" style="display: none;"></div>
@@ -112,15 +117,43 @@
     </div>
   </div>
 
+  <!-- MODAL ĐỔI MẬT KHẨU TOÀN CỤC -->
+  <div class="modal modal-blur fade" id="modal-change-password" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow-lg border-0" style="border-radius: 16px;">
+        <div class="modal-header text-white" style="background: var(--tblr-primary); border-radius: 16px 16px 0 0;">
+          <h5 class="modal-title fw-bold"><i class="ti ti-key me-2"></i> Đổi Mật Khẩu Truy Cập</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="frmChangePass" onsubmit="event.preventDefault(); processChangePassword();">
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label class="form-label text-muted fw-bold" style="font-size: 12px;">Mật khẩu hiện tại <span class="text-danger">*</span></label>
+              <input type="password" id="cpOldPass" class="form-control premium-input" required placeholder="Nhập mật khẩu cũ để xác thực...">
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-muted fw-bold" style="font-size: 12px;">Mật khẩu mới <span class="text-danger">*</span></label>
+              <input type="password" id="cpNewPass" class="form-control premium-input" required placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)...">
+            </div>
+          </div>
+          <div class="modal-footer bg-light" style="border-radius: 0 0 16px 16px;">
+            <button type="button" class="btn btn-light fw-bold" data-bs-dismiss="modal">Hủy</button>
+            <button type="submit" id="btnChangePass" class="btn btn-brand fw-bold px-4"><i class="ti ti-check me-2"></i> Xác nhận đổi</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- LOGIC HỆ THỐNG GLOBAL -->
   <script>
-    // 1. CẤU HÌNH SUPABASE CLIENT (API MXT HUB)
+    // 1. CẤU HÌNH SUPABASE CLIENT
     const SUPABASE_URL = 'https://hwdpfyooxbblwybbfxpk.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_lDIh4gJWaWmnoAJUfUSCxQ_MMCo3LBS';
     window.sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     window.currentUser = null;
 
-    // SweetAlert2 Toàn cục
+    // Bộ công cụ UI Toàn cục
     window.UI = {
       toast: Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true }),
       success: (msg) => window.UI.toast.fire({ icon: 'success', title: msg }),
@@ -149,7 +182,7 @@
           <div class="container-xl d-flex justify-content-between align-items-center w-100 py-2">
             <div class="d-flex align-items-center gap-3">
               <span class="badge badge-outline text-success fw-bold d-flex align-items-center gap-1">
-                <span class="status-dot status-dot-animated bg-success me-1"></span> Hệ thống mã hóa 256-bit
+                <span class="status-dot status-dot-animated bg-success me-1"></span> Hệ thống đang hoạt động
               </span>
             </div>
             <div class="navbar-nav flex-row order-md-last align-items-center gap-3">
@@ -167,7 +200,6 @@
     async function switchPage(pageId) {
       if (!window.currentUser) return; 
 
-      // Đóng menu Mobile tự động
       const sidebarMenu = document.getElementById('sidebar-menu');
       if (window.innerWidth < 992 && sidebarMenu && sidebarMenu.classList.contains('show')) {
           document.querySelector('.navbar-toggler').click();
@@ -176,15 +208,13 @@
       const moduleDiv = document.getElementById('module-' + pageId);
       if (!moduleDiv) return;
       
-      // Load file HTML động từ thư mục pages/
       if (moduleDiv.innerHTML.trim() === '') {
-        moduleDiv.innerHTML = '<div class="text-center py-5 text-muted mt-5"><span class="spinner-border spinner-border-sm me-2"></span> Đang nạp module...</div>';
+        moduleDiv.innerHTML = '<div class="text-center py-5 text-muted mt-5"><span class="spinner-border spinner-border-sm me-2"></span> Đang nạp hệ thống...</div>';
         try {
           const response = await fetch(`pages/page_${pageId}.html`);
           if (response.ok) {
             moduleDiv.innerHTML = await response.text();
             
-            // Ép trình duyệt thực thi thẻ Script
             Array.from(moduleDiv.querySelectorAll("script")).forEach(oldScript => {
               const newScript = document.createElement("script");
               Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
@@ -192,25 +222,23 @@
               oldScript.parentNode.replaceChild(newScript, oldScript);
             });
           } else {
-            moduleDiv.innerHTML = `<div class="container-xl mt-5"><div class="alert alert-warning border-0">Tính năng [${pageId}] đang được cập nhật!</div></div>`;
+            moduleDiv.innerHTML = `<div class="container-xl mt-5"><div class="alert alert-warning border-0">Chức năng [${pageId}] đang được cập nhật!</div></div>`;
           }
         } catch (error) { console.error('Lỗi tải giao diện module:', error); }
       }
 
-      // Ẩn các module khác
       document.querySelectorAll('.app-module').forEach(el => el.style.display = 'none');
       moduleDiv.style.display = 'block';
 
-      // Kích hoạt menu
       document.querySelectorAll('.nav-menu').forEach(el => el.classList.remove('active'));
       const activeNavLink = document.getElementById('nav-' + pageId);
       if(activeNavLink) activeNavLink.classList.add('active');
 
-      // Khởi chạy hàm Init của từng Module (Sẽ code trong từng file page tương ứng)
+      // Khởi chạy hàm Init của Module
       if (pageId === 'dashboard' && typeof initDashboard === 'function') initDashboard();
-      if (pageId === 'congviec' && typeof initCongViec === 'function') initCongViec();
       if (pageId === 'task' && typeof initTaskManager === 'function') initTaskManager();
       if (pageId === 'seo' && typeof initSEO === 'function') initSEO();
+      if (pageId === 'congviec' && typeof initCongViec === 'function') initCongViec();
       if (pageId === 'crm' && typeof initCRM === 'function') initCRM();
       if (pageId === 'thuchi' && typeof loadFinancialDashboard === 'function') {
          loadFinancialDashboard();
@@ -220,9 +248,51 @@
       if (pageId === 'phimanh' && typeof loadMovies === 'function') loadMovies();
     }
 
-    // 5. KHỞI CHẠY HỆ THỐNG
+    // 5. XỬ LÝ ĐỔI MẬT KHẨU
+    window.processChangePassword = async function() {
+      const oldPass = document.getElementById('cpOldPass').value.trim();
+      const newPass = document.getElementById('cpNewPass').value.trim();
+      const btn = document.getElementById('btnChangePass');
+
+      if (!oldPass || !newPass) return Swal.fire('Lưu ý', 'Vui lòng nhập đầy đủ thông tin!', 'warning');
+      if (oldPass === newPass) return Swal.fire('Lưu ý', 'Mật khẩu mới phải khác mật khẩu hiện tại!', 'warning');
+      if (newPass.length < 6) return Swal.fire('Lưu ý', 'Mật khẩu mới phải từ 6 ký tự trở lên!', 'warning');
+
+      btn.disabled = true; 
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Đang xử lý...';
+
+      try {
+        const { error: signInError } = await window.sbClient.auth.signInWithPassword({
+          email: window.currentUser.email,
+          password: oldPass
+        });
+        
+        if (signInError) throw new Error('Mật khẩu hiện tại không chính xác!');
+
+        const { error: updateError } = await window.sbClient.auth.updateUser({ password: newPass });
+        if (updateError) throw updateError;
+
+        const modalEl = document.getElementById('modal-change-password');
+        if (modalEl) bootstrap.Modal.getInstance(modalEl).hide();
+        document.getElementById('frmChangePass').reset();
+        
+        Swal.fire({
+          icon: 'success',
+          title: 'Đổi mật khẩu thành công',
+          text: 'Vui lòng sử dụng mật khẩu mới cho lần đăng nhập sau.',
+          confirmButtonColor: '#146654'
+        });
+
+      } catch (err) {
+        Swal.fire('Lỗi', err.message, 'error');
+      } finally {
+        btn.disabled = false; 
+        btn.innerHTML = '<i class="ti ti-check me-2"></i> Xác nhận đổi';
+      }
+    };
+
+    // 6. KHỞI CHẠY HỆ THỐNG
     window.onload = async function() {
-      // Load giao diện Login
       const loginRes = await fetch('pages/page_login.html');
       const loginContainer = document.getElementById('screen-login');
       loginContainer.innerHTML = await loginRes.text();
@@ -232,7 +302,6 @@
           oldScript.parentNode.replaceChild(newScript, oldScript);
       });
 
-      // Kiểm tra Session Supabase
       const { data: { session } } = await window.sbClient.auth.getSession();
       
       if (session) {

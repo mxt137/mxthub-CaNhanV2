@@ -1,47 +1,101 @@
-/* =========================================================
-   TỆP: style.css - UI/UX "QUIET LUXURY" MXT HUB
-   ========================================================= */
+/* =========================================
+   MXT HUB V2 - QUIET LUXURY THEME
+   ========================================= */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --tblr-primary: #146654 !important; 
+  --tblr-primary: #146654 !important;
   --tblr-primary-rgb: 20, 102, 84 !important;
   --tblr-font-sans-serif: 'Inter', sans-serif !important;
-  --sidebar-bg: #0f172a; 
+  --sidebar-bg: #0f172a;
   --sidebar-text: #94a3b8;
   --sidebar-hover-bg: rgba(255, 255, 255, 0.04);
+  --bg-app: #f8fafc;
 }
 
-body { font-family: var(--tblr-font-sans-serif); -webkit-font-smoothing: antialiased; background-color: #f8fafc; }
+body {
+  font-family: var(--tblr-font-sans-serif);
+  -webkit-font-smoothing: antialiased;
+  background-color: var(--bg-app);
+}
 
-/* Các nút bấm */
-.btn-brand { background-color: var(--tblr-primary) !important; color: white !important; font-weight: 600; transition: all 0.2s ease; border-radius: 12px; }
-.btn-brand:hover { background-color: #0f4f41 !important; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(20, 102, 84, 0.3); }
-.btn-brand:active { transform: translateY(0); box-shadow: none; }
-.btn-icon { transition: all 0.2s; border-radius: 8px; }
-.btn-icon:hover { transform: scale(1.1); }
+/* Scrollbar Tinh Tế */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-/* Sidebar */
-.navbar-vertical { background-color: var(--sidebar-bg) !important; border-right: 1px solid rgba(255, 255, 255, 0.05) !important; box-shadow: 4px 0 24px rgba(15, 23, 42, 0.15) !important; }
-.navbar-vertical .navbar-brand { padding: 20px 24px !important; font-size: 20px !important; font-weight: 800 !important; color: #2ae1b2 !important; }
-.navbar-vertical .nav-link { color: var(--sidebar-text) !important; font-weight: 500 !important; font-size: 14px !important; padding: 12px 16px !important; border-radius: 10px !important; margin: 4px 12px !important; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; }
-.navbar-vertical .nav-link:hover { color: #ffffff !important; background-color: var(--sidebar-hover-bg) !important; transform: translateX(4px); }
-.navbar-vertical .nav-link.active { color: #ffffff !important; background: linear-gradient(135deg, #146654 0%, #0d4639 100%) !important; font-weight: 600 !important; box-shadow: 0 4px 12px rgba(20, 102, 84, 0.3) !important; }
+/* Buttons */
+.btn-brand {
+  background: linear-gradient(135deg, #146654 0%, #0d4639 100%) !important;
+  color: white !important;
+  font-weight: 600;
+  border: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-brand:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(20, 102, 84, 0.25) !important;
+}
+.btn-brand:disabled { opacity: 0.7; cursor: not-allowed; }
 
-/* Giao diện Login & Form */
-.login-wrapper { background-color: var(--tblr-primary); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.login-card { background: #ffffff; border-radius: 32px; box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15); width: 100%; max-width: 420px; padding: 40px 30px 30px 30px; text-align: center; position: relative; margin-top: 40px; }
-.login-logo-box { background-color: var(--tblr-primary); color: white; width: 80px; height: 80px; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: -80px auto 20px auto; box-shadow: 0 10px 20px rgba(20, 102, 84, 0.3); }
-.input-modern { position: relative; margin-bottom: 16px; }
-.input-modern .input-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 20px; }
-.input-modern input { width: 100%; background-color: #f8fafc; border: 1px solid transparent; border-radius: 16px; padding: 16px 20px 16px 50px; font-size: 15px; font-weight: 500; color: #1e293b; outline: none; transition: all 0.2s ease; }
-.input-modern input:focus { border: 1px solid rgba(20, 102, 84, 0.3); background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+/* Sidebar Navigation */
+.navbar-vertical {
+  background-color: var(--sidebar-bg) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 4px 0 24px rgba(15, 23, 42, 0.15) !important;
+}
+.navbar-vertical .navbar-brand { padding: 20px 24px !important; color: #2ae1b2 !important; }
+.navbar-vertical .nav-link {
+  color: var(--sidebar-text) !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  padding: 12px 16px !important;
+  border-radius: 12px !important;
+  margin: 4px 12px !important;
+  transition: all 0.25s ease !important;
+}
+.navbar-vertical .nav-link:hover {
+  color: #ffffff !important;
+  background-color: var(--sidebar-hover-bg) !important;
+  transform: translateX(4px);
+}
+.navbar-vertical .nav-link.active {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #146654 0%, #0d4639 100%) !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 12px rgba(20, 102, 84, 0.3) !important;
+}
 
-/* Bảng Dữ Liệu */
-.table thead th { background-color: var(--tblr-primary) !important; color: #ffffff !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; border-bottom: none !important; padding: 12px 16px !important; }
-.table thead tr th:first-child { border-top-left-radius: 8px !important; }
-.table thead tr th:last-child { border-top-right-radius: 8px !important; }
-.card-luxury { background: #ffffff; border-radius: 20px; border: 1px solid rgba(0,0,0,0.03); box-shadow: 0 8px 24px rgba(149, 157, 165, 0.08); }
+/* Form Inputs (Premium Glassmorphism) */
+.premium-input {
+  border-radius: 12px !important;
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 12px 16px !important;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+.premium-input:focus {
+  border-color: var(--tblr-primary) !important;
+  box-shadow: 0 0 0 3px rgba(20, 102, 84, 0.1) !important;
+  outline: none;
+}
+.input-icon-premium .input-icon-addon { color: #64748b; font-size: 20px; }
+.input-icon-premium .premium-input { padding-left: 44px !important; }
 
+/* Animations */
 .fade-in { animation: fadeIn 0.4s ease-in-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Tweak */
+@media (max-width: 991.98px) {
+  .navbar-vertical .container-fluid { height: 60px !important; padding: 0 16px !important; }
+  .navbar-toggler { border: none !important; color: white !important; }
+}

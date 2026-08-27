@@ -185,52 +185,83 @@
     }
 
     // 4. BỘ ĐỊNH TUYẾN CHUYỂN MODULE (SPA ROUTER)
-    // BỘ ĐỊNH TUYẾN CHUYỂN TRANG MƯỢT MÀ BẰNG FETCH API
-    async function switchPage(pageId) {
-      
-      // 1. FIX LỖI ĐÓNG MENU MOBILE CHUẨN BOOTSTRAP 5
-      const sidebarMenu = document.getElementById('sidebar-menu');
-      const togglerBtn = document.querySelector('.navbar-toggler');
-      
-      // Chỉ thực thi nếu màn hình dưới 992px (Mobile/Tablet) và menu đang mở
-      if (window.innerWidth < 992 && sidebarMenu && sidebarMenu.classList.contains('show')) {
-          // Mô phỏng thao tác nhấp vật lý để kích hoạt sự kiện đóng chuẩn của Tabler UI
-          if (togglerBtn) togglerBtn.click();
-      }
+    // BỘ ĐỊNH TUYẾN CHUYỂN TRANG MƯỢT MÀ BẰNG FETCH API (ĐÃ FIX LỖI)
+     async function switchPage(pageId) {
+       if (!window.currentUser) return;
     
-      // 2. CẬP NHẬT TRẠNG THÁI ACTIVE TRÊN MENU
-      document.querySelectorAll('.nav-menu').forEach(el => el.classList.remove('active'));
-      const activeNavLink = document.getElementById('nav-' + pageId);
-      if(activeNavLink) activeNavLink.classList.add('active');
+       // 1. FIX LỖI ĐÓNG MENU MOBILE BẰNG BOOTSTRAP API CHUẨN
+       const sidebarMenu = document.getElementById('sidebar-menu');
+       if (window.innerWidth < 992 && sidebarMenu && sidebarMenu.classList.contains('show')) {
+         try {
+           // Khởi tạo hoặc lấy instance Collapse của Bootstrap để đóng mượt mà và an toàn
+           const bsCollapse = bootstrap.Collapse.getInstance(sidebarMenu) || new bootstrap.Collapse(sidebarMenu, { toggle: false });
+           bsCollapse.hide();
+         } catch (e) {
+           sidebarMenu.classList.remove('show'); // Fallback dự phòng
+         }
+       }
     
-      // 3. HIỂN THỊ LOADING VÀ GỌI MODULE ĐỘNG
-      const contentDiv = document.getElementById('dynamic-content');
-      contentDiv.innerHTML = '<div class="text-center py-5 text-muted mt-5"><span class="spinner-border spinner-border-sm me-2"></span> Đang tải dữ liệu...</div>';
+       // 2. CẬP NHẬT TRẠNG THÁI ACTIVE TRÊN MENU
+       document.querySelectorAll('.nav-menu').forEach(el => el.classList.remove('active'));
+       const activeNavLink = document.getElementById('nav-' + pageId);
+       if(activeNavLink) activeNavLink.classList.add('active');
     
-      try {
-        const response = await fetch(`pages/page_${pageId}.html`);
-        if (!response.ok) throw new Error("Chức năng đang được cập nhật!");
-        
-        const htmlContent = await response.text();
-        contentDiv.innerHTML = htmlContent;
+       // 3. XỬ LÝ KHUNG HIỂN THỊ (FIX LỖI 'Cannot set properties of null')
+       const contentWrapper = document.getElementById('dynamic-content') || document.querySelector('.page-wrapper');
+       
+       // Tìm module div theo trang, nếu chưa có thì tự động tạo mới (Bí quyết giữ Cache SPA)
+       let moduleDiv = document.getElementById('module-' + pageId);
+       if (!moduleDiv) {
+         moduleDiv = document.createElement('div');
+         moduleDiv.id = 'module-' + pageId;
+         moduleDiv.className = 'app-module w-100'; // Đảm bảo bung full chiều rộng
+         contentWrapper.appendChild(moduleDiv);
+       }
     
-        // 4. KÍCH HOẠT LOGIC TÍNH NĂNG TƯƠNG ỨNG SAU KHI DOM ĐÃ RENDER
-        if (pageId === 'thuchi' && typeof loadFinancialDashboard === 'function') {
+       // 4. LOAD NỘI DUNG TỪ FILE HTML (Chỉ load 1 lần, các lần sau gọi lại cache)
+       if (moduleDiv.innerHTML.trim() === '') {
+         moduleDiv.innerHTML = '<div class="text-center py-5 text-muted mt-5"><span class="spinner-border spinner-border-sm me-2"></span> Đang nạp hệ thống...</div>';
+         try {
+           const response = await fetch(`pages/page_${pageId}.html`);
+           if (!response.ok) throw new Error("Chức năng đang được cập nhật!");
+           
+           moduleDiv.innerHTML = await response.text();
+    
+           // Ép trình duyệt thực thi các thẻ Script được nạp động
+           Array.from(moduleDiv.querySelectorAll("script")).forEach(oldScript => {
+             const newScript = document.createElement("script");
+             Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+             newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+             oldScript.parentNode.replaceChild(newScript, oldScript);
+           });
+         } catch (error) {
+           console.error("Lỗi SPA Router:", error);
+           moduleDiv.innerHTML = `<div class="container-xl mt-4"><div class="alert alert-warning border-0 shadow-sm">${error.message}</div></div>`;
+           return; // Dừng lại nếu lỗi
+         }
+       }
+    
+       // 5. ẨN CÁC MODULE KHÁC & HIỆN MODULE ĐƯỢC CHỌN
+       document.querySelectorAll('.app-module').forEach(el => el.style.display = 'none');
+       
+       // Dọn dẹp dòng chữ "Đang tải hệ thống..." rác của file index gốc (nếu còn)
+       const initLoading = contentWrapper.querySelector('.text-center.py-5.text-muted.mt-5:not(.app-module *)');
+       if (initLoading) initLoading.remove();
+    
+       moduleDiv.style.display = 'block';
+    
+       // 6. KHỞI CHẠY LOGIC TÍNH NĂNG TƯƠNG ỨNG SAU KHI DOM ĐÃ SẴN SÀNG
+       if (pageId === 'dashboard' && typeof initDashboard === 'function') initDashboard();
+       if (pageId === 'task' && typeof initTaskManager === 'function') initTaskManager();
+       if (pageId === 'seo' && typeof initSEO === 'function') initSEO();
+       if (pageId === 'crm' && typeof initCRM === 'function') initCRM();
+       if (pageId === 'thuchi' && typeof loadFinancialDashboard === 'function') {
           loadFinancialDashboard();
           if (typeof initTransactionsTab === 'function') initTransactionsTab();
-        }
-        if (pageId === 'dashboard' && typeof initDashboard === 'function') initDashboard();
-        if (pageId === 'matkhau' && typeof loadPasswords === 'function') loadPasswords();
-        if (pageId === 'phimanh' && typeof loadMovies === 'function') loadMovies();
-        if (pageId === 'crm' && typeof initCRM === 'function') initCRM();
-        if (pageId === 'task' && typeof initTaskManager === 'function') initTaskManager();
-        if (pageId === 'seo' && typeof initSEO === 'function') initSEO();
-    
-      } catch (error) {
-        console.error("Lỗi SPA Router:", error);
-        contentDiv.innerHTML = `<div class="container-xl mt-4"><div class="alert alert-warning border-0 shadow-sm">${error.message}</div></div>`;
-      }
-    }
+       }
+       if (pageId === 'matkhau' && typeof loadPasswords === 'function') loadPasswords();
+       if (pageId === 'phimanh' && typeof loadMovies === 'function') loadMovies();
+     }
 
     // 5. XỬ LÝ ĐỔI MẬT KHẨU
     window.processChangePassword = async function() {

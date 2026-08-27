@@ -185,54 +185,51 @@
     }
 
     // 4. BỘ ĐỊNH TUYẾN CHUYỂN MODULE (SPA ROUTER)
+    // BỘ ĐỊNH TUYẾN CHUYỂN TRANG MƯỢT MÀ BẰNG FETCH API
     async function switchPage(pageId) {
-      if (!window.currentUser) return; 
-
-      const sidebarMenu = document.getElementById('sidebar-menu');
-      if (window.innerWidth < 992 && sidebarMenu && sidebarMenu.classList.contains('show')) {
-          document.querySelector('.navbar-toggler').click();
-      }
-
-      const moduleDiv = document.getElementById('module-' + pageId);
-      if (!moduleDiv) return;
       
-      if (moduleDiv.innerHTML.trim() === '') {
-        moduleDiv.innerHTML = '<div class="text-center py-5 text-muted mt-5"><span class="spinner-border spinner-border-sm me-2"></span> Đang nạp hệ thống...</div>';
-        try {
-          const response = await fetch(`pages/page_${pageId}.html`);
-          if (response.ok) {
-            moduleDiv.innerHTML = await response.text();
-            
-            Array.from(moduleDiv.querySelectorAll("script")).forEach(oldScript => {
-              const newScript = document.createElement("script");
-              Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-              newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-              oldScript.parentNode.replaceChild(newScript, oldScript);
-            });
-          } else {
-            moduleDiv.innerHTML = `<div class="container-xl mt-5"><div class="alert alert-warning border-0">Chức năng [${pageId}] đang được cập nhật!</div></div>`;
-          }
-        } catch (error) { console.error('Lỗi tải giao diện module:', error); }
+      // 1. FIX LỖI ĐÓNG MENU MOBILE CHUẨN BOOTSTRAP 5
+      const sidebarMenu = document.getElementById('sidebar-menu');
+      const togglerBtn = document.querySelector('.navbar-toggler');
+      
+      // Chỉ thực thi nếu màn hình dưới 992px (Mobile/Tablet) và menu đang mở
+      if (window.innerWidth < 992 && sidebarMenu && sidebarMenu.classList.contains('show')) {
+          // Mô phỏng thao tác nhấp vật lý để kích hoạt sự kiện đóng chuẩn của Tabler UI
+          if (togglerBtn) togglerBtn.click();
       }
-
-      document.querySelectorAll('.app-module').forEach(el => el.style.display = 'none');
-      moduleDiv.style.display = 'block';
-
+    
+      // 2. CẬP NHẬT TRẠNG THÁI ACTIVE TRÊN MENU
       document.querySelectorAll('.nav-menu').forEach(el => el.classList.remove('active'));
       const activeNavLink = document.getElementById('nav-' + pageId);
       if(activeNavLink) activeNavLink.classList.add('active');
-
-      // Khởi chạy hàm Init của Module
-      if (pageId === 'dashboard' && typeof initDashboard === 'function') initDashboard();
-      if (pageId === 'task' && typeof initTaskManager === 'function') initTaskManager();
-      if (pageId === 'seo' && typeof initSEO === 'function') initSEO();
-      if (pageId === 'crm' && typeof initCRM === 'function') initCRM();
-      if (pageId === 'thuchi' && typeof loadFinancialDashboard === 'function') {
-         loadFinancialDashboard();
-         if (typeof initTransactionsTab === 'function') initTransactionsTab();
+    
+      // 3. HIỂN THỊ LOADING VÀ GỌI MODULE ĐỘNG
+      const contentDiv = document.getElementById('dynamic-content');
+      contentDiv.innerHTML = '<div class="text-center py-5 text-muted mt-5"><span class="spinner-border spinner-border-sm me-2"></span> Đang tải dữ liệu...</div>';
+    
+      try {
+        const response = await fetch(`pages/page_${pageId}.html`);
+        if (!response.ok) throw new Error("Chức năng đang được cập nhật!");
+        
+        const htmlContent = await response.text();
+        contentDiv.innerHTML = htmlContent;
+    
+        // 4. KÍCH HOẠT LOGIC TÍNH NĂNG TƯƠNG ỨNG SAU KHI DOM ĐÃ RENDER
+        if (pageId === 'thuchi' && typeof loadFinancialDashboard === 'function') {
+          loadFinancialDashboard();
+          if (typeof initTransactionsTab === 'function') initTransactionsTab();
+        }
+        if (pageId === 'dashboard' && typeof initDashboard === 'function') initDashboard();
+        if (pageId === 'matkhau' && typeof loadPasswords === 'function') loadPasswords();
+        if (pageId === 'phimanh' && typeof loadMovies === 'function') loadMovies();
+        if (pageId === 'crm' && typeof initCRM === 'function') initCRM();
+        if (pageId === 'task' && typeof initTaskManager === 'function') initTaskManager();
+        if (pageId === 'seo' && typeof initSEO === 'function') initSEO();
+    
+      } catch (error) {
+        console.error("Lỗi SPA Router:", error);
+        contentDiv.innerHTML = `<div class="container-xl mt-4"><div class="alert alert-warning border-0 shadow-sm">${error.message}</div></div>`;
       }
-      if (pageId === 'matkhau' && typeof loadPasswords === 'function') loadPasswords();
-      if (pageId === 'phimanh' && typeof loadMovies === 'function') loadMovies();
     }
 
     // 5. XỬ LÝ ĐỔI MẬT KHẨU

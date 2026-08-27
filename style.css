@@ -347,3 +347,54 @@ body {
 .tree-sat-node-wrapper:only-child::after { display: none; }
 .tree-sat-node { background: white; border-radius: 12px; padding: 16px; width: 280px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-left: 5px solid #10b981; transition: transform 0.2s; }
 .tree-sat-node:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+/* =========================================
+   MODULE KHO MẬT KHẨU - MXT HUB V2
+   ========================================= */
+
+/* Tiêu đề Group sang trọng */
+.pass-group-header {
+  background: linear-gradient(90deg, rgba(20,102,84,0.06) 0%, rgba(255,255,255,0) 100%);
+  border-left: 4px solid var(--tblr-primary);
+  padding: 16px 20px;
+}
+
+/* Nút copy & ẩn hiện pass mịn màng */
+.btn-ghost-copy {
+  background: rgba(100,116,139,0.08); 
+  color: #64748b; 
+  border-radius: 8px; 
+  transition: all 0.2s;
+}
+.btn-ghost-copy:hover { 
+  background: var(--tblr-primary); 
+  color: white; 
+  transform: scale(1.05); 
+}
+
+/* ===================================================
+   RESPONSIVE CHO IPHONE 14 PRO MAX & MOBILE (Max: 576px)
+   =================================================== */
+@media (max-width: 576px) {
+  /* Ép Modal thành dạng Bottom Sheet (Trượt từ dưới lên) */
+  .modal-dialog-centered {
+    align-items: flex-end !important;
+    min-height: 100%;
+    margin: 0;
+  }
+  .modal-content {
+    border-radius: 24px 24px 0 0 !important;
+    border-bottom: none !important;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Dàn các cột 6 thành 12 (100% chiều rộng) */
+  .mobile-stack { width: 100% !important; margin-bottom: 12px; }
+  
+  /* Ẩn bớt các cột phụ trên bảng ở chế độ Mobile */
+  .hide-on-mobile { display: none !important; }
+  
+  /* Nút lưu bành trướng 100% để dễ bấm bằng ngón tay cái */
+  .btn-mobile-full { width: 100% !important; justify-content: center; }
+  .modal-footer { flex-direction: column-reverse; gap: 12px; }
+  .modal-footer a { width: 100%; text-align: center; padding: 10px 0; }
+}

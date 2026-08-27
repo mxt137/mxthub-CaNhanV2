@@ -137,3 +137,50 @@ body {
 .drag-handle { cursor: grab; }
 .drag-handle:active { cursor: grabbing; }
 .color-preview { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+/* =========================================
+   FIX KHOẢNG CÁCH ICON & Ô NHẬP LIỆU (CHUẨN V1)
+   ========================================= */
+.input-icon {
+  position: relative;
+  width: 100%;
+}
+
+.input-icon .input-icon-addon {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  padding: 0 0.75rem;
+  color: #64748b;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Áp dụng padding chuẩn cho các input đặt trong input-icon */
+.input-icon .form-control,
+.input-icon .form-select,
+.input-icon select,
+.input-icon input {
+  padding-left: 2.75rem !important;
+}
+
+/* Modal form inputs chuẩn Quiet Luxury V1 */
+.form-control,
+.form-select {
+  border-radius: 10px !important;
+  border-color: #cbd5e1 !important;
+  font-size: 14px;
+  color: #1e293b;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--tblr-primary) !important;
+  box-shadow: 0 0 0 3px rgba(20, 102, 84, 0.15) !important;
+  outline: none;
+}

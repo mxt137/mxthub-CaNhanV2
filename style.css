@@ -282,3 +282,36 @@ body {
 }
 .kanban-card:active { cursor: grabbing; }
 .kanban-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-color: #cbd5e1; }
+/* =========================================
+   MODULE CRM KHÁCH HÀNG - MXT HUB V2
+   ========================================= */
+
+/* Card Thống Kê Màu Sắc Bắt Mắt */
+.metric-card-pro { border: none; border-radius: 20px; position: relative; overflow: hidden; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s; }
+.metric-card-pro:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
+.metric-card-pro .bg-icon { position: absolute; font-size: 110px; right: -15px; bottom: -20px; opacity: 0.15; transition: transform 0.3s; }
+.metric-card-pro:hover .bg-icon { transform: scale(1.1) rotate(-5deg); }
+
+/* Các tone màu nền sang trọng (Pastel Gradient) */
+.bg-grad-blue { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); color: #0369a1; }
+.bg-grad-green { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); color: #15803d; }
+.bg-grad-orange { background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%); color: #c2410c; }
+
+/* CARD DỰ ÁN BẮT MẮT */
+.project-card-pro {
+  border: none;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  border-top: 5px solid var(--tblr-primary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.project-card-pro:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 30px rgba(20, 102, 84, 0.1);
+}
+
+/* BADGE NHÓM KHÁCH HÀNG */
+.badge-buyer { background-color: rgba(59, 130, 246, 0.1) !important; color: #2563eb !important; border: 1px solid rgba(59, 130, 246, 0.2) !important; }
+.badge-tenant { background-color: rgba(245, 158, 11, 0.1) !important; color: #d97706 !important; border: 1px solid rgba(245, 158, 11, 0.2) !important; }
+.badge-owner { background-color: rgba(16, 185, 129, 0.1) !important; color: #059669 !important; border: 1px solid rgba(16, 185, 129, 0.2) !important; }

@@ -1,80 +1,3 @@
-<style>
-  /* Hiệu ứng thẻ bấm trang chủ SEO */
-  .seo-hero-card { border: none; border-radius: 16px; position: relative; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; background: linear-gradient(135deg, #146654 0%, #0d4639 100%); color: white; cursor: pointer; min-height: 200px; display: flex; flex-direction: column; justify-content: center; }
-  .seo-hero-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(20, 102, 84, 0.25); }
-  .seo-hero-card .bg-icon { position: absolute; font-size: 140px; right: -20px; bottom: -30px; opacity: 0.1; transition: transform 0.4s; }
-  .seo-hero-card:hover .bg-icon { transform: scale(1.1) rotate(-10deg); }
-  
-  /* ==========================================
-     UI MỚI CHO KHUNG NHẬP LIỆU JSON ĐỘNG (CHUẨN ẢNH THIẾT KẾ)
-     ========================================== */
-  .json-dynamic-wrapper { 
-    background: #f8fafc; 
-    border: 1px solid #e2e8f0; 
-    border-radius: 12px; 
-    padding: 16px 20px; 
-  }
-  
-  .json-row-clean {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    margin-bottom: 12px;
-    animation: fadeIn 0.3s ease-in-out;
-  }
-  
-  .json-row-clean:last-child {
-    margin-bottom: 0;
-  }
-
-  .input-json-clean {
-    background-color: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    border-radius: 8px !important;
-    padding: 10px 14px !important;
-    font-size: 14px;
-    font-weight: 500;
-    color: #1e293b;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-  }
-  
-  .input-json-clean:focus {
-    border-color: var(--tblr-primary) !important;
-    box-shadow: 0 0 0 3px rgba(20, 102, 84, 0.1) !important;
-    outline: none;
-  }
-
-  .btn-remove-row {
-    color: #ef4444;
-    background: transparent;
-    border: none;
-    padding: 4px 8px;
-    border-radius: 6px;
-    transition: all 0.2s;
-    cursor: pointer;
-  }
-  
-  .btn-remove-row:hover {
-    background: #fef2f2;
-    transform: scale(1.1);
-  }
-
-  /* CSS VẼ SƠ ĐỒ CÂY (Giữ nguyên) */
-  .tree-wrapper { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; width: 100%; }
-  .tree-pillar-node { background: #146654; color: white; border-radius: 16px; padding: 20px; width: 340px; z-index: 2; position: relative; box-shadow: 0 10px 25px rgba(20, 102, 84, 0.25); text-align: center; border: 2px solid #0d4639; }
-  .tree-children-container { display: flex; gap: 24px; padding-top: 30px; position: relative; justify-content: center; flex-wrap: wrap; width: 100%; }
-  .tree-children-container::before { content: ''; position: absolute; top: 0; left: 50%; border-left: 2px solid #cbd5e1; width: 0; height: 30px; transform: translateX(-50%); }
-  .tree-sat-node-wrapper { position: relative; padding-top: 20px; }
-  .tree-sat-node-wrapper::before { content: ''; position: absolute; top: 0; left: 50%; border-left: 2px solid #cbd5e1; width: 0; height: 20px; transform: translateX(-50%); }
-  .tree-sat-node-wrapper::after { content: ''; position: absolute; top: 0; border-top: 2px solid #cbd5e1; width: 100%; }
-  .tree-sat-node-wrapper:first-child::after { left: 50%; width: 50%; }
-  .tree-sat-node-wrapper:last-child::after { right: 50%; width: 50%; left: auto; }
-  .tree-sat-node-wrapper:only-child::after { display: none; }
-  .tree-sat-node { background: white; border-radius: 12px; padding: 16px; width: 280px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-left: 5px solid #10b981; transition: transform 0.2s; }
-  .tree-sat-node:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
-</style>
-
 <div class="page-header d-print-none mt-4 fade-in">
   <div class="container-xl">
     <div class="row g-2 align-items-center">
@@ -94,7 +17,7 @@
     <!-- KHU VỰC 1: MENU ĐIỀU HƯỚNG CHÍNH -->
     <div class="row g-4" id="seo-main-menu">
       <div class="col-md-6">
-        <div class="card seo-hero-card" onclick="switchSeoModule('structure')">
+        <div class="card seo-hero-card" onclick="window.switchSeoModule('structure')">
           <div class="card-body p-4 z-1">
             <i class="ti ti-sitemap bg-icon"></i>
             <h2 class="fw-bolder mb-2" style="font-size: 24px;">CẤU TRÚC SEO DỰ ÁN</h2>
@@ -103,7 +26,7 @@
         </div>
       </div>
       <div class="col-md-6">
-        <div class="card seo-hero-card" onclick="switchSeoModule('backlinks')">
+        <div class="card seo-hero-card" onclick="window.switchSeoModule('backlinks')">
           <div class="card-body p-4 z-1">
             <i class="ti ti-link bg-icon"></i>
             <h2 class="fw-bolder mb-2" style="font-size: 24px;">QUẢN LÝ BACKLINK ENTITY</h2>
@@ -118,17 +41,17 @@
       <div class="card shadow-sm border-0 mb-4" style="border-radius: 16px;">
         <div class="card-body p-3 d-flex justify-content-between align-items-center flex-wrap gap-3">
           <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-light" onclick="switchSeoModule('menu')"><i class="ti ti-arrow-left me-2"></i> Trở lại</button>
-            <select id="seoFilterGroup" class="form-select premium-input fw-bold" style="width: 220px;" onchange="handleGroupFilterChange()">
+            <button class="btn btn-light" onclick="window.switchSeoModule('menu')"><i class="ti ti-arrow-left me-2"></i> Trở lại</button>
+            <select id="seoFilterGroup" class="form-select premium-input fw-bold" style="width: 220px;" onchange="window.handleGroupFilterChange()">
               <option value="">-- Chọn Group Website --</option>
             </select>
-            <button id="btnDeleteGroup" class="btn btn-outline-danger btn-icon shadow-sm" style="display: none;" onclick="deleteCurrentGroup()" title="Xóa Group này"><i class="ti ti-trash"></i></button>
-            <select id="seoFilterPillar" class="form-select premium-input fw-bold" style="width: 220px; display: none;" onchange="loadSeoTreeForPillar()">
+            <button id="btnDeleteGroup" class="btn btn-outline-danger btn-icon shadow-sm" style="display: none;" onclick="window.deleteCurrentGroup()" title="Xóa Group này"><i class="ti ti-trash"></i></button>
+            <select id="seoFilterPillar" class="form-select premium-input fw-bold" style="width: 220px; display: none;" onchange="window.loadSeoTreeForPillar()">
               <option value="">-- Chọn Pillar Page --</option>
             </select>
-            <button class="btn btn-outline-primary fw-bold" onclick="openSeoGroupModal()" title="Thêm Website mới"><i class="ti ti-world-plus me-2"></i>Group Mới</button>
+            <button class="btn btn-outline-primary fw-bold" onclick="window.openSeoGroupModal()" title="Thêm Website mới"><i class="ti ti-world-plus me-2"></i>Group Mới</button>
           </div>
-          <button class="btn btn-brand fw-bold px-4" onclick="openSeoPageModal('', 'pillar')"><i class="ti ti-layout-navbar-filled me-2"></i>Tạo Pillar Page</button>
+          <button class="btn btn-brand fw-bold px-4" onclick="window.openSeoPageModal('', 'pillar')"><i class="ti ti-layout-navbar-filled me-2"></i>Tạo Pillar Page</button>
         </div>
       </div>
       
@@ -142,14 +65,14 @@
       <div class="card shadow-sm border-0 mb-4" style="border-radius: 16px;">
         <div class="card-body p-3 d-flex justify-content-between align-items-center flex-wrap gap-3">
           <div class="d-flex align-items-center gap-3">
-            <button class="btn btn-light" onclick="switchSeoModule('menu')"><i class="ti ti-arrow-left me-2"></i> Trở lại</button>
-            <select id="blFilterType" class="form-select premium-input fw-bold" style="width: 220px;" onchange="loadSeoBacklinks()">
+            <button class="btn btn-light" onclick="window.switchSeoModule('menu')"><i class="ti ti-arrow-left me-2"></i> Trở lại</button>
+            <select id="blFilterType" class="form-select premium-input fw-bold" style="width: 220px;" onchange="window.loadSeoBacklinks()">
               <option value="">-- Lọc theo Nhóm --</option>
               <option value="Entity">Entity Profile</option>
               <option value="Blog 2.0">Blog 2.0</option>
             </select>
           </div>
-          <button class="btn btn-brand fw-bold px-4" onclick="openSeoBacklinkModal()"><i class="ti ti-link me-2"></i>Thêm Backlink Mới</button>
+          <button class="btn btn-brand fw-bold px-4" onclick="window.openSeoBacklinkModal()"><i class="ti ti-link me-2"></i>Thêm Backlink Mới</button>
         </div>
       </div>
 
@@ -185,7 +108,7 @@
         <h5 class="modal-title fw-bold"><i class="ti ti-world me-2"></i>Group Website</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
-      <form onsubmit="event.preventDefault(); saveSeoGroup();">
+      <form onsubmit="event.preventDefault(); window.saveSeoGroup();">
         <div class="modal-body p-4">
           <label class="form-label text-muted fw-bold" style="font-size: 11px;">Tên Website / Chiến dịch <span class="text-danger">*</span></label>
           <input type="text" id="sgName" class="form-control premium-input fw-bold" required placeholder="VD: mientrungrealty.com">
@@ -206,7 +129,7 @@
         <h5 class="modal-title fw-bold" id="seoPageModalTitle">Thiết lập Trang SEO</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
-      <form id="frmSeoPage" onsubmit="event.preventDefault(); saveSeoPage();">
+      <form id="frmSeoPage" onsubmit="event.preventDefault(); window.saveSeoPage();">
         <div class="modal-body p-4">
           <input type="hidden" id="spId">
           <input type="hidden" id="spType">
@@ -229,13 +152,13 @@
             <input type="text" id="spTitle" class="form-control premium-input" placeholder="Thẻ Title chuẩn SEO...">
           </div>
 
-          <!-- DYNAMIC JSON: INTERNAL LINKS (ĐÃ LÀM ĐẸP UI HÀNG NGANG) -->
+          <!-- DYNAMIC JSON: INTERNAL LINKS -->
           <div class="json-dynamic-wrapper mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <label class="form-label fw-bold m-0" style="font-size: 13px; color: var(--tblr-primary);">
                 <i class="ti ti-link me-1"></i> DANH SÁCH LINK NỘI BỘ (CỘT G & H)
               </label>
-              <button type="button" class="btn btn-sm btn-brand fw-bold shadow-sm" onclick="addInternalLinkRow()">
+              <button type="button" class="btn btn-sm btn-brand fw-bold shadow-sm" onclick="window.addInternalLinkRow()">
                 <i class="ti ti-plus me-1"></i>Thêm link
               </button>
             </div>
@@ -264,7 +187,7 @@
         <h5 class="modal-title fw-bold"><i class="ti ti-link me-2"></i>Quản lý Backlink Entity</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
-      <form id="frmSeoBacklink" onsubmit="event.preventDefault(); saveSeoBacklink();">
+      <form id="frmSeoBacklink" onsubmit="event.preventDefault(); window.saveSeoBacklink();">
         <div class="modal-body p-4">
           <input type="hidden" id="blId">
           <div class="row g-3 mb-3">
@@ -289,13 +212,13 @@
             </div>
           </div>
 
-          <!-- DYNAMIC JSON: BACKLINK DETAILS (ĐÃ LÀM ĐẸP UI HÀNG NGANG) -->
+          <!-- DYNAMIC JSON: BACKLINK DETAILS -->
           <div class="json-dynamic-wrapper mb-2">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <label class="form-label fw-bold m-0" style="font-size: 13px; color: var(--sidebar-bg);">
                 <i class="ti ti-target me-1"></i> CHI TIẾT LINK ĐÍCH (JSON)
               </label>
-              <button type="button" class="btn btn-sm btn-dark fw-bold shadow-sm" onclick="addBacklinkDetailRow()">
+              <button type="button" class="btn btn-sm btn-dark fw-bold shadow-sm" onclick="window.addBacklinkDetailRow()">
                 <i class="ti ti-plus me-1"></i>Thêm Link đích
               </button>
             </div>
@@ -310,11 +233,15 @@
     </div>
   </div>
 </div>
+
 <script>
-  window.mxt_seoGroups = [];
-window.mxt_seoBacklinks = [];
-window.mxt_currentPillar = null;
-window.mxt_currentSatellites = [];
+// ==========================================
+// KHAI BÁO BIẾN TOÀN CỤC CHỐNG LỖI SPA
+// ==========================================
+window.mxt_seoGroups = window.mxt_seoGroups || [];
+window.mxt_seoBacklinks = window.mxt_seoBacklinks || [];
+window.mxt_currentPillar = window.mxt_currentPillar || null;
+window.mxt_currentSatellites = window.mxt_currentSatellites || [];
 
 // ==========================================
 // 1. ĐIỀU HƯỚNG & KHỞI TẠO (ROUTING)
@@ -342,13 +269,12 @@ window.switchSeoModule = function(module) {
 };
 
 // ==========================================
-// 2. XỬ LÝ NHẬP LIỆU JSON ĐỘNG TRÊN DOM (ĐÃ CHUẨN UX NGANG)
+// 2. XỬ LÝ NHẬP LIỆU JSON ĐỘNG TRÊN DOM
 // ==========================================
 window.addInternalLinkRow = function(url = '', anchor = '') {
   const container = document.getElementById('internalLinksContainer');
   const div = document.createElement('div');
   div.className = 'json-row-clean';
-  // Loại bỏ icon, phân chia cột 50-50, nút X tinh tế bên phải
   div.innerHTML = `
     <input type="url" class="form-control input-json-clean w-50 json-url" placeholder="https://..." value="${url}">
     <input type="text" class="form-control input-json-clean w-50 json-anchor" placeholder="Anchor Text..." value="${anchor}">
@@ -374,7 +300,6 @@ window.addBacklinkDetailRow = function(url = '', anchor = '', targetLink = '') {
   const container = document.getElementById('backlinkDetailsContainer');
   const div = document.createElement('div');
   div.className = 'json-row-clean';
-  // Chia cột: URL đăng (40%) - Anchor (30%) - Target (30%)
   div.innerHTML = `
     <input type="url" class="form-control input-json-clean json-bl-url" style="width: 40%;" placeholder="URL bài viết đã đăng" value="${url}">
     <input type="text" class="form-control input-json-clean json-bl-anchor" style="width: 30%;" placeholder="Anchor text..." value="${anchor}">
@@ -399,7 +324,7 @@ window.getBacklinkDetailsData = function() {
 };
 
 // ==========================================
-// CÁC HÀM CRUD & LOGIC GIỮ NGUYÊN
+// CÁC HÀM CRUD & LOGIC
 // ==========================================
 window.loadSeoGroups = async function() {
   try {
@@ -420,14 +345,15 @@ window.openSeoGroupModal = function() {
 window.saveSeoGroup = async function() {
   const btn = document.getElementById('btnSaveGroup');
   const name = document.getElementById('sgName').value.trim();
-  btn.disabled = true; btn.innerHTML = 'Đang lưu...';
+  const originalText = btn.innerHTML;
+  btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Đang lưu...';
   try {
     await window.sbClient.from('seo_groups').insert([{ user_id: window.currentUser.id, name: name }]);
     bootstrap.Modal.getInstance(document.getElementById('modal-seo-group')).hide();
     await window.loadSeoGroups();
-    Swal.fire({ icon: 'success', title: 'Đã thêm Group', showConfirmButton: false, timer: 1500 });
-  } catch (e) { Swal.fire('Lỗi', e.message, 'error'); }
-  finally { btn.disabled = false; btn.innerHTML = 'Lưu Group'; }
+    window.UI.success('Đã thêm Group');
+  } catch (e) { window.UI.error(e.message); }
+  finally { btn.disabled = false; btn.innerHTML = originalText; }
 };
 
 window.deleteCurrentGroup = async function() {
@@ -445,11 +371,11 @@ window.deleteCurrentGroup = async function() {
       await window.sbClient.from('seo_pillars').delete().eq('group_id', groupId);
       await window.sbClient.from('seo_groups').delete().eq('id', groupId);
       
-      Swal.fire({ icon: 'success', title: 'Đã xóa hoàn toàn!', showConfirmButton: false, timer: 1500 });
+      window.UI.success('Đã xóa hoàn toàn!');
       document.getElementById('seoFilterGroup').value = '';
       window.handleGroupFilterChange(); 
       await window.loadSeoGroups();
-    } catch(e) { Swal.fire('Lỗi', e.message, 'error'); }
+    } catch(e) { window.UI.error(e.message); }
   }
 };
 
@@ -524,8 +450,8 @@ window.renderSingleSeoTree = function() {
           <div class="d-flex justify-content-between align-items-start mb-2">
             <span class="badge bg-success-lt border border-success">SATELLITE PAGE</span>
             <div class="d-flex gap-1">
-               <button class="btn btn-sm btn-icon text-primary border-0 bg-transparent hover-shadow" onclick="openSeoPageModal('${sat.id}', 'satellite', '${pillar.id}')" title="Sửa"><i class="ti ti-pencil fs-3"></i></button>
-               <button class="btn btn-sm btn-icon text-danger border-0 bg-transparent hover-shadow" onclick="deleteSeoPage('${sat.id}', 'satellite')" title="Xóa"><i class="ti ti-trash fs-3"></i></button>
+               <button class="btn btn-sm btn-icon text-primary border-0 bg-transparent hover-shadow" onclick="window.openSeoPageModal('${sat.id}', 'satellite', '${pillar.id}')" title="Sửa"><i class="ti ti-pencil fs-3"></i></button>
+               <button class="btn btn-sm btn-icon text-danger border-0 bg-transparent hover-shadow" onclick="window.deleteSeoPage('${sat.id}', 'satellite')" title="Xóa"><i class="ti ti-trash fs-3"></i></button>
             </div>
           </div>
           <div class="fw-bolder text-dark mb-1" style="font-size: 15px;">${sat.title || 'Chưa có Title'}</div>
@@ -549,15 +475,15 @@ window.renderSingleSeoTree = function() {
         <div class="d-flex justify-content-between align-items-start mb-3">
           <span class="badge bg-white text-brand fw-bold shadow-sm">PILLAR PAGE</span>
           <div class="d-flex gap-1">
-             <button class="btn btn-sm btn-icon btn-warning rounded-circle shadow-sm" onclick="openSeoPageModal('${pillar.id}', 'pillar')" title="Sửa Pillar"><i class="ti ti-pencil"></i></button>
-             <button class="btn btn-sm btn-icon btn-danger rounded-circle shadow-sm" onclick="deleteSeoPage('${pillar.id}', 'pillar')" title="Xóa Pillar & Các vệ tinh"><i class="ti ti-trash"></i></button>
+             <button class="btn btn-sm btn-icon btn-warning rounded-circle shadow-sm" onclick="window.openSeoPageModal('${pillar.id}', 'pillar')" title="Sửa Pillar"><i class="ti ti-pencil"></i></button>
+             <button class="btn btn-sm btn-icon btn-danger rounded-circle shadow-sm" onclick="window.deleteSeoPage('${pillar.id}', 'pillar')" title="Xóa Pillar & Các vệ tinh"><i class="ti ti-trash"></i></button>
           </div>
         </div>
         <div class="fw-bolder text-uppercase mb-1" style="font-size: 20px; letter-spacing: 0.5px;">${pillar.project_name}</div>
         <div class="fw-medium mb-2" style="font-size: 14px; opacity: 0.9;">${pillar.title || 'Chưa thiết lập Title'}</div>
         <div class="text-truncate" style="font-size: 12px; opacity: 0.8;" title="${pillar.url}"><a href="${pillar.url}" target="_blank" class="text-white">${pillar.url}</a></div>
         ${pLinksHtml}
-        <button class="btn btn-light w-100 mt-4 fw-bold text-brand shadow-sm" onclick="openSeoPageModal('', 'satellite', '${pillar.id}')"><i class="ti ti-plus me-2"></i>Thêm Vệ Tinh (Satellite)</button>
+        <button class="btn btn-light w-100 mt-4 fw-bold text-brand shadow-sm" onclick="window.openSeoPageModal('', 'satellite', '${pillar.id}')"><i class="ti ti-plus me-2"></i>Thêm Vệ Tinh (Satellite)</button>
       </div>
       ${sats.length > 0 ? `<div class="tree-children-container">${satHtml}</div>` : ''}
     </div>
@@ -600,7 +526,7 @@ window.openSeoPageModal = async function(id = '', type = 'pillar', parentId = ''
       if(data.internal_links && Array.isArray(data.internal_links)) {
         data.internal_links.forEach(l => window.addInternalLinkRow(l.url, l.anchor));
       }
-    } catch(e) { Swal.fire('Lỗi', e.message, 'error'); return; }
+    } catch(e) { window.UI.error(e.message); return; }
   } else {
     window.addInternalLinkRow(); 
   }
@@ -612,6 +538,7 @@ window.saveSeoPage = async function() {
   const type = document.getElementById('spType').value;
   const id = document.getElementById('spId').value;
   const table = type === 'pillar' ? 'seo_pillars' : 'seo_satellites';
+  const originalText = btn.innerHTML;
   
   const payload = {
     url: document.getElementById('spUrl').value.trim(),
@@ -638,9 +565,9 @@ window.saveSeoPage = async function() {
     
     if (type === 'pillar') window.handleGroupFilterChange(); 
     else window.loadSeoTreeForPillar(); 
-    Swal.fire({icon: 'success', title: 'Đã lưu hệ thống', showConfirmButton: false, timer: 1500});
-  } catch(e) { Swal.fire('Lỗi', e.message, 'error'); }
-  finally { btn.disabled = false; btn.innerHTML = '<i class="ti ti-device-floppy me-2"></i>Lưu hệ thống'; }
+    window.UI.success('Đã lưu hệ thống');
+  } catch(e) { window.UI.error(e.message); }
+  finally { btn.disabled = false; btn.innerHTML = originalText; }
 };
 
 window.deleteSeoPage = async function(id, type) {
@@ -662,8 +589,8 @@ window.deleteSeoPage = async function(id, type) {
          document.getElementById('seoFilterPillar').value = '';
          window.handleGroupFilterChange(); 
        } else { window.loadSeoTreeForPillar(); }
-       Swal.fire({icon: 'success', title: 'Đã xóa!', showConfirmButton: false, timer: 1500});
-    } catch(e) { Swal.fire('Lỗi', e.message, 'error'); }
+       window.UI.success('Đã xóa!');
+    } catch(e) { window.UI.error(e.message); }
   }
 };
 
@@ -712,8 +639,8 @@ window.loadSeoBacklinks = async function() {
           </td>
           <td>${detailsHtml}</td>
           <td class="text-end">
-            <button class="btn btn-sm btn-icon border-0 text-primary bg-transparent hover-shadow" onclick="openSeoBacklinkModal('${b.id}')"><i class="ti ti-pencil fs-3"></i></button>
-            <button class="btn btn-sm btn-icon border-0 text-danger bg-transparent hover-shadow" onclick="deleteSeoBacklink('${b.id}')"><i class="ti ti-trash fs-3"></i></button>
+            <button class="btn btn-sm btn-icon border-0 text-primary bg-transparent hover-shadow" onclick="window.openSeoBacklinkModal('${b.id}')"><i class="ti ti-pencil fs-3"></i></button>
+            <button class="btn btn-sm btn-icon border-0 text-danger bg-transparent hover-shadow" onclick="window.deleteSeoBacklink('${b.id}')"><i class="ti ti-trash fs-3"></i></button>
           </td>
         </tr>
       `;
@@ -746,6 +673,7 @@ window.openSeoBacklinkModal = function(id = '') {
 window.saveSeoBacklink = async function() {
   const btn = document.getElementById('btnSaveBl');
   const id = document.getElementById('blId').value;
+  const originalText = btn.innerHTML;
   
   const payload = {
     group_type: document.getElementById('blType').value,
@@ -762,9 +690,9 @@ window.saveSeoBacklink = async function() {
     
     bootstrap.Modal.getInstance(document.getElementById('modal-seo-backlink')).hide();
     window.loadSeoBacklinks();
-    Swal.fire({icon: 'success', title: 'Đã lưu Backlink', showConfirmButton: false, timer: 1500});
-  } catch(e) { Swal.fire('Lỗi', e.message, 'error'); }
-  finally { btn.disabled = false; btn.innerHTML = '<i class="ti ti-device-floppy me-2"></i>Lưu Backlink'; }
+    window.UI.success('Đã lưu Backlink');
+  } catch(e) { window.UI.error(e.message); }
+  finally { btn.disabled = false; btn.innerHTML = originalText; }
 };
 
 window.deleteSeoBacklink = async function(id) {
@@ -773,8 +701,8 @@ window.deleteSeoBacklink = async function(id) {
     try {
       await window.sbClient.from('seo_backlinks').delete().eq('id', id);
       window.loadSeoBacklinks();
-      Swal.fire({icon: 'success', title: 'Đã xóa!', showConfirmButton: false, timer: 1500});
-    } catch(e) { Swal.fire('Lỗi', e.message, 'error'); }
+      window.UI.success('Đã xóa!');
+    } catch(e) { window.UI.error(e.message); }
   }
 };
 </script>

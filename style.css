@@ -398,3 +398,40 @@ body {
   .modal-footer { flex-direction: column-reverse; gap: 12px; }
   .modal-footer a { width: 100%; text-align: center; padding: 10px 0; }
 }
+/* =========================================
+   MODULE THƯ VIỆN PHIM - MXT HUB V2
+   ========================================= */
+
+/* Nền banner Gradient Sang trọng */
+.movie-hero-bg {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+/* Icon mờ kích thước lớn phía sau banner */
+.movie-hero-bg .bg-icon {
+  position: absolute;
+  font-size: 140px;
+  right: -10px;
+  top: -30px;
+  opacity: 0.05;
+  color: white;
+  transform: rotate(15deg);
+  transition: transform 0.4s ease;
+}
+.movie-hero-bg:hover .bg-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Kéo thả Sortable */
+.movie-drag-handle {
+  cursor: grab;
+  font-size: 18px;
+  color: #94a3b8;
+  transition: color 0.2s;
+}
+.movie-drag-handle:active {
+  cursor: grabbing;
+}
+.movie-drag-handle:hover {
+  color: var(--tblr-primary);
+}

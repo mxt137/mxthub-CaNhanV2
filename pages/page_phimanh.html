@@ -8,7 +8,7 @@
         <div class="text-muted mt-1" style="font-size: 13px;">Theo dõi và lưu trữ tiến độ cày phim của bạn.</div>
       </div>
       <div class="col-auto ms-auto">
-        <button class="btn btn-dark" onclick="openMovieModal()" style="border-radius: 8px; background-color: #0f172a; border: none;">
+        <button class="btn btn-dark shadow-sm" onclick="window.openMovieModal()" style="border-radius: 10px; background-color: #0f172a; border: none; font-weight: 600;">
           <i class="ti ti-plus me-2"></i> Thêm Phim Đang Xem
         </button>
       </div>
@@ -19,8 +19,8 @@
 <div class="page-body fade-in">
   <div class="container-xl">
     
-    <div class="card mb-4 shadow-sm" style="border-radius: 16px; border: none; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); position: relative; overflow: hidden;">
-      <i class="ti ti-device-tv-old position-absolute" style="font-size: 140px; right: -10px; top: -30px; opacity: 0.05; color: white; transform: rotate(15deg);"></i>
+    <div class="card mb-4 shadow-sm movie-hero-bg" style="border-radius: 16px; border: none; position: relative; overflow: hidden;">
+      <i class="ti ti-device-tv-old bg-icon"></i>
       <div class="card-body p-4 position-relative">
         <div class="row align-items-center">
           <div class="col-md-5 mb-3 mb-md-0">
@@ -30,18 +30,17 @@
           <div class="col-md-7">
             <div class="input-icon">
               <span class="input-icon-addon"><i class="ti ti-search text-white-50"></i></span>
-              <input type="text" id="filterMovie" class="form-control form-control-lg bg-white bg-opacity-10 border-0 text-white placeholder-white-50 fw-medium" placeholder="Nhập tên phim cần tìm..." style="border-radius: 10px; backdrop-filter: blur(4px);" oninput="renderMovies()">
+              <input type="text" id="filterMovie" class="form-control form-control-lg bg-white bg-opacity-10 border-0 text-white placeholder-white-50 fw-medium" placeholder="Nhập tên phim cần tìm..." style="border-radius: 12px; backdrop-filter: blur(4px);" oninput="window.renderMovies()">
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="card shadow-sm" style="border-radius: 16px; border: none;">  
+    <div class="card shadow-sm border-0" style="border-radius: 16px;">  
       <div class="table-responsive" style="overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
         <table class="table table-vcenter card-table table-hover m-0" style="min-width: 800px;">
-          
-          <thead style="background: #146654 !important;">
+          <thead style="background: var(--tblr-primary) !important;">
             <tr>
               <th style="font-size: 12px; font-weight: bold; color: #ffffff !important; width: 40px;" class="text-center"><i class="ti ti-arrows-sort"></i></th>
               <th style="font-size: 12px; font-weight: bold; color: #ffffff !important; width: 35%;">Tên Phim</th>
@@ -60,49 +59,50 @@
   </div>
 </div>
 
+<!-- MODAL THÊM/SỬA PHIM -->
 <div class="modal modal-blur fade" id="modal-movie" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content shadow-lg" style="border-radius: 20px; border: none; overflow: hidden;">
+    <div class="modal-content shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
 
-      <div class="modal-header text-white" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-bottom: none; padding: 20px 24px;">
+      <div class="modal-header text-white movie-hero-bg" style="border-bottom: none; padding: 20px 24px;">
         <h5 class="modal-title fw-bold" id="movieModalTitle" style="font-size: 18px;">
           <i class="ti ti-movie me-2 fs-2"></i> Lưu Phim Mới
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
-      <form id="frmMovie" onsubmit="event.preventDefault(); saveMovie();">
+      <form id="frmMovie" onsubmit="event.preventDefault(); window.saveMovie();">
         <div class="modal-body p-4">
           <input type="hidden" id="mId">
           
           <div class="mb-4">
             <label class="form-label fw-bold text-muted text-uppercase" style="font-size: 11px; letter-spacing: 1px;">Tên Phim <span class="text-danger">*</span></label>
-            <div class="input-icon">
+            <div class="input-icon input-icon-premium">
               <span class="input-icon-addon"><i class="ti ti-device-tv text-primary"></i></span>
-              <input type="text" id="mTitle" class="form-control form-control-lg fw-bold" placeholder="VD: Mắt Biếc, House of the Dragon..." required style="border-radius: 10px; border-color: #cbd5e1;">
+              <input type="text" id="mTitle" class="form-control premium-input fw-bold" placeholder="VD: Mắt Biếc, House of the Dragon..." required>
             </div>
           </div>
 
           <div class="row g-3 mb-4">
             <div class="col-md-7">
               <label class="form-label fw-bold text-muted text-uppercase" style="font-size: 11px; letter-spacing: 1px;">Link Xem Phim (Tùy chọn)</label>
-              <div class="input-icon">
+              <div class="input-icon input-icon-premium">
                 <span class="input-icon-addon"><i class="ti ti-link text-muted"></i></span>
-                <input type="url" id="mUrl" class="form-control" placeholder="https://..." style="border-radius: 10px; border-color: #cbd5e1;">
+                <input type="url" id="mUrl" class="form-control premium-input" placeholder="https://...">
               </div>
             </div>
             <div class="col-md-5">
               <label class="form-label fw-bold text-muted text-uppercase" style="font-size: 11px; letter-spacing: 1px;">Đang xem đến <span class="text-danger">*</span></label>
-              <div class="input-icon">
+              <div class="input-icon input-icon-premium">
                 <span class="input-icon-addon"><i class="ti ti-player-play-filled text-success"></i></span>
-                <input type="text" id="mEpisode" class="form-control fw-bold text-success" placeholder="VD: Tập 12" required style="border-radius: 10px; border-color: #cbd5e1;">
+                <input type="text" id="mEpisode" class="form-control premium-input fw-bold text-success" placeholder="VD: Tập 12" required>
               </div>
             </div>
           </div>
 
           <div class="mb-2">
             <label class="form-label fw-bold text-muted text-uppercase" style="font-size: 11px; letter-spacing: 1px;">Ghi chú / Nhắc nhở</label>
-            <textarea id="mNote" class="form-control" rows="3" placeholder="Ví dụ: Đang xem dở đoạn main combat ở phút thứ 20..." style="border-radius: 10px; border-color: #cbd5e1;"></textarea>
+            <textarea id="mNote" class="form-control premium-input" rows="3" placeholder="Ví dụ: Đang xem dở đoạn main combat ở phút thứ 20..."></textarea>
           </div>
 
         </div>
@@ -118,11 +118,12 @@
   </div>
 </div>
 
+<!-- MODAL VIEW CHI TIẾT PHIM -->
 <div class="modal modal-blur fade" id="modal-movie-view" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-sm">
-    <div class="modal-content shadow-lg" style="border-radius: 20px; border: none; overflow: hidden;">
+    <div class="modal-content shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
       
-      <div class="modal-header text-white" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 20px 24px; border-bottom: none;">
+      <div class="modal-header text-white movie-hero-bg" style="padding: 20px 24px; border-bottom: none;">
         <h5 class="modal-title fw-bold d-flex align-items-center" style="font-size: 18px;">
           <div style="background: rgba(255,255,255,0.1); border-radius: 10px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
             <i class="ti ti-movie fs-2 text-warning"></i>
@@ -162,34 +163,36 @@
     </div>
   </div>
 </div>
+
 <script>
   // ==========================================
-  // MODULE PHIM ẢNH (KÉO THẢ & CRUD)
+  // KHAI BÁO BIẾN TOÀN CỤC CHỐNG LỖI SPA
   // ==========================================
-  let allMovies = [];
-  let movieSortable = null;
+  window.mxt_allMovies = window.mxt_allMovies || [];
+  window.mxt_movieSortable = window.mxt_movieSortable || null;
 
-  // Hàm load dữ liệu từ Supabase (Được gọi tự động từ index.html)
-  async function loadMovies() {
+  // ==========================================
+  // 1. TẢI VÀ RENDER DỮ LIỆU
+  // ==========================================
+  window.loadMovies = async function() {
     try {
       const { data, error } = await window.sbClient.from('movies').select('*').order('sort_order', { ascending: true }).order('created_at', { ascending: false });
       if (error) throw error;
-      allMovies = data || [];
-      renderMovies();
+      window.mxt_allMovies = data || [];
+      window.renderMovies();
     } catch (e) {
       document.getElementById('moviesContainer').innerHTML = `<tr><td colspan="6" class="text-danger text-center py-5">Lỗi trích xuất CSDL: ${e.message}</td></tr>`;
     }
-  }
+  };
 
-  // Hàm Render Bảng dữ liệu HTML
-  function renderMovies() {
+  window.renderMovies = function() {
     const container = document.getElementById('moviesContainer');
     const filterTxt = document.getElementById('filterMovie').value.toLowerCase().trim();
 
     // Lọc theo thanh tìm kiếm
-    let filtered = allMovies;
+    let filtered = window.mxt_allMovies;
     if (filterTxt) {
-      filtered = allMovies.filter(p => p.title.toLowerCase().includes(filterTxt));
+      filtered = window.mxt_allMovies.filter(p => p.title.toLowerCase().includes(filterTxt));
     }
 
     if (filtered.length === 0) {
@@ -199,16 +202,15 @@
 
     let html = '';
     filtered.forEach(m => {
-      // ĐÃ SỬA: Thêm onclick="event.stopPropagation();" vào nút xem link để không bị mở đè 2 form
       const viewBtn = m.url 
         ? `<a href="${m.url}" target="_blank" onclick="event.stopPropagation();" class="btn btn-sm btn-icon border-0 ms-2" style="background: rgba(16, 185, 129, 0.1); color: #10b981;" title="Mở link xem phim"><i class="ti ti-external-link fs-3"></i></a>` 
         : ``;
 
       html += `
-        <tr data-id="${m.id}" onclick="openMovieViewModal('${m.id}')" style="cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+        <tr data-id="${m.id}" onclick="window.openMovieViewModal('${m.id}')" style="cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
           
           <td class="text-center" onclick="event.stopPropagation();">
-            <i class="ti ti-grip-vertical text-muted movie-drag-handle" style="cursor: grab; font-size: 18px;" title="Kéo thả để sắp xếp"></i>
+            <i class="ti ti-grip-vertical movie-drag-handle" title="Kéo thả để sắp xếp"></i>
           </td>
           
           <td>
@@ -228,53 +230,54 @@
           </td>
           
           <td class="text-end">
-            <button class="btn btn-sm btn-icon border-0" style="background: rgba(32, 107, 196, 0.1); color: #206bc4;" onclick="event.stopPropagation(); openMovieModal('${m.id}')" title="Cập nhật tiến độ"><i class="ti ti-pencil fs-3"></i></button>
-            <button class="btn btn-sm btn-icon border-0 ms-1" style="background: rgba(225, 29, 72, 0.1); color: #e11d48;" onclick="event.stopPropagation(); deleteMovie('${m.id}')" title="Xóa phim"><i class="ti ti-trash fs-3"></i></button>
+            <button class="btn btn-sm btn-icon border-0" style="background: rgba(32, 107, 196, 0.1); color: #206bc4;" onclick="event.stopPropagation(); window.openMovieModal('${m.id}')" title="Cập nhật tiến độ"><i class="ti ti-pencil fs-3"></i></button>
+            <button class="btn btn-sm btn-icon border-0 ms-1" style="background: rgba(225, 29, 72, 0.1); color: #e11d48;" onclick="event.stopPropagation(); window.deleteMovie('${m.id}')" title="Xóa phim"><i class="ti ti-trash fs-3"></i></button>
           </td>
         </tr>
       `;
     });
     container.innerHTML = html;
 
-    // Bật tính năng Kéo thả SortableJS (Lưu ý: Chỉ cho phép kéo thả khi KHÔNG dùng thanh tìm kiếm để tránh loạn thứ tự)
+    // QUẢN TRỊ RỦI RO BỘ NHỚ: Hủy SortableJS cũ trước khi tạo mới
+    if (window.mxt_movieSortable) {
+      window.mxt_movieSortable.destroy();
+      window.mxt_movieSortable = null;
+    }
+
+    // Bật tính năng Kéo thả SortableJS khi không sử dụng thanh tìm kiếm
     if (!filterTxt) {
-      if (movieSortable) movieSortable.destroy();
-      movieSortable = new Sortable(container, {
+      window.mxt_movieSortable = new Sortable(container, {
         handle: '.movie-drag-handle',
         animation: 150,
         ghostClass: 'bg-light',
         onEnd: async function () {
           const rows = container.querySelectorAll('tr');
           try {
-            // Lặp và update từng dòng song song
             const updatePromises = Array.from(rows).map((row, index) => {
               const rowId = row.getAttribute('data-id');
               return window.sbClient.from('movies').update({ sort_order: index }).eq('id', rowId);
             });
             
             await Promise.all(updatePromises);
-            UI.toast.fire({ icon: 'success', title: 'Đã lưu thứ tự cày phim!' });
+            window.UI.toast.fire({ icon: 'success', title: 'Đã lưu thứ tự cày phim!' });
           } catch(err) { 
-            UI.error('Không thể lưu thứ tự!');
+            window.UI.error('Không thể lưu thứ tự!');
           }
         }
       });
-    } else {
-      if (movieSortable) {
-        movieSortable.destroy();
-        movieSortable = null;
-      }
     }
-  }
+  };
 
-  // Hàm Mở Modal Thêm/Sửa
-  function openMovieModal(id = '') {
+  // ==========================================
+  // 2. CRUD (THÊM / SỬA / XÓA)
+  // ==========================================
+  window.openMovieModal = function(id = '') {
     document.getElementById('frmMovie').reset();
     document.getElementById('mId').value = id;
     
     if (id) {
       document.getElementById('movieModalTitle').innerHTML = '<i class="ti ti-edit me-2 fs-2"></i>Cập nhật Tiến độ';
-      const m = allMovies.find(x => x.id === id);
+      const m = window.mxt_allMovies.find(x => x.id === id);
       if (m) {
         document.getElementById('mTitle').value = m.title;
         document.getElementById('mUrl').value = m.url || '';
@@ -287,11 +290,11 @@
     
     const el = document.getElementById('modal-movie');
     (bootstrap.Modal.getInstance(el) || new bootstrap.Modal(el)).show();
-  }
+  };
 
-  // Hàm Lưu (Insert / Update)
-  async function saveMovie() {
+  window.saveMovie = async function() {
     const btn = document.getElementById('btnSaveMovie');
+    const originalText = btn.innerHTML;
     const id = document.getElementById('mId').value;
 
     const payload = {
@@ -303,37 +306,35 @@
     };
 
     btn.disabled = true;
-    btn.innerHTML = 'Đang lưu...';
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang lưu...';
 
     try {
       if (id) {
         const { error } = await window.sbClient.from('movies').update(payload).eq('id', id);
         if (error) throw error;
-        UI.success('Đã cập nhật tiến độ!');
+        window.UI.success('Đã cập nhật tiến độ!');
       } else {
         payload.user_id = window.currentUser.id;
-        // Tự động gán thứ tự (sort_order) lớn nhất + 1 để phim mới luôn nằm ở dưới cùng
-        const maxSort = allMovies.length > 0 ? Math.max(...allMovies.map(m => m.sort_order || 0)) : 0;
+        const maxSort = window.mxt_allMovies.length > 0 ? Math.max(...window.mxt_allMovies.map(m => m.sort_order || 0)) : 0;
         payload.sort_order = maxSort + 1;
 
         const { error } = await window.sbClient.from('movies').insert([payload]);
         if (error) throw error;
-        UI.success('Đã thêm phim vào danh sách!');
+        window.UI.success('Đã thêm phim vào danh sách!');
       }
 
       const el = document.getElementById('modal-movie');
       bootstrap.Modal.getInstance(el).hide();
-      loadMovies(); // Render lại bảng
+      window.loadMovies(); 
     } catch (e) {
-      UI.error('Lỗi: ' + e.message);
+      window.UI.error('Lỗi: ' + e.message);
     } finally {
       btn.disabled = false;
-      btn.innerHTML = 'Lưu Lại <i class="ti ti-device-floppy ms-2"></i>';
+      btn.innerHTML = originalText;
     }
-  }
+  };
 
-  // Hàm Xóa Phim
-  async function deleteMovie(id) {
+  window.deleteMovie = async function(id) {
     Swal.fire({
       title: 'Xóa khỏi danh sách?',
       text: "Bạn sẽ quên mất mình đã xem đến tập nào đấy nhé!",
@@ -346,23 +347,22 @@
         try {
           const { error } = await window.sbClient.from('movies').delete().eq('id', id);
           if (error) throw error;
-          UI.success('Đã xóa thành công!');
-          loadMovies();
+          window.UI.success('Đã xóa thành công!');
+          window.loadMovies();
         } catch (e) {
-          UI.error('Lỗi xóa: ' + e.message);
+          window.UI.error('Lỗi xóa: ' + e.message);
         }
       }
     });
-  }
+  };
 
   // ==========================================
-  // XỬ LÝ MODAL VIEW PHIM (CHỈ XEM)
+  // 3. XEM THÔNG TIN PHIM
   // ==========================================
-  function openMovieViewModal(id) {
-    const m = allMovies.find(x => x.id === id); 
+  window.openMovieViewModal = function(id) {
+    const m = window.mxt_allMovies.find(x => x.id === id); 
     if(!m) return;
 
-    // Đổ dữ liệu
     document.getElementById('vMovieTitle').innerText = m.title || 'Chưa có tên phim';
     document.getElementById('vMovieEpisode').innerText = m.episode || 'Chưa rõ';
     document.getElementById('vMovieNote').innerText = m.note || 'Không có ghi chú nào.';
@@ -373,18 +373,15 @@
         document.getElementById('vMovieDate').innerText = 'Chưa có';
     }
     
-    // Xử lý link xem phim
     const urlEl = document.getElementById('vMovieUrl');
     if (m.url) {
       urlEl.style.display = 'block';
-      // Đảm bảo link luôn có https:// để mở tab an toàn
       urlEl.href = m.url.startsWith('http') ? m.url : 'https://' + m.url;
     } else {
       urlEl.style.display = 'none';
     }
 
-    // Hiển thị Modal
     const el = document.getElementById('modal-movie-view');
     (bootstrap.Modal.getInstance(el) || new bootstrap.Modal(el)).show();
-  }
+  };
 </script>

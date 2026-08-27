@@ -1,0 +1,519 @@
+<div class="page-body fade-in mt-4">
+  <!-- Đổi container-xl thành container-fluid nếu bạn muốn bảng rộng tràn sát 2 mép viền màn hình -->
+  <div class="container-xl">
+    
+    <!-- BANNER TỔNG QUAN -->
+    <div class="mb-4" style="background: linear-gradient(135deg, #146654 0%, #0d4639 100%); border-radius: 20px; padding: 24px 30px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(20, 102, 84, 0.15); flex-wrap: wrap; gap: 20px;">
+      <div>
+        <h2 style="margin: 0; font-weight: 800; font-size: 28px; letter-spacing: 0.5px;"><i class="ti ti-layout-kanban me-2"></i> KANBAN BOARD</h2>
+        <div style="background: rgba(255,255,255,0.1); padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; margin-top: 8px; display: inline-block; border: 1px solid rgba(255,255,255,0.15);">
+          Quản lý và theo dõi tiến độ dự án
+        </div>
+      </div>
+      <div class="d-flex gap-3 flex-wrap">
+        <div style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 12px 24px; text-align: center; min-width: 110px;">
+          <div style="font-size: 24px; font-weight: 800;" id="stat-total">0</div>
+          <div style="font-size: 10px; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; opacity: 0.8; margin-top: 4px;">Tổng Việc</div>
+        </div>
+        <div style="background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 16px; padding: 12px 24px; text-align: center; min-width: 110px;">
+          <div style="font-size: 24px; font-weight: 800; color: #34d399;" id="stat-done">0</div>
+          <div style="font-size: 10px; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; opacity: 0.9; margin-top: 4px; color: #a7f3d0;">Hoàn Thành</div>
+        </div>
+        <div style="background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 16px; padding: 12px 24px; text-align: center; min-width: 110px;">
+          <div style="font-size: 24px; font-weight: 800; color: #fbbf24;" id="stat-progress">0</div>
+          <div style="font-size: 10px; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; opacity: 0.9; margin-top: 4px; color: #fde68a;">Đang Làm</div>
+        </div>
+        <div style="background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 12px 24px; text-align: center; min-width: 110px;">
+          <div style="font-size: 24px; font-weight: 800; color: #60a5fa;" id="stat-todo">0</div>
+          <div style="font-size: 10px; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; opacity: 0.9; margin-top: 4px; color: #bfdbfe;">Khởi Tạo</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR ĐIỀU KHIỂN -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+      <div class="d-flex gap-3 flex-grow-1" style="max-width: 500px;">
+        <div class="input-icon w-50">
+          <span class="input-icon-addon"><i class="ti ti-search text-muted"></i></span>
+          <input type="text" id="filterKanbanSearch" class="form-control premium-input bg-white" placeholder="Tìm tên công việc..." oninput="debounceKanbanSearch()" style="border-radius: 12px; border: 1px solid #e2e8f0;">
+        </div>
+        <div class="input-icon w-50">
+          <span class="input-icon-addon"><i class="ti ti-folder text-muted"></i></span>
+          <select id="filterKanbanGroup" class="form-select premium-input bg-white" onchange="loadKanbanTasks()" style="border-radius: 12px; border: 1px solid #e2e8f0;">
+            <option value="">-- Tất cả nhóm --</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn fw-bold" onclick="openKanbanGroupModal()" style="background: white; border: 1px solid #cbd5e1; color: #475569; border-radius: 10px; transition: all 0.2s;">
+          <i class="ti ti-folder-plus me-2" style="color: #3b82f6;"></i>Thêm Nhóm
+        </button>
+        <button class="btn btn-brand fw-bold" onclick="openKanbanTaskModal()" style="border-radius: 10px; box-shadow: 0 4px 12px rgba(20,102,84,0.2);">
+          <i class="ti ti-plus me-2"></i>Tạo Việc Mới
+        </button>
+      </div>
+    </div>
+
+    <!-- BẢNG KANBAN BOARD CHUYÊN NGHIỆP: ÉP FLEXBOX TUYỆT ĐỐI -->
+    <div id="kanbanBoard" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 24px; align-items: stretch !important; overflow-x: auto; padding-bottom: 24px; width: 100%; scrollbar-width: thin;">
+      
+      <!-- CỘT 1: KHỞI TẠO -->
+      <div class="shadow-sm d-flex flex-column" style="flex: 1 1 0 !important; min-width: 320px !important; background: #f8fafc; border-radius: 20px; border: 1px solid #e2e8f0; height: auto !important;">
+        <div class="p-3 d-flex justify-content-between align-items-center" style="background: #1e293b; color: white; border-radius: 20px 20px 0 0; border-bottom: 3px solid #3b82f6;">
+          <div class="fw-bolder" style="font-size: 15px; letter-spacing: 0.5px;">
+            <i class="ti ti-circle-dotted text-blue me-2 fs-3"></i> KHỞI TẠO
+          </div>
+          <span class="badge" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.1); font-size: 12px; padding: 6px 12px; border-radius: 20px;" id="count-todo">0</span>
+        </div>
+        <!-- KHÔNG dùng overflow-y để cột tự kéo dãn dài xuống theo content -->
+        <div class="p-3 flex-grow-1" id="list-todo" data-status="todo" style="min-height: 150px;"></div>
+      </div>
+
+      <!-- CỘT 2: ĐANG LÀM -->
+      <div class="shadow-sm d-flex flex-column" style="flex: 1 1 0 !important; min-width: 320px !important; background: #f8fafc; border-radius: 20px; border: 1px solid #e2e8f0; height: auto !important;">
+        <div class="p-3 d-flex justify-content-between align-items-center" style="background: #1e293b; color: white; border-radius: 20px 20px 0 0; border-bottom: 3px solid #f59e0b;">
+          <div class="fw-bolder" style="font-size: 15px; letter-spacing: 0.5px;">
+            <i class="ti ti-loader text-warning me-2 fs-3"></i> ĐANG LÀM
+          </div>
+          <span class="badge" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.1); font-size: 12px; padding: 6px 12px; border-radius: 20px;" id="count-in_progress">0</span>
+        </div>
+        <div class="p-3 flex-grow-1" id="list-in_progress" data-status="in_progress" style="min-height: 150px;"></div>
+      </div>
+
+      <!-- CỘT 3: HOÀN THÀNH -->
+      <div class="shadow-sm d-flex flex-column" style="flex: 1 1 0 !important; min-width: 320px !important; background: #f0fdf4; border-radius: 20px; border: 1px solid #d1fae5; height: auto !important;">
+        <div class="p-3 d-flex justify-content-between align-items-center" style="background: #1e293b; color: white; border-radius: 20px 20px 0 0; border-bottom: 3px solid #10b981;">
+          <div class="fw-bolder" style="font-size: 15px; letter-spacing: 0.5px;">
+            <i class="ti ti-circle-check text-success me-2 fs-3"></i> ĐÃ HOÀN THÀNH
+          </div>
+          <span class="badge" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.1); font-size: 12px; padding: 6px 12px; border-radius: 20px;" id="count-done">0</span>
+        </div>
+        <div class="p-3 flex-grow-1" id="list-done" data-status="done" style="min-height: 150px;"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL VÀ FORM (ĐÃ TÍCH HỢP NÚT XÓA)        -->
+<!-- ========================================== -->
+
+<!-- MODAL NHÓM CÔNG VIỆC -->
+<div class="modal modal-blur fade" id="modal-kanban-group" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0" style="border-radius: 16px;">
+      <div class="modal-header text-white" style="background: var(--tblr-primary); border-radius: 16px 16px 0 0;">
+        <h5 class="modal-title fw-bold"><i class="ti ti-folder-plus me-2"></i>Nhóm Công Việc</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="frmKanbanGroup" onsubmit="event.preventDefault(); saveKanbanGroup();">
+        <div class="modal-body p-4">
+          <input type="hidden" id="kgId">
+          <div class="mb-3">
+            <label class="form-label text-muted fw-bold" style="font-size: 12px;">Tên Nhóm <span class="text-danger">*</span></label>
+            <input type="text" id="kgName" class="form-control premium-input fw-bold" required placeholder="VD: Hỗ trợ kỹ thuật, Marketing...">
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-6">
+              <label class="form-label text-muted fw-bold" style="font-size: 12px;">Mã Màu (Color)</label>
+              <input type="color" id="kgColor" class="form-control form-control-color border-0 p-1 w-100" style="height: 42px; border-radius: 8px;" value="#146654">
+            </div>
+            <div class="col-6">
+              <label class="form-label text-muted fw-bold" style="font-size: 12px;">Biểu tượng (Icon)</label>
+              <select id="kgIcon" class="form-select premium-input">
+                <option value="ti-folder">📁 Thư mục chung</option>
+                <option value="ti-layout-kanban">📋 Bảng công việc</option>
+                <option value="ti-briefcase">💼 Quản lý / Hành chính</option>
+                <option value="ti-headset">🎧 Chăm sóc Khách hàng</option>
+                <option value="ti-speakerphone">📢 Truyền thông / Ads</option>
+                <option value="ti-code">💻 Lập trình / Website</option>
+                <option value="ti-file-text">📄 Hợp đồng / Tài liệu</option>
+                <option value="ti-chart-bar">📊 Thống kê / Báo cáo</option>
+                <option value="ti-target">🎯 Mục tiêu / Chiến dịch</option>
+                <option value="ti-users">👥 Họp / Đội nhóm</option>
+                <option value="ti-paint">🎨 Thiết kế / Design</option>
+                <option value="ti-currency-dollar">💰 Tài chính / Kế toán</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light" style="border-radius: 0 0 16px 16px;">
+          <button type="button" class="btn btn-outline-danger me-auto" id="btnDeleteKg" onclick="deleteKanbanGroup()" style="display:none;">Xóa nhóm</button>
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+          <button type="submit" id="btnSaveKg" class="btn btn-brand fw-bold"><i class="ti ti-device-floppy me-2"></i>Lưu Nhóm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TẠO/SỬA THẺ CÔNG VIỆC -->
+<div class="modal modal-blur fade" id="modal-kanban-task" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0" style="border-radius: 16px;">
+      <div class="modal-header text-white" style="background: var(--tblr-primary); border-radius: 16px 16px 0 0;">
+        <h5 class="modal-title fw-bold" id="kanbanTaskModalTitle"><i class="ti ti-checklist me-2"></i>Chi Tiết Công Việc</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="frmKanbanTask" onsubmit="event.preventDefault(); saveKanbanTask();">
+        <div class="modal-body p-4">
+          <input type="hidden" id="ktId">
+          <input type="hidden" id="ktStatus" value="todo">
+          
+          <div class="row g-3 mb-3">
+            <div class="col-md-12">
+              <label class="form-label text-muted fw-bold" style="font-size: 12px;">Tên Công Việc <span class="text-danger">*</span></label>
+              <input type="text" id="ktTitle" class="form-control premium-input fw-bold fs-3" required placeholder="Cần làm gì...">
+            </div>
+          </div>
+          
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label text-muted fw-bold" style="font-size: 12px;">Thuộc Nhóm <span class="text-danger">*</span></label>
+              <div class="input-icon input-icon-premium">
+                <span class="input-icon-addon"><i class="ti ti-folder text-muted"></i></span>
+                <select id="ktGroup" class="form-select premium-input" required></select>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label text-muted fw-bold" style="font-size: 12px;">Mô tả chi tiết</label>
+            <textarea id="ktDesc" class="form-control premium-input" rows="4" placeholder="Ghi chú thêm các thông tin cần thiết..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer bg-light" style="border-radius: 0 0 16px 16px;">
+          <!-- NÚT XÓA ĐÃ GẮN CHUẨN HÀM MỚI NHẤT -->
+          <button type="button" class="btn btn-outline-danger me-auto fw-bold" id="btnDeleteKt" onclick="deleteKanbanTaskDirect()" style="display:none;"><i class="ti ti-trash me-2"></i>Xóa công việc</button>
+          <button type="button" class="btn btn-light fw-bold" data-bs-dismiss="modal">Hủy</button>
+          <button type="submit" id="btnSaveKt" class="btn btn-brand fw-bold px-4"><i class="ti ti-device-floppy me-2"></i>Lưu Thẻ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+window.mxt_kanbanGroups = [];
+window.mxt_kanbanTasks = [];
+window.mxt_kanbanSearchTimeout = null;
+window.mxt_sortableInstances = [];
+
+// ==========================================
+// 1. KHỞI TẠO MODULE
+// ==========================================
+window.initTaskManager = async function() {
+  await window.loadKanbanGroups();
+  await window.loadKanbanTasks();
+  window.initKanbanSortable();
+}
+
+window.debounceKanbanSearch = function() {
+  clearTimeout(window.mxt_kanbanSearchTimeout);
+  window.mxt_kanbanSearchTimeout = setTimeout(() => { window.loadKanbanTasks(); }, 500);
+}
+
+// ==========================================
+// 2. KANBAN DRAG & DROP LOGIC
+// ==========================================
+window.initKanbanSortable = function() {
+  window.mxt_sortableInstances.forEach(s => s.destroy());
+  window.mxt_sortableInstances = [];
+
+  const columns = ['list-todo', 'list-in_progress', 'list-done'];
+  
+  columns.forEach(colId => {
+    const el = document.getElementById(colId);
+    if (el) {
+      const sortable = new Sortable(el, {
+        group: 'kanban_board', 
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        onEnd: async function (evt) {
+          const itemEl = evt.item; 
+          const taskId = itemEl.getAttribute('data-id');
+          const newStatus = evt.to.getAttribute('data-status');
+          const oldStatus = evt.from.getAttribute('data-status');
+          
+          if (newStatus !== oldStatus) {
+            await window.updateKanbanTaskStatus(taskId, newStatus);
+            window.updateKanbanBoardCounts();
+          }
+        },
+      });
+      window.mxt_sortableInstances.push(sortable);
+    }
+  });
+}
+
+window.updateKanbanBoardCounts = function() {
+  const todoCount = document.getElementById('list-todo').children.length;
+  const inProgCount = document.getElementById('list-in_progress').children.length;
+  const doneCount = document.getElementById('list-done').children.length;
+  
+  // Update số lượng trên Header Cột
+  document.getElementById('count-todo').innerText = todoCount;
+  document.getElementById('count-in_progress').innerText = inProgCount;
+  document.getElementById('count-done').innerText = doneCount;
+
+  // Update thống kê trên Banner Tổng (Giao diện Quiet Luxury)
+  document.getElementById('stat-todo').innerText = todoCount;
+  document.getElementById('stat-progress').innerText = inProgCount;
+  document.getElementById('stat-done').innerText = doneCount;
+  document.getElementById('stat-total').innerText = todoCount + inProgCount + doneCount;
+}
+
+// ==========================================
+// 3. API NHÓM CÔNG VIỆC (KANBAN GROUPS)
+// ==========================================
+window.loadKanbanGroups = async function() {
+  try {
+    const { data, error } = await window.sbClient
+      .from('kanban_groups')
+      .select('*')
+      .eq('user_id', window.currentUser.id)
+      .order('name');
+    
+    if (error) throw error;
+    window.mxt_kanbanGroups = data || [];
+
+    let opts = '<option value="">-- Tất cả nhóm --</option>';
+    let optsForm = '<option value="">-- Chọn nhóm --</option>';
+    
+    window.mxt_kanbanGroups.forEach(g => {
+      const html = `<option value="${g.id}">${g.name}</option>`;
+      opts += html;
+      optsForm += html;
+    });
+
+    document.getElementById('filterKanbanGroup').innerHTML = opts;
+    document.getElementById('ktGroup').innerHTML = optsForm;
+  } catch (e) { console.error('Lỗi tải nhóm Kanban:', e); }
+}
+
+window.openKanbanGroupModal = function(id = '') {
+  document.getElementById('frmKanbanGroup').reset();
+  document.getElementById('kgId').value = id;
+  document.getElementById('btnDeleteKg').style.display = id ? 'block' : 'none';
+
+  if (id) {
+    const g = window.mxt_kanbanGroups.find(x => x.id === id);
+    if (g) {
+      document.getElementById('kgName').value = g.name;
+      document.getElementById('kgColor').value = g.color;
+      document.getElementById('kgIcon').value = g.icon;
+    }
+  }
+  new bootstrap.Modal(document.getElementById('modal-kanban-group')).show();
+}
+
+window.saveKanbanGroup = async function() {
+  const btn = document.getElementById('btnSaveKg');
+  const id = document.getElementById('kgId').value;
+  const payload = {
+    name: document.getElementById('kgName').value.trim(),
+    color: document.getElementById('kgColor').value,
+    icon: document.getElementById('kgIcon').value
+  };
+
+  btn.disabled = true;
+  try {
+    if (id) {
+      await window.sbClient.from('kanban_groups').update(payload).eq('id', id);
+    } else {
+      payload.user_id = window.currentUser.id;
+      await window.sbClient.from('kanban_groups').insert([payload]);
+    }
+    
+    bootstrap.Modal.getInstance(document.getElementById('modal-kanban-group')).hide();
+    await window.loadKanbanGroups();
+    window.loadKanbanTasks(); 
+    Swal.fire({ icon: 'success', title: 'Thành công!', timer: 1500, showConfirmButton: false });
+  } catch (e) {
+    Swal.fire('Lỗi', e.message, 'error');
+  } finally { btn.disabled = false; }
+}
+
+window.deleteKanbanGroup = async function() {
+  const id = document.getElementById('kgId').value;
+  const conf = await Swal.fire({ title: 'Xóa nhóm này?', text: "Mọi công việc thuộc nhóm sẽ bị xóa theo!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#e11d48' });
+  
+  if (conf.isConfirmed) {
+    await window.sbClient.from('kanban_groups').delete().eq('id', id);
+    bootstrap.Modal.getInstance(document.getElementById('modal-kanban-group')).hide();
+    await window.loadKanbanGroups();
+    window.loadKanbanTasks();
+  }
+}
+
+// ==========================================
+// 4. API THẺ CÔNG VIỆC (KANBAN TASKS)
+// ==========================================
+window.loadKanbanTasks = async function() {
+  const search = document.getElementById('filterKanbanSearch').value.trim();
+  const groupId = document.getElementById('filterKanbanGroup').value;
+
+  document.getElementById('list-todo').innerHTML = '<div class="text-center py-4"><span class="spinner-border text-primary"></span></div>';
+  document.getElementById('list-in_progress').innerHTML = '';
+  document.getElementById('list-done').innerHTML = '';
+
+  let query = window.sbClient
+    .from('kanban_tasks')
+    .select('*, kanban_groups(name, color, icon)')
+    .eq('user_id', window.currentUser.id)
+    .order('created_at', { ascending: false });
+
+  if (groupId) query = query.eq('group_id', groupId);
+  if (search) query = query.ilike('title', `%${search}%`);
+
+  try {
+    const { data, error } = await query;
+    if (error) throw error;
+    window.mxt_kanbanTasks = data || [];
+    window.renderKanbanBoard();
+  } catch (e) { console.error('Lỗi tải tasks:', e); }
+}
+
+window.renderKanbanBoard = function() {
+  const cols = { 'todo': '', 'in_progress': '', 'done': '' };
+
+  window.mxt_kanbanTasks.forEach(t => {
+    const g = t.kanban_groups || { name: 'Không phân nhóm', color: '#94a3b8', icon: 'ti-folder' };
+    
+    const dateStr = new Date(t.created_at).toLocaleDateString('vi-VN');
+    let doneBadge = '';
+    if (t.status === 'done' && t.completed_at) {
+      doneBadge = `<div class="mt-2 text-success" style="font-size:11px; font-weight:600;"><i class="ti ti-check me-1"></i>Hoàn thành: ${new Date(t.completed_at).toLocaleDateString('vi-VN')}</div>`;
+    }
+
+    // Nâng cấp Card CSS
+    const html = `
+      <div class="kanban-card bg-white p-3 mb-3 shadow-sm position-relative" data-id="${t.id}" style="border-radius: 12px; border: 1px solid #f1f5f9; border-left: 4px solid ${g.color}; cursor: grab;">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <span class="badge" style="background: ${g.color}15; color: ${g.color}; border: 1px solid ${g.color}30; font-weight:600; cursor:pointer;" onclick="openKanbanGroupModal('${t.group_id}')" title="Chỉnh sửa Nhóm">
+            <i class="ti ${g.icon} me-1"></i>${g.name}
+          </span>
+          <div class="d-flex gap-1">
+            <button class="btn btn-sm btn-icon text-muted bg-transparent border-0" onclick="openKanbanTaskModal('${t.id}')" title="Chỉnh sửa thẻ"><i class="ti ti-pencil fs-4"></i></button>
+            <button class="btn btn-sm btn-icon text-muted bg-transparent border-0 hover-danger" onclick="deleteKanbanTaskDirect('${t.id}')" title="Xóa thẻ"><i class="ti ti-trash fs-4"></i></button>
+          </div>
+        </div>
+        <div class="fw-bold text-dark mb-2 lh-sm" style="font-size: 15px;">${t.title}</div>
+        ${t.description ? `<div class="text-muted mb-3 text-truncate" style="font-size:12px;">${t.description}</div>` : ''}
+        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+          <span class="text-muted" style="font-size:11px;"><i class="ti ti-calendar me-1"></i>Tạo: ${dateStr}</span>
+        </div>
+        ${doneBadge}
+      </div>
+    `;
+    if (cols[t.status] !== undefined) cols[t.status] += html;
+  });
+
+  document.getElementById('list-todo').innerHTML = cols['todo'];
+  document.getElementById('list-in_progress').innerHTML = cols['in_progress'];
+  document.getElementById('list-done').innerHTML = cols['done'];
+  
+  window.updateKanbanBoardCounts();
+}
+
+window.openKanbanTaskModal = function(id = '') {
+  if (window.mxt_kanbanGroups.length === 0) return Swal.fire('Lưu ý', 'Bạn cần Thêm Nhóm công việc trước khi tạo Thẻ!', 'info');
+
+  document.getElementById('frmKanbanTask').reset();
+  document.getElementById('ktId').value = id;
+  document.getElementById('ktStatus').value = 'todo';
+  
+  // Hiển thị nút xóa trong modal nếu là sửa
+  document.getElementById('btnDeleteKt').style.display = id ? 'block' : 'none';
+
+  if (id) {
+    document.getElementById('kanbanTaskModalTitle').innerHTML = '<i class="ti ti-edit me-2"></i>Cập nhật Công việc';
+    const t = window.mxt_kanbanTasks.find(x => x.id === id);
+    if (t) {
+      document.getElementById('ktTitle').value = t.title;
+      document.getElementById('ktDesc').value = t.description || '';
+      document.getElementById('ktGroup').value = t.group_id;
+      document.getElementById('ktStatus').value = t.status;
+    }
+  } else {
+    document.getElementById('kanbanTaskModalTitle').innerHTML = '<i class="ti ti-plus me-2"></i>Tạo Thẻ Việc Mới';
+  }
+  
+  new bootstrap.Modal(document.getElementById('modal-kanban-task')).show();
+}
+
+window.saveKanbanTask = async function() {
+  const btn = document.getElementById('btnSaveKt');
+  const id = document.getElementById('ktId').value;
+  
+  const payload = {
+    title: document.getElementById('ktTitle').value.trim(),
+    description: document.getElementById('ktDesc').value.trim(),
+    group_id: document.getElementById('ktGroup').value,
+    status: document.getElementById('ktStatus').value
+  };
+
+  btn.disabled = true;
+  try {
+    if (id) {
+      await window.sbClient.from('kanban_tasks').update(payload).eq('id', id);
+    } else {
+      payload.user_id = window.currentUser.id;
+      await window.sbClient.from('kanban_tasks').insert([payload]);
+    }
+    
+    bootstrap.Modal.getInstance(document.getElementById('modal-kanban-task')).hide();
+    window.loadKanbanTasks();
+  } catch (e) {
+    Swal.fire('Lỗi', e.message, 'error');
+  } finally { btn.disabled = false; }
+}
+
+window.updateKanbanTaskStatus = async function(id, newStatus) {
+  const payload = { status: newStatus };
+  if (newStatus === 'done') payload.completed_at = new Date().toISOString();
+  else payload.completed_at = null; 
+
+  try {
+    await window.sbClient.from('kanban_tasks').update(payload).eq('id', id);
+    const tIndex = window.mxt_kanbanTasks.findIndex(x => x.id === id);
+    if (tIndex > -1) {
+      window.mxt_kanbanTasks[tIndex].status = newStatus;
+      window.mxt_kanbanTasks[tIndex].completed_at = payload.completed_at;
+    }
+    window.renderKanbanBoard(); 
+  } catch (e) {
+    console.error("Lỗi cập nhật trạng thái", e);
+    window.loadKanbanTasks(); 
+  }
+}
+
+// Bắt gọn lỗi xóa (gắn trực tiếp vào đối tượng window để Vercel không bao giờ bị mất dấu)
+window.deleteKanbanTaskDirect = async function(providedId = null) {
+  const id = providedId || document.getElementById('ktId').value;
+  if (!id) return;
+  
+  const conf = await Swal.fire({ 
+    title: 'Xóa thẻ này?', 
+    text: "Thẻ công việc này sẽ bị xóa vĩnh viễn khỏi hệ thống!", 
+    icon: 'warning', 
+    showCancelButton: true, 
+    confirmButtonColor: '#e11d48' 
+  });
+  
+  if (conf.isConfirmed) {
+    try {
+      await window.sbClient.from('kanban_tasks').delete().eq('id', id);
+      
+      const modalEl = document.getElementById('modal-kanban-task');
+      if (modalEl.classList.contains('show')) {
+        bootstrap.Modal.getInstance(modalEl).hide();
+      }
+      
+      window.loadKanbanTasks();
+    } catch (e) {
+      Swal.fire('Lỗi', e.message, 'error');
+    }
+  }
+}
+</script>

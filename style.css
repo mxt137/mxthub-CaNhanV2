@@ -1,5 +1,5 @@
 /* =========================================
-   MXT HUB V2 - QUIET LUXURY THEME
+   MXT HUB V2 - CORE & QUIET LUXURY THEME
    ========================================= */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
@@ -19,13 +19,20 @@ body {
   background-color: var(--bg-app);
 }
 
-/* Scrollbar Tinh Tế */
+/* =========================================
+   1. HIỆU ỨNG & TIỆN ÍCH CHUNG
+   ========================================= */
+.fade-in { animation: fadeIn 0.4s ease-in-out; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-/* Buttons */
 .btn-brand {
   background: linear-gradient(135deg, #146654 0%, #0d4639 100%) !important;
   color: white !important;
@@ -39,293 +46,151 @@ body {
 }
 .btn-brand:disabled { opacity: 0.7; cursor: not-allowed; }
 
-/* Sidebar Navigation */
+/* =========================================
+   2. FORM INPUTS & ICON (FIX LỖI KHOẢNG CÁCH)
+   ========================================= */
+.premium-input {
+  border-radius: 12px !important;
+  background-color: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  padding: 14px 16px !important;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1e293b;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.premium-input:focus {
+  background-color: #ffffff !important;
+  border-color: var(--tblr-primary) !important;
+  box-shadow: 0 0 0 4px rgba(20, 102, 84, 0.1) !important;
+  outline: none;
+}
+.premium-input::placeholder { color: #94a3b8; font-weight: 400; }
+
+.input-icon { position: relative; width: 100%; }
+.input-icon .input-icon-addon,
+.input-icon-premium .input-icon-addon {
+  position: absolute; top: 0; bottom: 0; left: 0;
+  display: flex; align-items: center; justify-content: center;
+  min-width: 48px; color: #64748b; font-size: 20px;
+  pointer-events: none; z-index: 4;
+}
+.input-icon .form-control,
+.input-icon .form-select,
+.input-icon-premium .premium-input {
+  padding-left: 48px !important;
+}
+
+/* =========================================
+   3. BẢNG DỮ LIỆU (FIX LỖI MÀU THEAD)
+   ========================================= */
+.table-responsive { scrollbar-width: thin; }
+.table-responsive::-webkit-scrollbar { height: 6px; }
+.table-responsive::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.table td, .table th { white-space: nowrap; }
+
+/* Ép màu xanh ngọc lục bảo trực tiếp vào thẻ th */
+.table thead th,
+.table thead tr th {
+  background-color: var(--tblr-primary) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  border-bottom: none !important;
+  padding: 12px 16px !important;
+}
+
+/* Bo góc cho bảng mượt mà hơn */
+.table thead tr th:first-child { border-top-left-radius: 12px !important; }
+.table thead tr th:last-child { border-top-right-radius: 12px !important; }
+
+/* =========================================
+   4. NAVIGATION MENU (SIDEBAR & TABS)
+   ========================================= */
 .navbar-vertical {
   background-color: var(--sidebar-bg) !important;
   border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
   box-shadow: 4px 0 24px rgba(15, 23, 42, 0.15) !important;
 }
-.navbar-vertical .navbar-brand { padding: 20px 24px !important; color: #2ae1b2 !important; }
-.navbar-vertical .nav-link {
-  color: var(--sidebar-text) !important;
-  font-weight: 500 !important;
-  font-size: 14px !important;
-  padding: 12px 16px !important;
-  border-radius: 12px !important;
-  margin: 4px 12px !important;
-  transition: all 0.25s ease !important;
-}
-.navbar-vertical .nav-link:hover {
-  color: #ffffff !important;
-  background-color: var(--sidebar-hover-bg) !important;
-  transform: translateX(4px);
-}
-.navbar-vertical .nav-link.active {
-  color: #ffffff !important;
-  background: linear-gradient(135deg, #146654 0%, #0d4639 100%) !important;
-  font-weight: 600 !important;
-  box-shadow: 0 4px 12px rgba(20, 102, 84, 0.3) !important;
-}
+.navbar-vertical .navbar-brand { padding: 20px 24px !important; font-size: 20px !important; font-weight: 800 !important; color: #2ae1b2 !important; }
+.navbar-vertical .nav-link { color: var(--sidebar-text) !important; font-weight: 500 !important; font-size: 14px !important; padding: 12px 16px !important; border-radius: 8px !important; margin: 4px 12px !important; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; }
+.navbar-vertical .nav-link:hover { color: #ffffff !important; background-color: var(--sidebar-hover-bg) !important; transform: translateX(4px); }
+.navbar-vertical .nav-link.active { color: #ffffff !important; background: linear-gradient(135deg, #146654 0%, #0d4639 100%) !important; font-weight: 600 !important; box-shadow: 0 4px 12px rgba(20, 102, 84, 0.3) !important; }
 
-/* Form Inputs (Premium Glassmorphism) */
-.premium-input {
-  border-radius: 12px !important;
-  background-color: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  padding: 12px 16px !important;
-  font-size: 14px;
-  font-weight: 500;
-  color: #1e293b;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-}
-.premium-input:focus {
-  border-color: var(--tblr-primary) !important;
-  box-shadow: 0 0 0 3px rgba(20, 102, 84, 0.1) !important;
-  outline: none;
-}
-.input-icon-premium .input-icon-addon { color: #64748b; font-size: 20px; }
-.input-icon-premium .premium-input { padding-left: 44px !important; }
-
-/* Animations */
-.fade-in { animation: fadeIn 0.4s ease-in-out; }
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Mobile Tweak */
-@media (max-width: 991.98px) {
-  .navbar-vertical .container-fluid { height: 60px !important; padding: 0 16px !important; }
-  .navbar-toggler { border: none !important; color: white !important; }
-}
-/* ==========================================
-   TABS MENU CRM & THU CHI - TRƯỢT NGANG (MOBILE)
-   ========================================== */
-.crm-nav-pills { 
-  background: #f1f5f9; 
-  padding: 6px; 
-  border-radius: 16px; 
-  display: flex; 
-  gap: 5px; 
-  flex-wrap: nowrap; 
-  overflow-x: auto; 
-  -webkit-overflow-scrolling: touch; 
-  scrollbar-width: none; 
-}
+/* Tabs Mobile (CRM, Thu Chi) */
+.crm-nav-pills { background: #f1f5f9; padding: 6px; border-radius: 16px; display: flex; gap: 5px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .crm-nav-pills::-webkit-scrollbar { display: none; }
-.crm-nav-pills .nav-link { 
-  border: none !important; 
-  color: #64748b; 
-  font-weight: 600; 
-  padding: 10px 22px; 
-  border-radius: 12px; 
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-  display: flex; 
-  align-items: center; 
-  white-space: nowrap; 
-}
+.crm-nav-pills .nav-link { border: none !important; color: #64748b; font-weight: 600; padding: 10px 22px; border-radius: 12px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; white-space: nowrap; }
 .crm-nav-pills .nav-link:hover { color: var(--tblr-primary); background: rgba(20, 102, 84, 0.08); }
-.crm-nav-pills .nav-link.active { 
-  background: var(--tblr-primary) !important; 
-  color: white !important; 
-  box-shadow: 0 4px 12px rgba(20, 102, 84, 0.25); 
-  transform: translateY(-1px); 
-}
+.crm-nav-pills .nav-link.active { background: var(--tblr-primary) !important; color: white !important; box-shadow: 0 4px 12px rgba(20, 102, 84, 0.25); transform: translateY(-1px); }
 
-/* Kéo thả Sortable cho Bảng Ví */
-.drag-handle { cursor: grab; }
-.drag-handle:active { cursor: grabbing; }
+/* =========================================
+   5. CÁC THÀNH PHẦN MODULE ĐẶC THÙ
+   ========================================= */
+
+/* Drag & Drop (Sortable) */
+.drag-handle, .movie-drag-handle { cursor: grab; color: #94a3b8; transition: color 0.2s;}
+.drag-handle:active, .movie-drag-handle:active { cursor: grabbing; }
+.movie-drag-handle:hover { color: var(--tblr-primary); }
+
+/* Module Thu Chi */
 .color-preview { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
-/* =========================================
-   FIX KHOẢNG CÁCH ICON & Ô NHẬP LIỆU (CHUẨN V1)
-   ========================================= */
-.input-icon {
-  position: relative;
-  width: 100%;
-}
 
-.input-icon .input-icon-addon {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 2.75rem;
-  padding: 0 0.75rem;
-  color: #64748b;
-  pointer-events: none;
-  z-index: 4;
-}
-
-/* Áp dụng padding chuẩn cho các input đặt trong input-icon */
-.input-icon .form-control,
-.input-icon .form-select,
-.input-icon select,
-.input-icon input {
-  padding-left: 2.75rem !important;
-}
-
-/* Modal form inputs chuẩn Quiet Luxury V1 */
-.form-control,
-.form-select {
-  border-radius: 10px !important;
-  border-color: #cbd5e1 !important;
-  font-size: 14px;
-  color: #1e293b;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.form-control:focus,
-.form-select:focus {
-  border-color: var(--tblr-primary) !important;
-  box-shadow: 0 0 0 3px rgba(20, 102, 84, 0.15) !important;
-  outline: none;
-}
-/* =========================================
-   MODULE LỊCH LÀM VIỆC - MXT HUB V2
-   ========================================= */
+/* Module Lịch Làm Việc (CV) */
 .cv-week-container { display: flex; gap: 24px; overflow-x: auto; padding-bottom: 24px; scroll-snap-type: x mandatory; align-items: stretch;}
 .cv-week-container::-webkit-scrollbar { height: 10px; }
 .cv-week-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; border: 2px solid #f8fafc; }
-
 .cv-day-col { min-width: 340px; flex: 1; background: #ffffff; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 8px 24px rgba(149, 157, 165, 0.1); display: flex; flex-direction: column; scroll-snap-align: start; overflow: hidden;}
 .cv-day-header { padding: 20px 16px; text-align: center; position: relative; border-bottom: 1px solid rgba(0,0,0,0.05); }
 .cv-day-body { padding: 16px 20px; flex-grow: 1; overflow-y: auto; min-height: 400px; background: #f8fafc; }
-
 .cv-task-card { background: #ffffff; border-radius: 16px; padding: 18px; margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
 .cv-task-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px -8px rgba(0,0,0,0.1); border-color: #cbd5e1; }
-
 .group-label { display: inline-flex; align-items: center; gap: 8px; margin: 24px 0 16px 0; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #ffffff; padding: 6px 16px; border-radius: 50rem; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
 .group-label.first-group { margin-top: 4px; }
 .group-daily { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
 .group-once { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-
-/* Nút Select Status */
-.badge-select { 
-  appearance: none; border-radius: 50rem; font-size: 11px; font-weight: 800; padding: 4px 28px 4px 12px; 
-  cursor: pointer; transition: all 0.2s;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 8px center; background-size: 14px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
+.badge-select { appearance: none; border-radius: 50rem; font-size: 11px; font-weight: 800; padding: 4px 28px 4px 12px; cursor: pointer; transition: all 0.2s; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; background-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
 .badge-select:focus { outline: none; box-shadow: 0 0 0 3px rgba(20, 102, 84, 0.2); }
-
 .st-pending { background-color: #fffbeb; color: #d97706; border: 1px solid #fcd34d; }
 .st-progress { background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
 .st-completed { background-color: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
-
 .cv-task-card.completed-task { opacity: 0.6; background: #f8fafc; border: 1px dashed #cbd5e1; box-shadow: none; }
 .cv-task-card.completed-task .task-title { text-decoration: line-through; color: #94a3b8 !important; }
-.stat-mini-card { text-align: center; padding: 12px; border-radius: 16px; min-width: 90px; backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.2); }
 
-.form-selectgroup-item input:checked + .form-selectgroup-label { border-color: #146654; box-shadow: 0 0 0 2px rgba(20, 102, 84, 0.2); background: #f8fbfa; }
-/* =========================================
-   MODULE KANBAN BOARD - MXT HUB V2
-   ========================================= */
-.metric-card-kanban {
-  border-radius: 16px;
-  padding: 12px 24px;
-  text-align: center;
-  min-width: 110px;
-  border: 1px solid rgba(255,255,255,0.15);
-  background: rgba(255,255,255,0.1);
-  transition: transform 0.2s ease;
-}
+/* Module Kanban */
+.metric-card-kanban { border-radius: 16px; padding: 12px 24px; text-align: center; min-width: 110px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.1); transition: transform 0.2s ease; }
 .metric-card-kanban:hover { transform: translateY(-2px); }
-
-.kanban-board-wrapper {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  gap: 24px;
-  align-items: stretch !important;
-  overflow-x: auto;
-  padding-bottom: 24px;
-  width: 100%;
-  scrollbar-width: thin;
-}
-
-.kanban-col {
-  flex: 1 1 0 !important;
-  min-width: 320px !important;
-  background: #f8fafc;
-  border-radius: 20px;
-  border: 1px solid #e2e8f0;
-  display: flex;
-  flex-direction: column;
-}
-
-.kanban-col-header {
-  padding: 16px 20px;
-  color: white;
-  border-radius: 20px 20px 0 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.kanban-board-wrapper { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 24px; align-items: stretch !important; overflow-x: auto; padding-bottom: 24px; width: 100%; scrollbar-width: thin; }
+.kanban-col { flex: 1 1 0 !important; min-width: 320px !important; background: #f8fafc; border-radius: 20px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; }
+.kanban-col-header { padding: 16px 20px; color: white; border-radius: 20px 20px 0 0; display: flex; justify-content: space-between; align-items: center; }
 .kanban-col-header.todo { background: #1e293b; border-bottom: 3px solid #3b82f6; }
 .kanban-col-header.in-progress { background: #1e293b; border-bottom: 3px solid #f59e0b; }
 .kanban-col-header.done { background: #1e293b; border-bottom: 3px solid #10b981; }
-
-.kanban-card {
-  background: #ffffff;
-  padding: 16px;
-  margin-bottom: 16px;
-  border-radius: 12px;
-  border: 1px solid #f1f5f9;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-  cursor: grab;
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
-}
+.kanban-card { background: #ffffff; padding: 16px; margin-bottom: 16px; border-radius: 12px; border: 1px solid #f1f5f9; box-shadow: 0 2px 6px rgba(0,0,0,0.02); cursor: grab; transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s; }
 .kanban-card:active { cursor: grabbing; }
 .kanban-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-color: #cbd5e1; }
-/* =========================================
-   MODULE CRM KHÁCH HÀNG - MXT HUB V2
-   ========================================= */
+.form-selectgroup-item input:checked + .form-selectgroup-label { border-color: #146654; box-shadow: 0 0 0 2px rgba(20, 102, 84, 0.2); background: #f8fbfa; }
 
-/* Card Thống Kê Màu Sắc Bắt Mắt */
+/* Module CRM Khách Hàng */
 .metric-card-pro { border: none; border-radius: 20px; position: relative; overflow: hidden; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s; }
 .metric-card-pro:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
 .metric-card-pro .bg-icon { position: absolute; font-size: 110px; right: -15px; bottom: -20px; opacity: 0.15; transition: transform 0.3s; }
 .metric-card-pro:hover .bg-icon { transform: scale(1.1) rotate(-5deg); }
-
-/* Các tone màu nền sang trọng (Pastel Gradient) */
 .bg-grad-blue { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); color: #0369a1; }
 .bg-grad-green { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); color: #15803d; }
 .bg-grad-orange { background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%); color: #c2410c; }
-
-/* CARD DỰ ÁN BẮT MẮT */
-.project-card-pro {
-  border: none;
-  border-radius: 16px;
-  background: #ffffff;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-  border-top: 5px solid var(--tblr-primary);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.project-card-pro:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 15px 30px rgba(20, 102, 84, 0.1);
-}
-
-/* BADGE NHÓM KHÁCH HÀNG */
+.project-card-pro { border: none; border-radius: 16px; background: #ffffff; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border-top: 5px solid var(--tblr-primary); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.project-card-pro:hover { transform: translateY(-6px); box-shadow: 0 15px 30px rgba(20, 102, 84, 0.1); }
 .badge-buyer { background-color: rgba(59, 130, 246, 0.1) !important; color: #2563eb !important; border: 1px solid rgba(59, 130, 246, 0.2) !important; }
 .badge-tenant { background-color: rgba(245, 158, 11, 0.1) !important; color: #d97706 !important; border: 1px solid rgba(245, 158, 11, 0.2) !important; }
 .badge-owner { background-color: rgba(16, 185, 129, 0.1) !important; color: #059669 !important; border: 1px solid rgba(16, 185, 129, 0.2) !important; }
-/* =========================================
-   MODULE HỖ TRỢ SEO - MXT HUB V2
-   ========================================= */
 
-/* Hiệu ứng thẻ bấm trang chủ SEO */
+/* Module Hỗ trợ SEO */
 .seo-hero-card { border: none; border-radius: 16px; position: relative; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; background: linear-gradient(135deg, #146654 0%, #0d4639 100%); color: white; cursor: pointer; min-height: 200px; display: flex; flex-direction: column; justify-content: center; }
 .seo-hero-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(20, 102, 84, 0.25); }
 .seo-hero-card .bg-icon { position: absolute; font-size: 140px; right: -20px; bottom: -30px; opacity: 0.1; transition: transform 0.4s; }
 .seo-hero-card:hover .bg-icon { transform: scale(1.1) rotate(-10deg); }
-
-/* Khung nhập liệu JSON Động */
 .json-dynamic-wrapper { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 20px; }
 .json-row-clean { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; animation: fadeIn 0.3s ease-in-out; }
 .json-row-clean:last-child { margin-bottom: 0; }
@@ -333,8 +198,6 @@ body {
 .input-json-clean:focus { border-color: var(--tblr-primary) !important; box-shadow: 0 0 0 3px rgba(20, 102, 84, 0.1) !important; outline: none; }
 .btn-remove-row { color: #ef4444; background: transparent; border: none; padding: 4px 8px; border-radius: 6px; transition: all 0.2s; cursor: pointer; }
 .btn-remove-row:hover { background: #fef2f2; transform: scale(1.1); }
-
-/* Sơ đồ cây SEO (Tree View) */
 .tree-wrapper { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; width: 100%; }
 .tree-pillar-node { background: #146654; color: white; border-radius: 16px; padding: 20px; width: 340px; z-index: 2; position: relative; box-shadow: 0 10px 25px rgba(20, 102, 84, 0.25); text-align: center; border: 2px solid #0d4639; }
 .tree-children-container { display: flex; gap: 24px; padding-top: 30px; position: relative; justify-content: center; flex-wrap: wrap; width: 100%; }
@@ -347,91 +210,42 @@ body {
 .tree-sat-node-wrapper:only-child::after { display: none; }
 .tree-sat-node { background: white; border-radius: 12px; padding: 16px; width: 280px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-left: 5px solid #10b981; transition: transform 0.2s; }
 .tree-sat-node:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+
+/* Module Kho Mật Khẩu */
+.pass-group-header { background: linear-gradient(90deg, rgba(20,102,84,0.06) 0%, rgba(255,255,255,0) 100%); border-left: 4px solid var(--tblr-primary); padding: 16px 20px; }
+.btn-ghost-copy { background: rgba(100,116,139,0.08); color: #64748b; border-radius: 8px; transition: all 0.2s; }
+.btn-ghost-copy:hover { background: var(--tblr-primary); color: white; transform: scale(1.05); }
+
+/* Module Phim Ảnh */
+.movie-hero-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+.movie-hero-bg .bg-icon { position: absolute; font-size: 140px; right: -10px; top: -30px; opacity: 0.05; color: white; transform: rotate(15deg); transition: transform 0.4s ease; }
+.movie-hero-bg:hover .bg-icon { transform: scale(1.1) rotate(5deg); }
+
+
 /* =========================================
-   MODULE KHO MẬT KHẨU - MXT HUB V2
+   6. RESPONSIVE MOBILE TWEAKS
    ========================================= */
-
-/* Tiêu đề Group sang trọng */
-.pass-group-header {
-  background: linear-gradient(90deg, rgba(20,102,84,0.06) 0%, rgba(255,255,255,0) 100%);
-  border-left: 4px solid var(--tblr-primary);
-  padding: 16px 20px;
+@media (max-width: 991.98px) {
+  .navbar-vertical .container-fluid { display: flex !important; justify-content: center !important; align-items: center !important; height: 54px !important; padding: 0 16px !important; position: relative; }
+  .navbar-brand { margin: 0 auto !important; display: flex; align-items: center; }
+  .navbar-toggler { display: flex !important; align-items: center !important; justify-content: center !important; width: 40px !important; height: 40px !important; padding: 0 !important; position: absolute !important; left: 10px !important; top: 7px !important; background-color: #0f172a !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; border-radius: 8px !important; z-index: 10000 !important; }
+  .navbar-toggler i { color: #ffffff !important; font-size: 24px !important; }
+  .navbar-toggler:focus { box-shadow: none !important; background-color: #0f172a !important; }
+  #sidebar-menu { position: absolute !important; top: 54px !important; left: 0 !important; width: 100% !important; background-color: #151f37 !important; box-shadow: 0 10px 20px rgba(0,0,0,0.3) !important; z-index: 9999 !important; padding: 15px !important; }
 }
 
-/* Nút copy & ẩn hiện pass mịn màng */
-.btn-ghost-copy {
-  background: rgba(100,116,139,0.08); 
-  color: #64748b; 
-  border-radius: 8px; 
-  transition: all 0.2s;
-}
-.btn-ghost-copy:hover { 
-  background: var(--tblr-primary); 
-  color: white; 
-  transform: scale(1.05); 
-}
-
-/* ===================================================
-   RESPONSIVE CHO IPHONE 14 PRO MAX & MOBILE (Max: 576px)
-   =================================================== */
 @media (max-width: 576px) {
+  .nav-tabs { display: flex !important; flex-wrap: nowrap !important; overflow-x: auto !important; overflow-y: hidden !important; -webkit-overflow-scrolling: touch !important; scrollbar-width: none !important; border-bottom: 2px solid #e2e8f0 !important; padding-bottom: 4px !important; margin-bottom: 16px !important; }
+  .nav-tabs::-webkit-scrollbar { display: none !important; }
+  .nav-tabs .nav-item { flex: 0 0 auto !important; white-space: nowrap !important; }
+  .page-body .container-xl, .page-header .container-xl { padding-left: 12px !important; padding-right: 12px !important; }
+  
   /* Ép Modal thành dạng Bottom Sheet (Trượt từ dưới lên) */
-  .modal-dialog-centered {
-    align-items: flex-end !important;
-    min-height: 100%;
-    margin: 0;
-  }
-  .modal-content {
-    border-radius: 24px 24px 0 0 !important;
-    border-bottom: none !important;
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  
-  /* Dàn các cột 6 thành 12 (100% chiều rộng) */
+  .modal-dialog-centered { align-items: flex-end !important; min-height: 100%; margin: 0; }
+  .modal-content { border-radius: 24px 24px 0 0 !important; border-bottom: none !important; padding-bottom: env(safe-area-inset-bottom); }
   .mobile-stack { width: 100% !important; margin-bottom: 12px; }
-  
-  /* Ẩn bớt các cột phụ trên bảng ở chế độ Mobile */
   .hide-on-mobile { display: none !important; }
-  
-  /* Nút lưu bành trướng 100% để dễ bấm bằng ngón tay cái */
   .btn-mobile-full { width: 100% !important; justify-content: center; }
   .modal-footer { flex-direction: column-reverse; gap: 12px; }
   .modal-footer a { width: 100%; text-align: center; padding: 10px 0; }
-}
-/* =========================================
-   MODULE THƯ VIỆN PHIM - MXT HUB V2
-   ========================================= */
-
-/* Nền banner Gradient Sang trọng */
-.movie-hero-bg {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-}
-
-/* Icon mờ kích thước lớn phía sau banner */
-.movie-hero-bg .bg-icon {
-  position: absolute;
-  font-size: 140px;
-  right: -10px;
-  top: -30px;
-  opacity: 0.05;
-  color: white;
-  transform: rotate(15deg);
-  transition: transform 0.4s ease;
-}
-.movie-hero-bg:hover .bg-icon {
-  transform: scale(1.1) rotate(5deg);
-}
-
-/* Kéo thả Sortable */
-.movie-drag-handle {
-  cursor: grab;
-  font-size: 18px;
-  color: #94a3b8;
-  transition: color 0.2s;
-}
-.movie-drag-handle:active {
-  cursor: grabbing;
-}
-.movie-drag-handle:hover {
-  color: var(--tblr-primary);
 }

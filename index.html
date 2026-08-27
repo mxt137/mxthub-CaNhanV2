@@ -60,11 +60,6 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link nav-menu" id="nav-congviec" onclick="switchPage('congviec')" style="cursor: pointer;">
-                <i class="ti ti-calendar-check me-2 fs-2 nav-link-icon"></i> Lịch Làm Việc
-              </a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link nav-menu" id="nav-crm" onclick="switchPage('crm')" style="cursor: pointer;">
                 <i class="ti ti-users me-2 fs-2 nav-link-icon"></i> CRM Khách Hàng
               </a>
@@ -109,7 +104,6 @@
       <div id="module-dashboard" class="app-module" style="display: none;"></div>
       <div id="module-task" class="app-module" style="display: none;"></div>
       <div id="module-seo" class="app-module" style="display: none;"></div>
-      <div id="module-congviec" class="app-module" style="display: none;"></div>
       <div id="module-crm" class="app-module" style="display: none;"></div>
       <div id="module-thuchi" class="app-module" style="display: none;"></div>
       <div id="module-matkhau" class="app-module" style="display: none;"></div>
@@ -232,7 +226,6 @@
       if (pageId === 'dashboard' && typeof initDashboard === 'function') initDashboard();
       if (pageId === 'task' && typeof initTaskManager === 'function') initTaskManager();
       if (pageId === 'seo' && typeof initSEO === 'function') initSEO();
-      if (pageId === 'congviec' && typeof initCongViec === 'function') initCongViec();
       if (pageId === 'crm' && typeof initCRM === 'function') initCRM();
       if (pageId === 'thuchi' && typeof loadFinancialDashboard === 'function') {
          loadFinancialDashboard();

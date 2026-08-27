@@ -1,0 +1,652 @@
+<style>
+  /* CSS Lịch làm việc - Quiet Luxury (High Contrast) */
+  .cv-week-container { display: flex; gap: 24px; overflow-x: auto; padding-bottom: 24px; scroll-snap-type: x mandatory; align-items: stretch;}
+  .cv-week-container::-webkit-scrollbar { height: 10px; }
+  .cv-week-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; border: 2px solid #f8fafc; }
+  
+  .cv-day-col { min-width: 340px; flex: 1; background: #ffffff; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 8px 24px rgba(149, 157, 165, 0.1); display: flex; flex-direction: column; scroll-snap-align: start; overflow: hidden;}
+  .cv-day-header { padding: 20px 16px; text-align: center; position: relative; border-bottom: 1px solid rgba(0,0,0,0.05); }
+  .cv-day-body { padding: 16px 20px; flex-grow: 1; overflow-y: auto; min-height: 400px; background: #f8fafc; }
+  
+  .cv-task-card { background: #ffffff; border-radius: 16px; padding: 18px; margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+  .cv-task-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px -8px rgba(0,0,0,0.1); border-color: #cbd5e1; }
+  
+  .group-label { display: inline-flex; align-items: center; gap: 8px; margin: 24px 0 16px 0; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #ffffff; padding: 6px 16px; border-radius: 50rem; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+  .group-label.first-group { margin-top: 4px; }
+  .group-daily { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+  .group-once { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+
+  /* Nút Select Status */
+  .badge-select { 
+    appearance: none; border-radius: 50rem; font-size: 11px; font-weight: 800; padding: 4px 28px 4px 12px; 
+    cursor: pointer; transition: all 0.2s;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center; background-size: 14px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  }
+  .badge-select:focus { outline: none; box-shadow: 0 0 0 3px rgba(20, 102, 84, 0.2); }
+  
+  .st-pending { background-color: #fffbeb; color: #d97706; border: 1px solid #fcd34d; }
+  .st-progress { background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+  .st-completed { background-color: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+  
+  .cv-task-card.completed-task { opacity: 0.6; background: #f8fafc; border: 1px dashed #cbd5e1; box-shadow: none; }
+  .cv-task-card.completed-task .task-title { text-decoration: line-through; color: #94a3b8 !important; }
+  .stat-mini-card { text-align: center; padding: 12px; border-radius: 16px; min-width: 90px; backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.2); }
+
+  /* Tùy chỉnh Form Group cho việc chọn Icon */
+  .form-selectgroup-item input:checked + .form-selectgroup-label { border-color: #146654; box-shadow: 0 0 0 2px rgba(20, 102, 84, 0.2); background: #f8fbfa; }
+</style>
+
+<div class="page-body fade-in mt-4">
+  <div class="container-xl">
+
+    <!-- BANNER THỐNG KÊ -->
+    <div class="card text-white mb-4 position-relative" style="border: none; background: linear-gradient(135deg, #146654 0%, #0a3d31 100%); overflow: hidden; border-radius: 24px; box-shadow: 0 12px 36px rgba(20, 102, 84, 0.25);">
+      <i class="ti ti-calendar-stats position-absolute" style="font-size: 250px; right: -30px; bottom: -50px; opacity: 0.06; transform: rotate(15deg);"></i>
+      <i class="ti ti-target position-absolute" style="font-size: 120px; left: 2%; top: -10px; opacity: 0.06; transform: rotate(-15deg);"></i>
+      
+      <div class="card-body p-4 p-md-5 position-relative z-index-1">
+        <div class="row align-items-center">
+          <div class="col-xl-4 mb-4 mb-xl-0 text-center text-xl-start">
+            <h2 class="display-6 fw-bold m-0" style="letter-spacing: -0.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.1);">Lịch Làm Việc</h2>
+            <div class="d-inline-flex align-items-center mt-3" style="background: rgba(0,0,0,0.15); padding: 6px 16px; border-radius: 50rem; border: 1px solid rgba(255,255,255,0.1);">
+              <i class="ti ti-calendar-week me-2 text-info"></i>
+              <span class="opacity-90" style="font-size: 14px;">Tuần: <span id="cvWeekRange" class="fw-bold text-white">Đang tải...</span></span>
+            </div>
+          </div>
+          <div class="col-xl-8">
+            <div class="d-flex flex-wrap justify-content-center justify-content-xl-end gap-2 gap-md-3">
+              <div class="stat-mini-card" style="background: rgba(255,255,255,0.1);">
+                <div class="fs-2 fw-bolder" id="statTotal">0</div>
+                <div class="opacity-75 text-uppercase fw-bold mt-1" style="font-size: 10px; letter-spacing: 0.5px;">Tổng Việc</div>
+              </div>
+              <div class="stat-mini-card" style="background: rgba(16,185,129,0.2); border-color: rgba(16,185,129,0.3);">
+                <div class="fs-2 fw-bolder" id="statCompleted">0</div>
+                <div class="opacity-75 text-uppercase fw-bold mt-1" style="font-size: 10px; letter-spacing: 0.5px;">Hoàn Thành</div>
+              </div>
+              <div class="stat-mini-card" style="background: rgba(59,130,246,0.2); border-color: rgba(59,130,246,0.3);">
+                <div class="fs-2 fw-bolder" id="statProgress">0</div>
+                <div class="opacity-75 text-uppercase fw-bold mt-1" style="font-size: 10px; letter-spacing: 0.5px;">Đang Làm</div>
+              </div>
+              <div class="stat-mini-card" style="background: rgba(245,158,11,0.2); border-color: rgba(245,158,11,0.3);">
+                <div class="fs-2 fw-bolder" id="statPending">0</div>
+                <div class="opacity-75 text-uppercase fw-bold mt-1" style="font-size: 10px; letter-spacing: 0.5px;">Chưa Xong</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KHU VỰC THAO TÁC -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+      <div class="d-flex gap-2 bg-white p-1 rounded-3 shadow-sm border" style="border-color: #e2e8f0;">
+        <button class="btn btn-ghost-secondary btn-icon border-0" onclick="changeWeek(-1)" title="Tuần trước"><i class="ti ti-chevron-left"></i></button>
+        <button class="btn btn-ghost-primary fw-bold border-0" onclick="changeWeek(0)">Tuần này</button>
+        <button class="btn btn-ghost-secondary btn-icon border-0" onclick="changeWeek(1)" title="Tuần sau"><i class="ti ti-chevron-right"></i></button>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-info fw-bold shadow-sm" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); color: white; border: none;" onclick="openCopyModal()">
+          <i class="ti ti-copy me-2"></i> Sao chép việc
+        </button>
+        <button class="btn btn-brand fw-bold shadow-sm" style="background: linear-gradient(135deg, #146654 0%, #0d4639 100%); border: none;" onclick="openTaskModal()">
+          <i class="ti ti-plus me-2"></i> Thêm công việc
+        </button>
+      </div>
+    </div>
+
+    <!-- CẤU TRÚC LỊCH 7 NGÀY -->
+    <div class="cv-week-container" id="cvWeekContainer">
+      <div class="text-center py-5 w-100 text-muted"><span class="spinner-border spinner-border-sm me-2"></span>Đang thiết lập lịch...</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL THÊM / SỬA CÔNG VIỆC -->
+<!-- ========================================== -->
+<div class="modal modal-blur fade" id="modal-task" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg" style="border-radius: 20px; border: none;">
+      <div class="modal-header text-white" style="background: var(--tblr-primary); border-radius: 20px 20px 0 0; padding: 20px 24px;">
+        <h5 class="modal-title fw-bold fs-3" id="taskModalTitle"><i class="ti ti-edit me-2"></i>Thêm Công Việc</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="frmTask" onsubmit="event.preventDefault(); saveTask();">
+        <div class="modal-body p-4">
+          <input type="hidden" id="tId">
+          <div class="mb-4">
+            <label class="form-label fw-bolder text-dark">Tên công việc <span class="text-danger">*</span></label>
+            <input type="text" id="tName" class="form-control form-control-lg fw-medium bg-light border-0" style="border-radius: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);" placeholder="VD: Gọi khách hàng..." required>
+          </div>
+          
+          <!-- BỔ SUNG: BỘ CHỌN MỨC ĐỘ & BIỂU TƯỢNG -->
+          <div class="mb-4">
+            <label class="form-label fw-bolder text-dark">Tính chất / Mức độ</label>
+            <div class="form-selectgroup form-selectgroup-pills d-flex flex-wrap gap-2">
+              <label class="form-selectgroup-item m-0">
+                <input type="radio" name="tIconColor" value="ti-circle-check|#3b82f6" class="form-selectgroup-input" checked>
+                <span class="form-selectgroup-label d-flex align-items-center p-2 rounded-3 border fw-bold text-muted">
+                  <i class="ti ti-circle-check fs-2 me-2" style="color: #3b82f6;"></i> Cơ bản
+                </span>
+              </label>
+              <label class="form-selectgroup-item m-0">
+                <input type="radio" name="tIconColor" value="ti-flame|#ef4444" class="form-selectgroup-input">
+                <span class="form-selectgroup-label d-flex align-items-center p-2 rounded-3 border fw-bold text-muted">
+                  <i class="ti ti-flame fs-2 me-2" style="color: #ef4444;"></i> Quan trọng
+                </span>
+              </label>
+              <label class="form-selectgroup-item m-0">
+                <input type="radio" name="tIconColor" value="ti-star|#f59e0b" class="form-selectgroup-input">
+                <span class="form-selectgroup-label d-flex align-items-center p-2 rounded-3 border fw-bold text-muted">
+                  <i class="ti ti-star fs-2 me-2" style="color: #f59e0b;"></i> Ưu tiên
+                </span>
+              </label>
+              <label class="form-selectgroup-item m-0">
+                <input type="radio" name="tIconColor" value="ti-bulb|#146654" class="form-selectgroup-input">
+                <span class="form-selectgroup-label d-flex align-items-center p-2 rounded-3 border fw-bold text-muted">
+                  <i class="ti ti-bulb fs-2 me-2" style="color: #146654;"></i> Ý tưởng
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-bolder text-dark">Ngày thực hiện <span class="text-danger">*</span></label>
+            <input type="date" id="tDate" class="form-control form-control-lg bg-light border-0" style="border-radius: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);" required>
+          </div>
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="form-label fw-bolder text-dark">Phân loại <span class="text-danger">*</span></label>
+              <select id="tType" class="form-select form-select-lg bg-light border-0 fw-medium" style="border-radius: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);" required>
+                <option value="ONCE">Phát sinh (1 Lần)</option>
+                <option value="DAILY">Hằng ngày</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label fw-bolder text-dark">Trạng thái</label>
+              <select id="tStatus" class="form-select form-select-lg bg-light border-0 fw-medium" style="border-radius: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                <option value="PENDING">Chưa làm</option>
+                <option value="IN_PROGRESS">Đang làm</option>
+                <option value="COMPLETED">Hoàn thành</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-white border-0 pt-0 pb-4 px-4" style="border-radius: 0 0 20px 20px;">
+          <button type="button" class="btn btn-light fw-bold px-4" style="border-radius: 10px;" data-bs-dismiss="modal">Hủy</button>
+          <button type="submit" id="btnSaveTask" class="btn btn-brand fw-bold px-5 shadow-sm" style="border-radius: 10px;">Lưu Công Việc</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL SAO CHÉP NHIỀU NGÀY -->
+<!-- ========================================== -->
+<div class="modal modal-blur fade" id="modal-copy-task" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content shadow-lg" style="border-radius: 20px; border: none;">
+      <div class="modal-header text-white" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); border-radius: 20px 20px 0 0; padding: 20px 24px;">
+        <h5 class="modal-title fw-bold fs-3"><i class="ti ti-copy me-2"></i>Sao Chép Hàng Loạt</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="frmCopyTask" onsubmit="event.preventDefault(); executeCopyTasks();">
+        <div class="modal-body p-4">
+          
+          <div class="row mb-4 g-3 align-items-end p-4 rounded-4 shadow-sm" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+            <div class="col-md-4">
+              <label class="form-label fw-bolder text-primary text-uppercase mb-2" style="font-size: 11px;">1. Lấy việc từ ngày</label>
+              <div class="input-icon">
+                <span class="input-icon-addon"><i class="ti ti-calendar-down text-primary"></i></span>
+                <input type="date" id="copySourceDate" class="form-control border-primary fw-bold bg-white" style="border-radius: 10px; height: 45px;" onchange="loadTasksToCopy()" required>
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <label class="form-label fw-bolder text-success text-uppercase mb-2" style="font-size: 11px;">2. Chép đến (Từ ngày)</label>
+              <div class="input-icon">
+                <span class="input-icon-addon"><i class="ti ti-calendar-plus text-success"></i></span>
+                <input type="date" id="copyTargetDateStart" class="form-control border-success fw-bold bg-white" style="border-radius: 10px; height: 45px;" required>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-bolder text-success text-uppercase mb-2" style="font-size: 11px;">3. Chép đến (Kết thúc)</label>
+              <div class="input-icon">
+                <span class="input-icon-addon"><i class="ti ti-calendar-check text-success"></i></span>
+                <input type="date" id="copyTargetDateEnd" class="form-control border-success fw-bold bg-white" style="border-radius: 10px; height: 45px;" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm" style="border-radius: 16px; border: 1px solid #e2e8f0 !important;">
+            <div class="card-header bg-white border-bottom-0 py-3 rounded-top-4">
+              <h4 class="card-title fs-4 m-0 fw-bold text-dark"><i class="ti ti-list-check me-2 text-primary"></i>Chọn việc để chép</h4>
+            </div>
+            <div class="card-body p-0">
+              <div id="copyTasksList" class="list-group list-group-flush rounded-bottom-4" style="max-height: 250px; overflow-y: auto;">
+                <div class="text-center text-muted py-5 fw-medium" style="font-size: 14px;">Vui lòng chọn ngày Nguồn để tải danh sách.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer bg-white border-0 pt-0 pb-4 px-4" style="border-radius: 0 0 20px 20px;">
+          <button type="button" class="btn btn-light fw-bold px-4" style="border-radius: 10px;" data-bs-dismiss="modal">Hủy</button>
+          <button type="submit" id="btnExecuteCopy" class="btn btn-info text-white fw-bold px-5 shadow-sm" style="border-radius: 10px;">
+             <i class="ti ti-rocket me-2"></i>Thực Hiện
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+    let currentStartOfWeek = new Date();
+  let weeklyTasks = [];
+  
+  // ==========================================
+  // 1. KHỞI TẠO & TÍNH TOÁN NGÀY
+  // ==========================================
+  async function initCongViec() {
+    changeWeek(0); 
+  }
+
+  function changeWeek(offset) {
+    if (offset === 0) {
+      currentStartOfWeek = new Date();
+    } else {
+      currentStartOfWeek.setDate(currentStartOfWeek.getDate() + (offset * 7));
+    }
+    
+    const day = currentStartOfWeek.getDay();
+    const diff = currentStartOfWeek.getDate() - day + (day == 0 ? -6 : 1);
+    currentStartOfWeek.setDate(diff);
+    currentStartOfWeek.setHours(0,0,0,0);
+    
+    loadWeeklyTasks();
+  }
+
+  function getFormatDate(dateObj) {
+    const yyyy = dateObj.getFullYear();
+    const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const dd = String(dateObj.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  // ==========================================
+  // 2. FETCH DATA VÀ THỐNG KÊ
+  // ==========================================
+  async function loadWeeklyTasks() {
+    if(!window.currentUser) return;
+    
+    const endOfWeek = new Date(currentStartOfWeek);
+    endOfWeek.setDate(endOfWeek.getDate() + 6);
+    
+    const startStr = getFormatDate(currentStartOfWeek);
+    const endStr = getFormatDate(endOfWeek);
+    
+    document.getElementById('cvWeekRange').innerText = `${currentStartOfWeek.toLocaleDateString('vi-VN')} - ${endOfWeek.toLocaleDateString('vi-VN')}`;
+    document.getElementById('cvWeekContainer').innerHTML = '<div class="text-center py-5 w-100 text-muted"><span class="spinner-border spinner-border-sm me-2"></span>Đang tải dữ liệu tuần...</div>';
+
+    try {
+      const { data, error } = await window.sbClient.from('tasks')
+        .select('*')
+        .eq('user_id', window.currentUser.id)
+        .gte('task_date', startStr)
+        .lte('task_date', endStr)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      weeklyTasks = data || [];
+      
+      let tCount = weeklyTasks.length;
+      let cCount = weeklyTasks.filter(t => t.status === 'COMPLETED').length;
+      let iCount = weeklyTasks.filter(t => t.status === 'IN_PROGRESS').length;
+      let pCount = weeklyTasks.filter(t => t.status === 'PENDING').length;
+      
+      document.getElementById('statTotal').innerText = tCount;
+      document.getElementById('statCompleted').innerText = cCount;
+      document.getElementById('statProgress').innerText = iCount;
+      document.getElementById('statPending').innerText = pCount;
+
+      renderWeeklyBoard();
+    } catch(e) {
+      document.getElementById('cvWeekContainer').innerHTML = '<div class="text-danger p-4">Lỗi tải dữ liệu. Vui lòng kiểm tra Bảng tasks.</div>';
+    }
+  }
+
+  // ==========================================
+  // 3. RENDER BẢNG PHÂN NHÓM
+  // ==========================================
+  window.updateTaskStatus = async function(id, newStatus) {
+    try {
+      const {error} = await window.sbClient.from('tasks').update({status: newStatus}).eq('id', id);
+      if(!error) loadWeeklyTasks(); 
+    } catch(e) { console.error("Lỗi cập nhật trạng thái", e); }
+  }
+
+  function renderTaskCardHtml(t) {
+    let stClass = 'st-pending'; 
+    if(t.status === 'IN_PROGRESS') stClass = 'st-progress'; 
+    if(t.status === 'COMPLETED') stClass = 'st-completed'; 
+    
+    const isDoneClass = t.status === 'COMPLETED' ? 'completed-task' : '';
+    
+    const tIcon = t.icon || 'ti-circle-check';
+    const tColor = t.color || '#3b82f6';
+    
+    const selectHtml = `
+      <select class="badge-select ${stClass}" onchange="updateTaskStatus('${t.id}', this.value)">
+        <option value="PENDING" ${t.status === 'PENDING' ? 'selected' : ''}>Chưa làm</option>
+        <option value="IN_PROGRESS" ${t.status === 'IN_PROGRESS' ? 'selected' : ''}>Đang làm</option>
+        <option value="COMPLETED" ${t.status === 'COMPLETED' ? 'selected' : ''}>Hoàn thành</option>
+      </select>
+    `;
+
+    return `
+      <div class="cv-task-card ${isDoneClass}">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom" style="border-color: rgba(0,0,0,0.04) !important;">
+          ${selectHtml}
+          <div class="d-flex gap-1">
+            <button class="btn btn-sm btn-icon text-muted bg-transparent border-0" onclick="openTaskModal('${t.id}')" onmouseover="this.classList.replace('text-muted', 'text-primary')" onmouseout="this.classList.replace('text-primary', 'text-muted')"><i class="ti ti-pencil fs-4"></i></button>
+            <button class="btn btn-sm btn-icon text-muted bg-transparent border-0" onclick="deleteTask('${t.id}')" onmouseover="this.classList.replace('text-muted', 'text-danger')" onmouseout="this.classList.replace('text-danger', 'text-muted')"><i class="ti ti-trash fs-4"></i></button>
+          </div>
+        </div>
+        
+        <div class="task-title fw-medium text-dark mt-3 d-flex align-items-start gap-2" style="font-size: 14.5px; line-height: 1.5;">
+          <i class="ti ${tIcon}" style="color: ${tColor}; font-size: 18px; flex-shrink: 0; padding-top: 2px;"></i>
+          <span style="flex: 1;">${t.task_name}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderWeeklyBoard() {
+    const container = document.getElementById('cvWeekContainer');
+    const daysName = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ Nhật'];
+    
+    // NÂNG CẤP 1: Bộ Icon thanh lịch cho từng ngày trong tuần
+    const dayIcons = ['ti-square-rounded-number-2', 'ti-square-rounded-number-3', 'ti-square-rounded-number-4', 'ti-square-rounded-number-5', 'ti-square-rounded-number-6', 'ti-square-rounded-number-7', 'ti-sun'];
+    
+    // NÂNG CẤP 2: Bộ màu nền tối (Dark Jewel Tones) sang trọng, không bị lòe loẹt
+    const darkColors = ['#1e293b', '#0f172a', '#334155', '#1e293b', '#0f172a', '#334155', '#7f1d1d'];
+    
+    const todayStr = getFormatDate(new Date());
+    let html = '';
+
+    for (let i = 0; i < 7; i++) {
+      const loopDate = new Date(currentStartOfWeek);
+      loopDate.setDate(loopDate.getDate() + i);
+      const dateStr = getFormatDate(loopDate);
+      
+      const isToday = (dateStr === todayStr);
+      const todayIdAttr = isToday ? `id="col-today"` : '';
+      
+      const dateNum = String(loopDate.getDate()).padStart(2, '0');
+      const monthNum = String(loopDate.getMonth()+1).padStart(2, '0');
+      
+      const themeColor = darkColors[i];
+      
+      // NÂNG CẤP 3: CSS Header thiết kế nằm ngang, tiết kiệm diện tích tối đa
+      const headerWrapperStyle = isToday 
+        ? `background: linear-gradient(135deg, #146654 0%, #0a3d31 100%); color: #ffffff; padding: 14px 18px; border-radius: 20px 20px 0 0; box-shadow: 0 4px 12px rgba(20,102,84,0.3); position: relative; z-index: 2;` 
+        : `background: ${themeColor}; color: #ffffff; padding: 14px 18px; border-radius: 20px 20px 0 0; border-bottom: 2px solid rgba(0,0,0,0.1);`;
+
+      const dayTasks = weeklyTasks.filter(t => t.task_date === dateStr);
+      
+      const dailyTasks = dayTasks.filter(t => t.task_type === 'DAILY');
+      const onceTasks = dayTasks.filter(t => t.task_type === 'ONCE');
+
+      let tasksHtml = '';
+      if(dayTasks.length === 0) {
+        tasksHtml = `<div class="text-center py-5 opacity-50" style="font-size: 14px; font-weight: 600; color: #94a3b8; border: 2px dashed #e2e8f0; border-radius: 16px; margin-top: 20px;">Lịch trống</div>`;
+      } else {
+        if(dailyTasks.length > 0) {
+          tasksHtml += `<div class="group-label first-group group-daily"><i class="ti ti-repeat fs-4"></i> Hằng ngày</div>`;
+          tasksHtml += dailyTasks.map(renderTaskCardHtml).join('');
+        }
+        if(onceTasks.length > 0) {
+          tasksHtml += `<div class="group-label group-once"><i class="ti ti-bolt fs-4"></i> Phát sinh</div>`;
+          tasksHtml += onceTasks.map(renderTaskCardHtml).join('');
+        }
+      }
+
+      html += `
+        <div class="cv-day-col" ${todayIdAttr}>
+          <!-- HEADER THU GỌN - XẾP NGANG -->
+          <div class="cv-day-header d-flex align-items-center justify-content-between" style="${headerWrapperStyle}">
+            
+            <div class="d-flex align-items-center gap-2">
+              <i class="ti ${dayIcons[i]} fs-2" style="opacity: ${isToday ? '1' : '0.7'};"></i>
+              <div class="fw-bolder text-uppercase" style="font-size: 14px; letter-spacing: 0.5px;">${daysName[i]}</div>
+            </div>
+
+            <!-- Nút hiển thị Ngày/Tháng dạng Kính mờ -->
+            <div class="fw-bold rounded-pill d-flex align-items-center justify-content-center" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(4px); padding: 4px 12px; font-size: 12px; letter-spacing: 0.5px;">
+              ${dateNum}/${monthNum}
+            </div>
+
+          </div>
+          
+          <div class="cv-day-body">
+            ${tasksHtml}
+          </div>
+          <div class="p-3 text-center bg-white" style="border-top: 1px solid rgba(0,0,0,0.03);">
+            <button class="btn fw-bold w-100 shadow-none" style="background: rgba(20, 102, 84, 0.08); color: var(--tblr-primary); border: 1px solid rgba(20, 102, 84, 0.15); border-radius: 12px; height: 42px;" onclick="openTaskModal('', '${dateStr}')"><i class="ti ti-plus me-1"></i> Thêm việc</button>
+          </div>
+        </div>
+      `;
+    }
+    
+    container.innerHTML = html;
+
+    // TÍNH NĂNG TỰ ĐỘNG TRƯỢT TỚI NGÀY HÔM NAY (AUTO-SCROLL)
+    setTimeout(() => {
+      const todayCol = document.getElementById('col-today');
+      if (todayCol) {
+        todayCol.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }, 300);
+  }
+
+  // ==========================================
+  // 4. CRUD CÔNG VIỆC
+  // ==========================================
+  function openTaskModal(id = '', dateStr = '') {
+    document.getElementById('frmTask').reset();
+    document.getElementById('tId').value = id;
+    
+    // Mặc định chọn Radio đầu tiên
+    document.querySelector('input[name="tIconColor"][value="ti-circle-check|#3b82f6"]').checked = true;
+    
+    if(id) {
+      document.getElementById('taskModalTitle').innerHTML = '<i class="ti ti-edit me-2"></i>Sửa Công Việc';
+      const task = weeklyTasks.find(t => t.id === id);
+      if(task) {
+        document.getElementById('tName').value = task.task_name;
+        document.getElementById('tDate').value = task.task_date;
+        document.getElementById('tType').value = task.task_type;
+        document.getElementById('tStatus').value = task.status;
+        
+        // Khôi phục Icon & Color
+        const iconColorVal = `${task.icon || 'ti-circle-check'}|${task.color || '#3b82f6'}`;
+        const radio = document.querySelector(`input[name="tIconColor"][value="${iconColorVal}"]`);
+        if(radio) radio.checked = true;
+      }
+    } else {
+      document.getElementById('taskModalTitle').innerHTML = '<i class="ti ti-plus me-2"></i>Thêm Công Việc';
+      document.getElementById('tDate').value = dateStr || getFormatDate(new Date());
+    }
+    
+    new bootstrap.Modal(document.getElementById('modal-task')).show();
+  }
+
+  async function saveTask() {
+    const btn = document.getElementById('btnSaveTask');
+    const id = document.getElementById('tId').value;
+    const selectedIconColor = document.querySelector('input[name="tIconColor"]:checked').value.split('|');
+    
+    const payload = {
+      task_name: document.getElementById('tName').value.trim(),
+      task_date: document.getElementById('tDate').value,
+      task_type: document.getElementById('tType').value,
+      status: document.getElementById('tStatus').value,
+      icon: selectedIconColor[0],
+      color: selectedIconColor[1]
+    };
+
+    btn.disabled = true; btn.innerHTML = 'Đang lưu...';
+    try {
+      if(id) {
+        const {error} = await window.sbClient.from('tasks').update(payload).eq('id', id);
+        if(error) throw error;
+      } else {
+        payload.user_id = window.currentUser.id;
+        const {error} = await window.sbClient.from('tasks').insert([payload]);
+        if(error) throw error;
+      }
+      bootstrap.Modal.getInstance(document.getElementById('modal-task')).hide();
+      loadWeeklyTasks();
+    } catch(e) {
+      Swal.fire('Lỗi', e.message, 'error');
+    } finally {
+      btn.disabled = false; btn.innerHTML = 'Lưu Công Việc';
+    }
+  }
+
+  async function deleteTask(id) {
+    Swal.fire({
+      title: 'Xóa công việc này?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e11d48',
+      confirmButtonText: 'Có, Xóa!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const {error} = await window.sbClient.from('tasks').delete().eq('id', id);
+        if(!error) loadWeeklyTasks();
+      }
+    });
+  }
+
+  // ==========================================
+  // 5. SAO CHÉP HÀNG LOẠT (BULK COPY)
+  // ==========================================
+  let tempCopyTasks = [];
+
+  function openCopyModal() {
+    document.getElementById('frmCopyTask').reset();
+    document.getElementById('copyTasksList').innerHTML = '<div class="text-center text-muted py-5 fw-medium" style="font-size: 14px;">Vui lòng chọn ngày Nguồn để tải danh sách.</div>';
+    tempCopyTasks = [];
+    
+    const today = new Date();
+    const tmr = new Date(today); tmr.setDate(tmr.getDate()+1);
+    
+    document.getElementById('copySourceDate').value = getFormatDate(today);
+    document.getElementById('copyTargetDateStart').value = getFormatDate(tmr);
+    document.getElementById('copyTargetDateEnd').value = getFormatDate(tmr);
+    
+    loadTasksToCopy();
+    new bootstrap.Modal(document.getElementById('modal-copy-task')).show();
+  }
+
+  async function loadTasksToCopy() {
+    const srcDate = document.getElementById('copySourceDate').value;
+    const listEl = document.getElementById('copyTasksList');
+    if(!srcDate) return;
+
+    listEl.innerHTML = '<div class="text-center text-muted py-5"><span class="spinner-border spinner-border-sm"></span> Đang tải...</div>';
+    
+    try {
+      const {data, error} = await window.sbClient.from('tasks').select('*').eq('user_id', window.currentUser.id).eq('task_date', srcDate);
+      if(error) throw error;
+      
+      tempCopyTasks = data || [];
+      if(tempCopyTasks.length === 0) {
+        listEl.innerHTML = '<div class="text-center text-danger py-5 fw-bold" style="font-size: 14px;">Ngày này không có công việc nào để chép.</div>';
+        return;
+      }
+      
+      let html = '';
+      tempCopyTasks.forEach(t => {
+        const isDaily = t.task_type === 'DAILY';
+        const checked = isDaily ? 'checked' : '';
+        const badge = isDaily ? `<span class="badge bg-blue-lt ms-2 border border-blue px-2">Hằng ngày</span>` : `<span class="badge bg-warning-lt ms-2 border border-warning px-2">Phát sinh</span>`;
+        const tIcon = t.icon || 'ti-circle-check';
+        const tColor = t.color || '#3b82f6';
+        
+        html += `
+          <label class="list-group-item d-flex gap-3 align-items-center" style="padding: 16px 24px; cursor: pointer; border-color: rgba(0,0,0,0.04) !important; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+            <input class="form-check-input flex-shrink-0 chk-copy-task" type="checkbox" value="${t.id}" ${checked} style="width: 22px; height: 22px;">
+            <div class="d-flex align-items-start gap-2">
+              <i class="ti ${tIcon} mt-1" style="color: ${tColor}; font-size: 18px;"></i>
+              <span class="text-dark fw-bold" style="font-size: 15px;">${t.task_name} ${badge}</span>
+            </div>
+          </label>
+        `;
+      });
+      listEl.innerHTML = html;
+      
+    } catch(e) {
+      listEl.innerHTML = `<div class="text-danger p-4 fw-bold text-center">${e.message}</div>`;
+    }
+  }
+
+  async function executeCopyTasks() {
+    const btn = document.getElementById('btnExecuteCopy');
+    const startTarget = document.getElementById('copyTargetDateStart').value;
+    const endTarget = document.getElementById('copyTargetDateEnd').value;
+    
+    if(!startTarget || !endTarget) { Swal.fire('Lỗi', 'Vui lòng chọn đầy đủ khoảng thời gian cần chép đến.', 'warning'); return; }
+    if(new Date(startTarget) > new Date(endTarget)) { Swal.fire('Lỗi', 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.', 'warning'); return; }
+    
+    const checkedBoxes = document.querySelectorAll('.chk-copy-task:checked');
+    if(checkedBoxes.length === 0) { Swal.fire('Lưu ý', 'Bạn chưa chọn công việc nào để chép.', 'info'); return; }
+    
+    const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
+    const tasksToInsert = [];
+    
+    let loopDate = new Date(startTarget);
+    const endDateObj = new Date(endTarget);
+    
+    while(loopDate <= endDateObj) {
+      const tDateStr = getFormatDate(loopDate);
+      tempCopyTasks.filter(t => selectedIds.includes(t.id)).forEach(t => {
+        tasksToInsert.push({
+          user_id: window.currentUser.id,
+          task_name: t.task_name,
+          task_date: tDateStr,
+          task_type: t.task_type,
+          status: 'PENDING',
+          icon: t.icon || 'ti-circle-check', // Kế thừa icon cũ
+          color: t.color || '#3b82f6'        // Kế thừa màu cũ
+        });
+      });
+      loopDate.setDate(loopDate.getDate() + 1);
+    }
+
+    btn.disabled = true; btn.innerHTML = 'Đang đẩy lên...';
+    try {
+      const {error} = await window.sbClient.from('tasks').insert(tasksToInsert);
+      if(error) throw error;
+      
+      Swal.fire({icon:'success', title:'Thành công', text:`Đã chép ${tasksToInsert.length} đầu việc!`, timer:2000, showConfirmButton:false});
+      bootstrap.Modal.getInstance(document.getElementById('modal-copy-task')).hide();
+      
+      const tgDateObj = new Date(startTarget);
+      const diffTime = tgDateObj - new Date();
+      const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
+      changeWeek(diffWeeks); 
+      
+    } catch(e) {
+      Swal.fire('Lỗi', e.message, 'error');
+    } finally {
+      btn.disabled = false; btn.innerHTML = '<i class="ti ti-rocket me-2"></i>Thực Hiện Chép';
+    }
+  }
+</script>

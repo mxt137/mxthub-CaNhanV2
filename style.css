@@ -222,3 +222,63 @@ body {
 .stat-mini-card { text-align: center; padding: 12px; border-radius: 16px; min-width: 90px; backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.2); }
 
 .form-selectgroup-item input:checked + .form-selectgroup-label { border-color: #146654; box-shadow: 0 0 0 2px rgba(20, 102, 84, 0.2); background: #f8fbfa; }
+/* =========================================
+   MODULE KANBAN BOARD - MXT HUB V2
+   ========================================= */
+.metric-card-kanban {
+  border-radius: 16px;
+  padding: 12px 24px;
+  text-align: center;
+  min-width: 110px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.1);
+  transition: transform 0.2s ease;
+}
+.metric-card-kanban:hover { transform: translateY(-2px); }
+
+.kanban-board-wrapper {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 24px;
+  align-items: stretch !important;
+  overflow-x: auto;
+  padding-bottom: 24px;
+  width: 100%;
+  scrollbar-width: thin;
+}
+
+.kanban-col {
+  flex: 1 1 0 !important;
+  min-width: 320px !important;
+  background: #f8fafc;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.kanban-col-header {
+  padding: 16px 20px;
+  color: white;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.kanban-col-header.todo { background: #1e293b; border-bottom: 3px solid #3b82f6; }
+.kanban-col-header.in-progress { background: #1e293b; border-bottom: 3px solid #f59e0b; }
+.kanban-col-header.done { background: #1e293b; border-bottom: 3px solid #10b981; }
+
+.kanban-card {
+  background: #ffffff;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+  cursor: grab;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
+}
+.kanban-card:active { cursor: grabbing; }
+.kanban-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-color: #cbd5e1; }

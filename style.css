@@ -315,3 +315,35 @@ body {
 .badge-buyer { background-color: rgba(59, 130, 246, 0.1) !important; color: #2563eb !important; border: 1px solid rgba(59, 130, 246, 0.2) !important; }
 .badge-tenant { background-color: rgba(245, 158, 11, 0.1) !important; color: #d97706 !important; border: 1px solid rgba(245, 158, 11, 0.2) !important; }
 .badge-owner { background-color: rgba(16, 185, 129, 0.1) !important; color: #059669 !important; border: 1px solid rgba(16, 185, 129, 0.2) !important; }
+/* =========================================
+   MODULE HỖ TRỢ SEO - MXT HUB V2
+   ========================================= */
+
+/* Hiệu ứng thẻ bấm trang chủ SEO */
+.seo-hero-card { border: none; border-radius: 16px; position: relative; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; background: linear-gradient(135deg, #146654 0%, #0d4639 100%); color: white; cursor: pointer; min-height: 200px; display: flex; flex-direction: column; justify-content: center; }
+.seo-hero-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(20, 102, 84, 0.25); }
+.seo-hero-card .bg-icon { position: absolute; font-size: 140px; right: -20px; bottom: -30px; opacity: 0.1; transition: transform 0.4s; }
+.seo-hero-card:hover .bg-icon { transform: scale(1.1) rotate(-10deg); }
+
+/* Khung nhập liệu JSON Động */
+.json-dynamic-wrapper { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 20px; }
+.json-row-clean { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; animation: fadeIn 0.3s ease-in-out; }
+.json-row-clean:last-child { margin-bottom: 0; }
+.input-json-clean { background-color: #ffffff !important; border: 1px solid #cbd5e1 !important; border-radius: 8px !important; padding: 10px 14px !important; font-size: 14px; font-weight: 500; color: #1e293b; transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+.input-json-clean:focus { border-color: var(--tblr-primary) !important; box-shadow: 0 0 0 3px rgba(20, 102, 84, 0.1) !important; outline: none; }
+.btn-remove-row { color: #ef4444; background: transparent; border: none; padding: 4px 8px; border-radius: 6px; transition: all 0.2s; cursor: pointer; }
+.btn-remove-row:hover { background: #fef2f2; transform: scale(1.1); }
+
+/* Sơ đồ cây SEO (Tree View) */
+.tree-wrapper { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; width: 100%; }
+.tree-pillar-node { background: #146654; color: white; border-radius: 16px; padding: 20px; width: 340px; z-index: 2; position: relative; box-shadow: 0 10px 25px rgba(20, 102, 84, 0.25); text-align: center; border: 2px solid #0d4639; }
+.tree-children-container { display: flex; gap: 24px; padding-top: 30px; position: relative; justify-content: center; flex-wrap: wrap; width: 100%; }
+.tree-children-container::before { content: ''; position: absolute; top: 0; left: 50%; border-left: 2px solid #cbd5e1; width: 0; height: 30px; transform: translateX(-50%); }
+.tree-sat-node-wrapper { position: relative; padding-top: 20px; }
+.tree-sat-node-wrapper::before { content: ''; position: absolute; top: 0; left: 50%; border-left: 2px solid #cbd5e1; width: 0; height: 20px; transform: translateX(-50%); }
+.tree-sat-node-wrapper::after { content: ''; position: absolute; top: 0; border-top: 2px solid #cbd5e1; width: 100%; }
+.tree-sat-node-wrapper:first-child::after { left: 50%; width: 50%; }
+.tree-sat-node-wrapper:last-child::after { right: 50%; width: 50%; left: auto; }
+.tree-sat-node-wrapper:only-child::after { display: none; }
+.tree-sat-node { background: white; border-radius: 12px; padding: 16px; width: 280px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; border-left: 5px solid #10b981; transition: transform 0.2s; }
+.tree-sat-node:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }

@@ -1,0 +1,970 @@
+<style>
+  /* 4 Tabs Menu Xịn Xò 
+  .crm-nav-pills { background: #f1f5f9; padding: 6px; border-radius: 16px; display: inline-flex; gap: 5px; flex-wrap: wrap; }
+  .crm-nav-pills .nav-link { border: none !important; color: #64748b; font-weight: 600; padding: 10px 22px; border-radius: 12px; transition: all 0.3s ease; display: flex; align-items: center; }
+  .crm-nav-pills .nav-link:hover { color: var(--tblr-primary); background: rgba(20, 102, 84, 0.08); }
+  .crm-nav-pills .nav-link.active { background: var(--tblr-primary) !important; color: white !important; box-shadow: 0 4px 12px rgba(20, 102, 84, 0.25); transform: translateY(-1px); }
+  */
+  /* ==========================================
+     TABS MENU CRM - GIAO DIỆN TRƯỢT NGANG (MOBILE)
+     ========================================== */
+  .crm-nav-pills { 
+    background: #f1f5f9; 
+    padding: 6px; 
+    border-radius: 16px; 
+    display: flex; /* Sử dụng flex thay vì inline-flex để scale tốt trên mobile */
+    gap: 5px; 
+    flex-wrap: nowrap; /* Ép không xuống dòng */
+    overflow-x: auto; /* Cho phép cuộn ngang */
+    -webkit-overflow-scrolling: touch; /* Tạo hiệu ứng cuộn mượt (momentum) trên iOS */
+    scrollbar-width: none; /* Ẩn thanh cuộn trên Firefox */
+  }
+  
+  /* Ẩn thanh cuộn trên Chrome, Safari và Edge */
+  .crm-nav-pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  .crm-nav-pills .nav-link { 
+    border: none !important; 
+    color: #64748b; 
+    font-weight: 600; 
+    padding: 10px 22px; 
+    border-radius: 12px; 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    display: flex; 
+    align-items: center; 
+    white-space: nowrap; /* Chống rớt dòng chữ bên trong nút */
+  }
+  
+  .crm-nav-pills .nav-link:hover { 
+    color: var(--tblr-primary); 
+    background: rgba(20, 102, 84, 0.08); 
+  }
+  
+  .crm-nav-pills .nav-link.active { 
+    background: var(--tblr-primary) !important; 
+    color: white !important; 
+    box-shadow: 0 4px 12px rgba(20, 102, 84, 0.25); 
+    transform: translateY(-1px); 
+  }
+  
+  /* Card Thống Kê Màu Sắc Bắt Mắt */
+  .metric-card-pro { border: none; border-radius: 20px; position: relative; overflow: hidden; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s; }
+  .metric-card-pro:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
+  .metric-card-pro .bg-icon { position: absolute; font-size: 110px; right: -15px; bottom: -20px; opacity: 0.15; transition: transform 0.3s; }
+  .metric-card-pro:hover .bg-icon { transform: scale(1.1) rotate(-5deg); }
+  
+  /* Các tone màu nền sang trọng (Pastel Gradient) */
+  .bg-grad-blue { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); color: #0369a1; }
+  .bg-grad-green { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); color: #15803d; }
+  .bg-grad-orange { background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%); color: #c2410c; }
+  /* ĐỒNG NHẤT FORM (Form Consistency) */
+  .premium-input {
+    border-radius: 12px !important;
+    border: 1px solid #cbd5e1 !important;
+    background-color: #f8fafc !important;
+    padding: 12px 16px !important;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e293b;
+    transition: all 0.25s ease;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.01);
+  }
+  .premium-input:focus {
+    background-color: #ffffff !important;
+    border-color: var(--tblr-primary) !important;
+    box-shadow: 0 0 0 4px rgba(20, 102, 84, 0.1) !important;
+    outline: none;
+  }
+  .input-icon-premium .input-icon-addon {
+    color: var(--tblr-primary);
+    opacity: 0.7;
+  }
+
+  /* CARD DỰ ÁN BẮT MẮT */
+  .project-card-pro {
+    border: none;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border-top: 5px solid var(--tblr-primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .project-card-pro:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 30px rgba(20, 102, 84, 0.1);
+  }
+
+  /* BADGE NHÓM KHÁCH HÀNG */
+  .badge-buyer { background-color: rgba(59, 130, 246, 0.1) !important; color: #2563eb !important; border: 1px solid rgba(59, 130, 246, 0.2) !important; }
+  .badge-tenant { background-color: rgba(245, 158, 11, 0.1) !important; color: #d97706 !important; border: 1px solid rgba(245, 158, 11, 0.2) !important; }
+  .badge-owner { background-color: rgba(16, 185, 129, 0.1) !important; color: #059669 !important; border: 1px solid rgba(16, 185, 129, 0.2) !important; }
+  
+</style>
+
+<div class="page-header d-print-none mt-4 fade-in">
+  <div class="container-xl">
+    <div class="row g-2 align-items-center">
+      <div class="col">
+        <h2 class="page-title text-primary fw-bolder text-uppercase"><i class="ti ti-users me-2"></i> CRM Khách Hàng</h2>
+        <div class="text-muted mt-1" style="font-size: 13px;">Quản lý dữ liệu Khách hàng & Dự án</div>
+      </div>
+    </div>
+    
+    <ul class="nav crm-nav-pills mt-3 mb-4" data-bs-toggle="tabs">
+      <li class="nav-item"><a href="#" class="nav-link crm-nav-tab active" onclick="switchCrmTab('dashboard')"><i class="ti ti-chart-pie me-2 fs-3"></i>Tổng Quan</a></li>
+      <li class="nav-item"><a href="#" class="nav-link crm-nav-tab" onclick="switchCrmTab('customers')"><i class="ti ti-users-group me-2 fs-3"></i>Khách Hàng</a></li>
+      <li class="nav-item"><a href="#" class="nav-link crm-nav-tab" onclick="switchCrmTab('projects')"><i class="ti ti-building-skyscraper me-2 fs-3"></i>Dự Án</a></li>
+      <li class="nav-item"><a href="#" class="nav-link crm-nav-tab" onclick="switchCrmTab('marketing')"><i class="ti ti-database-import me-2 fs-3"></i>Kho Data</a></li>
+    </ul>
+    
+  </div>
+</div>
+
+<div class="page-body fade-in mt-0">
+  <div class="container-xl">
+    
+    <div id="crm-module-dashboard" class="crm-module" style="display: block;">
+      
+      <div class="row g-3 mb-4">
+        <div class="col-md-4">
+          <div class="card metric-card-pro bg-grad-blue h-100">
+            <div class="card-body p-4 text-center">
+              <i class="ti ti-building-skyscraper bg-icon"></i>
+              <h4 class="text-uppercase mb-2 fw-bold" style="font-size: 11px; letter-spacing: 1.5px; opacity: 0.8;">Dự Án Đang Bán</h4>
+              <div class="display-4 fw-bolder" id="crmDashProjects"><span class="spinner-border spinner-border-sm"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card metric-card-pro bg-grad-green h-100">
+            <div class="card-body p-4 text-center">
+              <i class="ti ti-users bg-icon"></i>
+              <h4 class="text-uppercase mb-2 fw-bold" style="font-size: 11px; letter-spacing: 1.5px; opacity: 0.8;">Khách Hàng (Leads)</h4>
+              <div class="display-4 fw-bolder" id="crmDashCustomers"><span class="spinner-border spinner-border-sm"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card metric-card-pro bg-grad-orange h-100">
+            <div class="card-body p-4 text-center">
+              <i class="ti ti-database-import bg-icon"></i>
+              <h4 class="text-uppercase mb-2 fw-bold" style="font-size: 11px; letter-spacing: 1.5px; opacity: 0.8;">Data Marketing</h4>
+              <div class="display-4 fw-bolder" id="crmDashMarketing"><span class="spinner-border spinner-border-sm"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row g-3">
+        <div class="col-lg-8">
+           <div class="card shadow-sm border-0 h-100" style="border-radius: 20px;">
+             <div class="card-body p-4">
+               <h4 class="card-title fw-bold text-primary mb-4"><i class="ti ti-chart-pie me-2"></i>Nguồn Lực Data Marketing</h4>
+               <div class="row g-4">
+                 <div class="col-md-7">
+                   <h5 class="fw-bold text-dark mb-3" style="font-size: 13px; text-transform: uppercase;">Top 10 Dự Án</h5>
+                   <div id="crmDashMktProjects"><div class="text-center text-muted"><span class="spinner-border spinner-border-sm"></span></div></div>
+                 </div>
+                 <div class="col-md-5">
+                   <h5 class="fw-bold text-dark mb-3" style="font-size: 13px; text-transform: uppercase;">Theo Nguồn Gốc</h5>
+                   <div id="crmDashMktSources"><div class="text-center text-muted"><span class="spinner-border spinner-border-sm"></span></div></div>
+                 </div>
+               </div>
+             </div>
+           </div>
+        </div>
+        
+        <div class="col-lg-4">
+           <div class="card shadow-sm border-0 h-100" style="border-radius: 20px;">
+             <div class="card-body p-4">
+               <h4 class="card-title fw-bold text-primary mb-4"><i class="ti ti-filter me-2"></i>Phễu Khách Hàng</h4>
+               <div id="crmDashFunnel">
+                 <div class="text-center text-muted py-5"><span class="spinner-border spinner-border-sm"></span></div>
+               </div>
+             </div>
+           </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="crm-module-customers" class="crm-module" style="display: none;">
+      <div class="card shadow-sm border-0 mb-3" style="border-radius: 16px;">
+        <div class="card-body p-3">
+          <div class="row g-2">
+            <div class="col-md-2"><input type="text" id="crmSearch" class="form-control premium-input" placeholder="Tên, SĐT..." oninput="debounceCrmSearch()"></div>
+            <div class="col-md-2"><select id="crmFilterGroup" class="form-select premium-input" onchange="loadCustomers()"><option value="">-- Mọi Nhóm --</option><option value="Buyer">Khách dự án</option><option value="Tenant">Khách thuê</option><option value="Owner">Chủ nhà</option></select></div>
+            <div class="col-md-2"><select id="crmFilterProject" class="form-select premium-input" onchange="loadCustomers()"><option value="">-- Mọi Dự án --</option></select></div>
+            <div class="col-md-2"><input type="text" id="crmFilterCity" class="form-control premium-input" placeholder="Thành phố..." oninput="debounceCrmSearch()"></div>
+            <div class="col-md-2"><select id="crmFilterSource" class="form-select premium-input" onchange="loadCustomers()"><option value="">-- Mọi Nguồn --</option><option value="Google Ads">Google Ads</option><option value="Facebook Ads">Facebook Ads</option><option value="Zalo">Zalo</option><option value="Giới thiệu">Giới thiệu</option><option value="Kho Marketing">Kho Marketing</option><option value="Khác">Khác</option></select></div>
+            <div class="col-md-2 text-end"><button class="btn btn-brand w-100" onclick="openCustomerModal()"><i class="ti ti-user-plus me-2"></i>Thêm KH</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="card shadow-sm border-0" style="border-radius: 16px;">
+        <div class="table-responsive">
+          <table class="table table-vcenter table-hover mb-0">
+            <thead style="background: var(--tblr-primary);">
+              <tr>
+                <th class="text-white text-center" style="width: 50px;">STT</th>
+                <th class="text-white">Tên KH & SĐT</th>
+                <th class="text-white">Nhóm & Nguồn</th>
+                <th class="text-white">Thành Phố</th>
+                <th class="text-white">Trạng thái</th>
+                <th class="text-white">Quan tâm</th>
+                <th class="text-white text-end">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="tblCustomersBody"></tbody>
+          </table>
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+          <span id="crmPaginationInfo" class="text-muted" style="font-size: 13px;"></span>
+          <div class="btn-group"><button id="btnPrevCrm" class="btn btn-sm btn-light" onclick="changeCrmPage(-1)"><i class="ti ti-chevron-left"></i></button><button id="btnNextCrm" class="btn btn-sm btn-light" onclick="changeCrmPage(1)"><i class="ti ti-chevron-right"></i></button></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="crm-module-projects" class="crm-module" style="display: none;">
+      <div class="row g-2 mb-3">
+        <div class="col-md-4"><input type="text" id="pSearch" class="form-control premium-input" placeholder="Tìm tên dự án..." oninput="debounceProjectSearch()"></div>
+        <div class="col-md-8 text-end"><button class="btn btn-brand" onclick="openProjectModal()"><i class="ti ti-building-plus me-2"></i>Thêm Dự Án</button></div>
+      </div>
+      <div class="row" id="crmProjectsGrid"></div>
+    </div>
+
+    <div id="crm-module-marketing" class="crm-module" style="display: none;">
+      <div class="card shadow-sm border-0 mb-3" style="border-radius: 16px; background: linear-gradient(to right, #ffffff, #f8fafc);">
+        <div class="card-body p-3">
+          <label class="form-label fw-bold text-primary mb-2"><i class="ti ti-plug-connected me-1"></i> Import từ Google Sheet (Cột: STT | Tên | SĐT | Dự án | Nguồn | Ghi chú)</label>
+          <div class="d-flex gap-2">
+            <input type="text" id="mktSheetLink" class="form-control premium-input" placeholder="Dán link Google Sheet vào đây (Nhớ mở quyền Bất kỳ ai có liên kết)...">
+            <button id="btnImportMkt" class="btn btn-dark fw-bold px-4" onclick="importFromGoogleSheet()"><i class="ti ti-cloud-download me-2"></i>Kéo Data</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card shadow-sm border-0 mb-3" style="border-radius: 16px;">
+        <div class="card-body p-3">
+          <div class="row g-2">
+            <div class="col-md-3"><input type="text" id="mktSearch" class="form-control premium-input" placeholder="Tìm tên, SĐT..." oninput="debounceMktSearch()"></div>
+            <div class="col-md-3"><select id="mktFilterProject" class="form-select premium-input" onchange="loadMarketingData()"><option value="">-- Mọi Dự án --</option></select></div>
+            <div class="col-md-3"><select id="mktFilterSource" class="form-select premium-input" onchange="loadMarketingData()"><option value="">-- Mọi Nguồn --</option></select></div>
+            <div class="col-md-3 text-end"><button class="btn btn-brand w-100" onclick="openMarketingModal()"><i class="ti ti-plus me-2"></i>Thêm Thủ Công</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card shadow-sm border-0" style="border-radius: 16px;">
+        <div class="table-responsive">
+          <table class="table table-vcenter table-hover mb-0">
+            <thead style="background: #0f172a;">
+              <tr>
+                <th class="text-white text-center" style="width: 50px;">STT</th>
+                <th class="text-white">Họ & Tên</th>
+                <th class="text-white">Số điện thoại</th>
+                <th class="text-white">Dự án quan tâm</th>
+                <th class="text-white">Nguồn data</th>
+                <th class="text-white">Ghi chú</th>
+                <th class="text-white text-end">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="tblMarketingBody"></tbody>
+          </table>
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+          <span id="mktPaginationInfo" class="text-muted" style="font-size: 13px;"></span>
+          <div class="btn-group"><button id="btnPrevMkt" class="btn btn-sm btn-light" onclick="changeMktPage(-1)"><i class="ti ti-chevron-left"></i></button><button id="btnNextMkt" class="btn btn-sm btn-light" onclick="changeMktPage(1)"><i class="ti ti-chevron-right"></i></button></div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<div class="modal modal-blur fade" id="modal-customer" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+      <div class="modal-header text-white" style="background: var(--tblr-primary); padding: 20px;">
+        <h5 class="modal-title fw-bold" id="customerModalTitle"><i class="ti ti-user me-2"></i>Thêm Khách Hàng</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      
+      <form id="frmCustomer" onsubmit="event.preventDefault(); saveCustomer();">
+        <div class="modal-body p-0">
+          <div class="row g-0">
+            <div class="col-lg-8 p-4 bg-white">
+              <input type="hidden" id="cId">
+              <input type="hidden" id="cOldNotes"> 
+              <div class="row g-3 mb-3">
+                <div class="col-md-4"><label class="form-label text-muted fw-bold" style="font-size: 11px;">Nhóm KH <span class="text-danger">*</span></label><select id="cGroup" class="form-select premium-input" required onchange="handleGroupChange()"><option value="Buyer">Khách dự án</option><option value="Tenant">Khách thuê nhà</option><option value="Owner">Chủ nhà (Ký gửi)</option></select></div>
+                <div class="col-md-4"><label class="form-label text-muted fw-bold" style="font-size: 11px;">Dự án quan tâm</label><select id="cProject" class="form-select premium-input"><option value="">-- Chọn Dự án --</option></select></div>
+                <div class="col-md-4"><label class="form-label text-muted fw-bold" style="font-size: 11px;">Trạng thái <span class="text-danger">*</span></label><select id="cStatus" class="form-select premium-input" required></select></div>
+              </div>
+              
+              <div class="row g-3 mb-3">
+                <div class="col-md-6"><label class="form-label text-muted fw-bold" style="font-size: 11px;">Họ & Tên <span class="text-danger">*</span></label><div class="input-icon input-icon-premium"><span class="input-icon-addon"><i class="ti ti-user"></i></span><input type="text" id="cName" class="form-control premium-input fw-bold" required placeholder="Tên khách hàng"></div></div>
+                <div class="col-md-6"><label class="form-label text-muted fw-bold" style="font-size: 11px;">Số điện thoại <span class="text-danger">*</span></label><div class="input-icon input-icon-premium"><span class="input-icon-addon"><i class="ti ti-phone"></i></span><input type="text" id="cPhone" class="form-control premium-input" required placeholder="09xxxx"></div></div>
+              </div>
+
+              <div class="row g-3 mb-3">
+                <div class="col-md-6"><label class="form-label text-muted fw-bold" style="font-size: 11px;">Thành phố</label><div class="input-icon input-icon-premium"><span class="input-icon-addon"><i class="ti ti-map-pin"></i></span><input type="text" id="cCity" class="form-control premium-input" list="cityList" placeholder="VD: Hà Nội, TP.HCM..."><datalist id="cityList"><option value="Hà Nội"><option value="TP.HCM"><option value="Đà Nẵng"><option value="Khác"></datalist></div></div>
+                <div class="col-md-6"><label class="form-label text-muted fw-bold" style="font-size: 11px;">Nguồn Khách</label><div class="input-icon input-icon-premium"><span class="input-icon-addon"><i class="ti ti-magnet"></i></span><select id="cSource" class="form-select premium-input"><option value="Google Ads">Google Ads</option><option value="Facebook Ads">Facebook Ads</option><option value="Zalo">Zalo</option><option value="Giới thiệu">Giới thiệu</option><option value="Kho Marketing">Kho Marketing</option><option value="Khác">Khác</option></select></div></div>
+              </div>
+
+              <div class="mb-2"><label class="form-label text-muted fw-bold" style="font-size: 11px;">Nhu cầu & Ghi chú (Quill)</label><div id="editor-customer-note" style="height: 140px; background: white; border-radius: 0 0 12px 12px;"></div></div>
+            </div>
+
+            <div class="col-lg-4 p-4" style="background: #f8fafc; border-left: 1px solid #e2e8f0;">
+              <h4 class="fw-bold text-primary mb-3"><i class="ti ti-history me-2"></i>Lịch sử chăm sóc</h4>
+              <div id="customerHistoryTimeline" style="max-height: 450px; overflow-y: auto; padding-right: 5px;">
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer bg-white" style="border-top: 1px solid #e2e8f0;">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
+          <button type="submit" id="btnSaveCustomer" class="btn btn-brand px-4"><i class="ti ti-device-floppy me-2"></i>Lưu Thông Tin</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal modal-blur fade" id="modal-project" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0" style="border-radius: 20px;">
+      <div class="modal-header text-white" style="background: var(--tblr-primary); padding: 20px;"><h5 class="modal-title fw-bold" id="projectModalTitle"><i class="ti ti-building me-2"></i>Thêm Dự Án</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <form id="frmProject" onsubmit="event.preventDefault(); saveProject();"><div class="modal-body p-4"><input type="hidden" id="pId"><div class="mb-3"><label class="form-label text-muted fw-bold" style="font-size: 11px;">Tên Dự Án <span class="text-danger">*</span></label><input type="text" id="pName" class="form-control premium-input fw-bold" required></div><div class="row g-3 mb-3"><div class="col-md-6"><label class="form-label text-muted fw-bold" style="font-size: 11px;">Chủ đầu tư</label><input type="text" id="pInvestor" class="form-control premium-input"></div><div class="col-md-6"><label class="form-label text-muted fw-bold" style="font-size: 11px;">Vị trí</label><input type="text" id="pLocation" class="form-control premium-input"></div></div><div class="mb-2"><label class="form-label text-muted fw-bold" style="font-size: 11px;">Chi tiết quy mô & chính sách</label><div id="editor-project-detail" style="height: 150px; background: white; border-radius: 0 0 12px 12px;"></div></div></div><div class="modal-footer bg-light" style="border-radius: 0 0 20px 20px;"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button><button type="submit" id="btnSaveProject" class="btn btn-brand"><i class="ti ti-device-floppy me-2"></i>Lưu Dự Án</button></div></form>
+    </div>
+  </div>
+</div>
+
+<div class="modal modal-blur fade" id="modal-marketing" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0" style="border-radius: 20px;">
+      <div class="modal-header text-white" style="background: #0f172a; padding: 20px;">
+        <h5 class="modal-title fw-bold"><i class="ti ti-database me-2"></i>Dữ Liệu Marketing</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="frmMarketing" onsubmit="event.preventDefault(); saveMarketingData();">
+        <div class="modal-body p-4">
+          <input type="hidden" id="mId">
+          <div class="mb-3"><label class="form-label text-muted fw-bold" style="font-size: 11px;">Họ & Tên <span class="text-danger">*</span></label><input type="text" id="mName" class="form-control premium-input fw-bold" required></div>
+          <div class="mb-3"><label class="form-label text-muted fw-bold" style="font-size: 11px;">Số điện thoại <span class="text-danger">*</span></label><input type="text" id="mPhone" class="form-control premium-input" required></div>
+          <div class="mb-3"><label class="form-label text-muted fw-bold" style="font-size: 11px;">Dự án</label><input type="text" id="mProject" class="form-control premium-input" list="mktProjectList" placeholder="Nhập hoặc chọn dự án..."><datalist id="mktProjectList"></datalist></div>
+          <div class="mb-3"><label class="form-label text-muted fw-bold" style="font-size: 11px;">Nguồn</label><input type="text" id="mSource" class="form-control premium-input" list="mktSourceList" placeholder="Nhập nguồn data..."><datalist id="mktSourceList"></datalist></div>
+          <!-- Thêm trường Ghi chú vào dưới trường Nguồn trong Form Modal -->
+          <div class="mb-3">
+            <label class="form-label text-muted fw-bold" style="font-size: 11px;">Ghi chú</label>
+            <textarea id="mNote" class="form-control premium-input" rows="2" placeholder="Ghi chú thêm..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer"><button type="submit" id="btnSaveMkt" class="btn btn-dark w-100"><i class="ti ti-device-floppy me-2"></i>Lưu Dữ Liệu</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  let quillCustomer, quillProject;
+let crmProjectsList = [];
+let currentCrmPage = 1;
+const CRM_PER_PAGE = 20;
+let crmSearchTimeout = null;
+let pSearchTimeout = null;
+
+// ==========================================
+// 1. KHỞI TẠO & CHUYỂN TAB
+// ==========================================
+async function initCRM() {
+  if (!quillCustomer) {
+    quillCustomer = new Quill('#editor-customer-note', { theme: 'snow', placeholder: 'Ghi chú nhu cầu khách hàng...' });
+    quillProject = new Quill('#editor-project-detail', { theme: 'snow', placeholder: 'Thông tin quy mô, chính sách bán hàng...' });
+  }
+  await fetchProjectsList();
+  switchCrmTab('dashboard'); 
+}
+
+function switchCrmTab(tabId) {
+  document.querySelectorAll('.crm-module').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.crm-nav-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('crm-module-' + tabId).style.display = 'block';
+  document.querySelector(`a[onclick="switchCrmTab('${tabId}')"]`).classList.add('active');
+
+  if (tabId === 'dashboard') loadCrmDashboard(); // THÊM DÒNG NÀY
+  if (tabId === 'projects') loadProjects();
+  if (tabId === 'customers') loadCustomers();
+  if (tabId === 'marketing') {
+    loadMarketingFilters();
+    loadMarketingData();
+  }
+}
+
+function handleGroupChange() {
+  const group = document.getElementById('cGroup').value;
+  const projectSelect = document.getElementById('cProject');
+  if (group === 'Buyer') { projectSelect.disabled = false; } 
+  else { projectSelect.value = ''; projectSelect.disabled = true; }
+
+  let columns = [];
+  if (group === 'Owner') columns = [{ title: 'Đang thu thập TT' }, { title: 'Đang rao thuê/bán' }, { title: 'Đã chốt xong' }, { title: 'Tạm ngưng' }];
+  else if (group === 'Tenant') columns = [{ title: 'Đang tìm nhà' }, { title: 'Đang đi xem' }, { title: 'Đã chốt thuê' }, { title: 'Hủy bỏ' }];
+  else columns = [{ title: 'Mới liên hệ' }, { title: 'Tiềm năng' }, { title: 'Không nhu cầu' }, { title: 'Đã chốt' }];
+  
+  document.getElementById('cStatus').innerHTML = columns.map(c => `<option value="${c.title}">${c.title}</option>`).join('');
+}
+
+// ==========================================
+// 2. MODULE DỰ ÁN
+// ==========================================
+function debounceProjectSearch() {
+  clearTimeout(pSearchTimeout);
+  pSearchTimeout = setTimeout(() => { loadProjects(); }, 500);
+}
+
+async function fetchProjectsList() {
+  const { data } = await window.sbClient.from('crm_projects').select('id, name').order('name');
+  crmProjectsList = data || [];
+  let opts = '<option value="">-- Mọi Dự án --</option>';
+  crmProjectsList.forEach(p => opts += `<option value="${p.id}">${p.name}</option>`);
+  document.getElementById('cProject').innerHTML = opts;
+  document.getElementById('crmFilterProject').innerHTML = opts;
+}
+
+async function loadProjects() {
+  const container = document.getElementById('crmProjectsGrid');
+  const search = document.getElementById('pSearch').value.trim();
+  container.innerHTML = '<div class="text-center py-5 text-muted"><span class="spinner-border"></span> Đang tải...</div>';
+  
+  let query = window.sbClient.from('crm_projects').select('*').order('created_at', { ascending: false });
+  if (search) query = query.ilike('name', `%${search}%`);
+
+  try {
+    const { data, error } = await query;
+    if (error) throw error;
+    if (!data || data.length === 0) { container.innerHTML = '<div class="col-12 text-center text-muted">Không tìm thấy dự án nào.</div>'; return; }
+
+    container.innerHTML = data.map(p => `
+      <div class="col-md-6 col-lg-4 mb-3">
+        <div class="project-card-pro h-100 p-4 d-flex flex-column">
+          <h4 class="fw-bolder text-dark mb-2 fs-3">${p.name}</h4>
+          <div class="text-muted mb-2" style="font-size: 13px;">
+            <i class="ti ti-user me-2 text-primary fs-4"></i>${p.investor || 'Chưa cập nhật CĐT'}
+          </div>
+          <div class="text-muted mb-4 flex-grow-1" style="font-size: 13px;">
+            <i class="ti ti-map-pin me-2 text-danger fs-4"></i>${p.location || 'Chưa cập nhật vị trí'}
+          </div>
+          <div class="d-flex gap-2 mt-auto">
+            <button class="btn btn-light flex-grow-1 fw-bold" onclick="openProjectModal('${p.id}')" style="border-radius: 10px;"><i class="ti ti-edit me-2"></i>Xem/Sửa</button>
+            <button class="btn btn-outline-danger btn-icon" onclick="deleteProject('${p.id}')" title="Xóa" style="border-radius: 10px;"><i class="ti ti-trash"></i></button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) { UI.error(e.message); }
+}
+
+async function openProjectModal(id = '') {
+  document.getElementById('frmProject').reset(); document.getElementById('pId').value = id; quillProject.root.innerHTML = '';
+  if (id) {
+    document.getElementById('projectModalTitle').innerHTML = '<i class="ti ti-edit me-2"></i>Sửa Dự Án';
+    const { data } = await window.sbClient.from('crm_projects').select('*').eq('id', id).single();
+    if (data) {
+      document.getElementById('pName').value = data.name; document.getElementById('pInvestor').value = data.investor || '';
+      document.getElementById('pLocation').value = data.location || ''; if(data.details) quillProject.root.innerHTML = data.details;
+    }
+  } else document.getElementById('projectModalTitle').innerHTML = '<i class="ti ti-building me-2"></i>Thêm Dự Án';
+  (bootstrap.Modal.getInstance(document.getElementById('modal-project')) || new bootstrap.Modal(document.getElementById('modal-project'))).show();
+}
+
+async function saveProject() {
+  const btn = document.getElementById('btnSaveProject'); const id = document.getElementById('pId').value;
+  const payload = { name: document.getElementById('pName').value.trim(), investor: document.getElementById('pInvestor').value.trim(), location: document.getElementById('pLocation').value.trim(), details: quillProject.root.innerHTML };
+  btn.disabled = true;
+  try {
+    let dbError;
+    if (id) { const { error } = await window.sbClient.from('crm_projects').update(payload).eq('id', id); dbError = error; } 
+    else { payload.user_id = window.currentUser.id; const { error } = await window.sbClient.from('crm_projects').insert([payload]); dbError = error; }
+    if (dbError) throw dbError;
+    UI.success('Đã lưu Dự án!'); bootstrap.Modal.getInstance(document.getElementById('modal-project')).hide();
+    await fetchProjectsList(); loadProjects();
+  } catch(e) { UI.error(e.message); } finally { btn.disabled = false; }
+}
+
+async function deleteProject(id) {
+  Swal.fire({ title: 'Xóa dự án?', text: "Dự án này sẽ bị xóa khỏi hệ thống!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#e11d48', confirmButtonText: 'Đồng ý xóa!' }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        await window.sbClient.from('crm_customers').update({project_id: null}).eq('project_id', id); // Ngắt liên kết KH
+        const { error } = await window.sbClient.from('crm_projects').delete().eq('id', id);
+        if (error) throw error;
+        UI.success('Đã xóa dự án!'); await fetchProjectsList(); loadProjects();
+      } catch (e) { UI.error(e.message); }
+    }
+  });
+}
+
+// ==========================================
+// 3. MODULE KHÁCH HÀNG & LỊCH SỬ CHĂM SÓC
+// ==========================================
+function debounceCrmSearch() { clearTimeout(crmSearchTimeout); crmSearchTimeout = setTimeout(() => { currentCrmPage = 1; loadCustomers(); }, 500); }
+function changeCrmPage(step) { currentCrmPage += step; if (currentCrmPage < 1) currentCrmPage = 1; loadCustomers(); }
+
+async function loadCustomers() {
+  const tbody = document.getElementById('tblCustomersBody'); tbody.innerHTML = '<tr><td colspan="7" class="text-center py-5"><span class="spinner-border"></span></td></tr>';
+  const fromRow = (currentCrmPage - 1) * CRM_PER_PAGE; const toRow = (currentCrmPage * CRM_PER_PAGE) - 1;
+  const search = document.getElementById('crmSearch').value.trim(); const group = document.getElementById('crmFilterGroup').value;
+  const project = document.getElementById('crmFilterProject').value; const city = document.getElementById('crmFilterCity').value.trim();
+  const source = document.getElementById('crmFilterSource').value;
+
+  let query = window.sbClient.from('crm_customers').select(`*, crm_projects(name)`, { count: 'exact' }).order('updated_at', { ascending: false }).range(fromRow, toRow);
+  if (group) query = query.eq('customer_group', group); if (project) query = query.eq('project_id', project);
+  if (source) query = query.eq('source', source); if (city) query = query.ilike('city', `%${city}%`);
+  if (search) query = query.or(`name.ilike.%${search}%,phone.ilike.%${search}%`);
+
+  try {
+    const { data, count, error } = await query; if (error) throw error;
+    document.getElementById('crmPaginationInfo').innerText = `Trang ${currentCrmPage} (Tổng: ${count || 0})`;
+    document.getElementById('btnPrevCrm').disabled = currentCrmPage === 1; document.getElementById('btnNextCrm').disabled = toRow + 1 >= count;
+    if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Không tìm thấy khách hàng.</td></tr>'; return; }
+
+    // Cấu hình màu sắc rực rỡ cho từng nhóm khách
+    const grpStyle = { 
+      'Buyer': { label: 'Khách Dự Án', class: 'badge-buyer' }, 
+      'Tenant': { label: 'Khách Thuê', class: 'badge-tenant' }, 
+      'Owner': { label: 'Chủ Nhà', class: 'badge-owner' } 
+    };
+    
+    tbody.innerHTML = data.map((c, index) => {
+      const style = grpStyle[c.customer_group] || { label: 'Khác', class: 'bg-light text-dark' };
+      return `
+      <tr onclick="openCustomerModal('${c.id}')" style="cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+        <td class="text-center fw-bold text-muted">${fromRow + index + 1}</td>
+        <td>
+          <div class="fw-bold text-dark fs-4">${c.name}</div>
+          <div class="text-muted mt-1" style="font-size: 13px;"><i class="ti ti-phone me-1 text-primary"></i>${c.phone || 'N/A'}</div>
+        </td>
+        <td>
+          <span class="badge ${style.class} px-2 py-1 fw-bold" style="border-radius: 6px;">${style.label}</span>
+          <div class="text-muted mt-2" style="font-size: 12px;"><i class="ti ti-magnet me-1 text-danger"></i>${c.source || 'Khác'}</div>
+        </td>
+        <td class="text-muted fw-medium">${c.city || 'N/A'}</td>
+        <td><span class="fw-bold text-primary" style="font-size: 13px;">${c.status}</span></td>
+        <td class="text-dark fw-medium" style="font-size: 13px;">${c.crm_projects ? c.crm_projects.name : 'N/A'}</td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-icon border-0 text-danger bg-transparent hover-shadow" onclick="event.stopPropagation(); deleteCustomer('${c.id}')"><i class="ti ti-trash fs-3"></i></button>
+        </td>
+      </tr>
+    `}).join('');
+  } catch (e) { UI.error(e.message); }
+}
+
+async function loadHistoryTimeline(customerId) {
+  const box = document.getElementById('customerHistoryTimeline');
+  if(!customerId) { box.innerHTML = '<div class="text-muted mt-4">Lịch sử sẽ xuất hiện sau khi lưu.</div>'; return; }
+  box.innerHTML = '<span class="spinner-border spinner-border-sm text-primary"></span>';
+  
+  const { data } = await window.sbClient.from('crm_customer_history').select('*').eq('customer_id', customerId).order('created_at', { ascending: false });
+  if(!data || data.length === 0) { box.innerHTML = '<div class="text-muted mt-4">Chưa có lịch sử chăm sóc.</div>'; return; }
+  
+  box.innerHTML = data.map(h => {
+    const d = new Date(h.created_at);
+    return `
+      <div class="mb-3">
+        <div class="text-muted fw-bold" style="font-size: 11px;"><i class="ti ti-clock me-1"></i>${d.toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'})} - ${d.toLocaleDateString('vi-VN')}</div>
+        <div class="p-2 mt-1 rounded bg-white border shadow-sm" style="font-size: 13px;">${h.content}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function addHistoryEntry(customerId, content) {
+  await window.sbClient.from('crm_customer_history').insert([{ customer_id: customerId, user_id: window.currentUser.id, content: content }]);
+  // Thuật toán: Dọn dẹp, chỉ giữ lại 5 dòng lịch sử mới nhất
+  const { data } = await window.sbClient.from('crm_customer_history').select('id').eq('customer_id', customerId).order('created_at', { ascending: false });
+  if(data && data.length > 5) {
+    const idsToDelete = data.slice(5).map(x => x.id);
+    await window.sbClient.from('crm_customer_history').delete().in('id', idsToDelete);
+  }
+}
+
+async function openCustomerModal(id = '') {
+  document.getElementById('frmCustomer').reset(); document.getElementById('cId').value = id;
+  document.getElementById('cOldNotes').value = ''; quillCustomer.root.innerHTML = '';
+  
+  if (id) {
+    document.getElementById('customerModalTitle').innerHTML = '<i class="ti ti-edit me-2"></i>Thông tin Khách Hàng';
+    const { data } = await window.sbClient.from('crm_customers').select('*').eq('id', id).single();
+    if (data) {
+      document.getElementById('cGroup').value = data.customer_group; handleGroupChange(); document.getElementById('cStatus').value = data.status; 
+      if(data.project_id) document.getElementById('cProject').value = data.project_id;
+      document.getElementById('cName').value = data.name; document.getElementById('cPhone').value = data.phone || '';
+      document.getElementById('cCity').value = data.city || ''; document.getElementById('cSource').value = data.source || 'Khác';
+      if(data.notes) {
+        quillCustomer.root.innerHTML = data.notes;
+        document.getElementById('cOldNotes').value = data.notes; // Giữ lại nội dung cũ để so sánh
+      }
+    }
+  } else {
+    document.getElementById('customerModalTitle').innerHTML = '<i class="ti ti-user-plus me-2"></i>Thêm Khách Mới';
+    handleGroupChange();
+  }
+  
+  await loadHistoryTimeline(id);
+  (bootstrap.Modal.getInstance(document.getElementById('modal-customer')) || new bootstrap.Modal(document.getElementById('modal-customer'))).show();
+}
+
+async function saveCustomer() {
+  const btn = document.getElementById('btnSaveCustomer'); const id = document.getElementById('cId').value;
+  const grp = document.getElementById('cGroup').value;
+  const newNotes = quillCustomer.root.innerHTML.trim();
+  const oldNotes = document.getElementById('cOldNotes').value.trim();
+  
+  const payload = {
+    customer_group: grp, project_id: (grp === 'Buyer' && document.getElementById('cProject').value) ? document.getElementById('cProject').value : null,
+    status: document.getElementById('cStatus').value, name: document.getElementById('cName').value.trim(),
+    phone: document.getElementById('cPhone').value.trim(), city: document.getElementById('cCity').value.trim(), source: document.getElementById('cSource').value,
+    notes: newNotes, updated_at: new Date().toISOString()
+  };
+
+  btn.disabled = true;
+  try {
+    let dbError;
+    if (id) {
+      const { error } = await window.sbClient.from('crm_customers').update(payload).eq('id', id); dbError = error;
+      // Nếu có sự thay đổi trong Ghi chú thì lưu cái CŨ vào lịch sử
+      if (!dbError && newNotes !== oldNotes && oldNotes !== '<p><br></p>') {
+         await addHistoryEntry(id, `<div class="fw-bold text-primary mb-1">Đã thay đổi nhu cầu/ghi chú. (Nội dung cũ:)</div>${oldNotes || 'Trống'}`);
+      }
+    } else {
+      payload.user_id = window.currentUser.id;
+      const { data: newCust, error } = await window.sbClient.from('crm_customers').insert([payload]).select().single(); dbError = error;
+      if (!dbError && newCust) await addHistoryEntry(newCust.id, `<div class="fw-bold text-success">Khởi tạo khách hàng mới</div>`);
+    }
+
+    if (dbError) throw dbError;
+    UI.success('Đã lưu dữ liệu Khách hàng!'); bootstrap.Modal.getInstance(document.getElementById('modal-customer')).hide(); loadCustomers();
+  } catch(e) { UI.error(e.message); } finally { btn.disabled = false; }
+}
+
+async function deleteCustomer(id) {
+  Swal.fire({ title: 'Xóa khách hàng?', text: "Lịch sử chăm sóc cũng sẽ bị xóa vĩnh viễn!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#e11d48', confirmButtonText: 'Đồng ý xóa!' }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        await window.sbClient.from('crm_customer_history').delete().eq('customer_id', id); // Xóa lịch sử trước
+        const { error } = await window.sbClient.from('crm_customers').delete().eq('id', id);
+        if (error) throw error;
+        UI.success('Đã xóa Khách hàng!'); loadCustomers();
+      } catch (e) { UI.error(e.message); }
+    }
+  });
+}
+// ==========================================
+// 4. MODULE KHO DATA MARKETING
+// ==========================================
+let currentMktPage = 1;
+const MKT_PER_PAGE = 30;
+let mktSearchTimeout = null;
+
+function debounceMktSearch() { clearTimeout(mktSearchTimeout); mktSearchTimeout = setTimeout(() => { currentMktPage = 1; loadMarketingData(); }, 500); }
+function changeMktPage(step) { currentMktPage += step; if (currentMktPage < 1) currentMktPage = 1; loadMarketingData(); }
+
+// [TÍNH NĂNG ĐỈNH CAO]: Tải bộ lọc và Đếm số lượng "(Còn X số)"
+async function loadMarketingFilters() {
+  const { data } = await window.sbClient.from('crm_marketing_data').select('project, source');
+  if(!data) return;
+  
+  let pCounts = {}, sCounts = {};
+  data.forEach(d => {
+    const p = d.project || 'Chưa xác định';
+    const s = d.source || 'Chưa xác định';
+    pCounts[p] = (pCounts[p] || 0) + 1;
+    sCounts[s] = (sCounts[s] || 0) + 1;
+  });
+
+  // Render Filter Dự Án
+  const pSorted = Object.entries(pCounts).sort((a,b) => a[0].localeCompare(b[0]));
+  document.getElementById('mktFilterProject').innerHTML = '<option value="">-- Mọi Dự án --</option>' + 
+    pSorted.map(([k,v]) => `<option value="${k}">${k} (Còn ${v} số)</option>`).join('');
+    
+  // Render Filter Nguồn
+  const sSorted = Object.entries(sCounts).sort((a,b) => a[0].localeCompare(b[0]));
+  document.getElementById('mktFilterSource').innerHTML = '<option value="">-- Mọi Nguồn --</option>' + 
+    sSorted.map(([k,v]) => `<option value="${k}">${k} (Còn ${v} số)</option>`).join('');
+
+  // Đổ vào DataList cho Form Thêm thủ công
+  document.getElementById('mktProjectList').innerHTML = pSorted.map(([k]) => `<option value="${k}">`).join('');
+  document.getElementById('mktSourceList').innerHTML = sSorted.map(([k]) => `<option value="${k}">`).join('');
+}
+
+// Tải bảng danh sách
+async function loadMarketingData() {
+  const tbody = document.getElementById('tblMarketingBody'); tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5"><span class="spinner-border"></span></td></tr>';
+  const fromRow = (currentMktPage - 1) * MKT_PER_PAGE; const toRow = (currentMktPage * MKT_PER_PAGE) - 1;
+  
+  const search = document.getElementById('mktSearch').value.trim();
+  const proj = document.getElementById('mktFilterProject').value;
+  const src = document.getElementById('mktFilterSource').value;
+
+  let query = window.sbClient.from('crm_marketing_data').select('*', { count: 'exact' }).order('created_at', { ascending: false }).range(fromRow, toRow);
+  if (proj) query = query.eq('project', proj);
+  if (src) query = query.eq('source', src);
+  if (search) query = query.or(`name.ilike.%${search}%,phone.ilike.%${search}%`);
+
+  try {
+    const { data, count, error } = await query; if (error) throw error;
+    document.getElementById('mktPaginationInfo').innerText = `Trang ${currentMktPage} (Tổng: ${count || 0})`;
+    document.getElementById('btnPrevMkt').disabled = currentMktPage === 1; document.getElementById('btnNextMkt').disabled = toRow + 1 >= count;
+    
+    if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Kho dữ liệu trống.</td></tr>'; return; }
+
+    tbody.innerHTML = data.map((d, index) => `
+      <tr>
+        <td class="text-center fw-bold text-muted">${fromRow + index + 1}</td>
+        <td class="fw-bold text-dark">${d.name}</td>
+        <td class="text-primary fw-bold" style="letter-spacing: 1px;">${d.phone}</td>
+        <td><span class="badge bg-light text-dark border">${d.project || 'N/A'}</span></td>
+        <td class="text-muted"><i class="ti ti-magnet me-1"></i>${d.source || 'N/A'}</td>
+        <td class="text-muted" style="font-size: 12px; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${d.ghi_chu || ''}">${d.ghi_chu || ''}</td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-icon border-0 text-primary bg-transparent" onclick="openMarketingModal('${d.id}')"><i class="ti ti-pencil fs-3"></i></button>
+          <button class="btn btn-sm btn-icon border-0 text-danger bg-transparent" onclick="deleteMarketing('${d.id}')"><i class="ti ti-trash fs-3"></i></button>
+        </td>
+      </tr>
+    `).join('');
+  } catch(e) { UI.error(e.message); }
+}
+
+// [TÍNH NĂNG ĐỈNH CAO]: Parse CSV an toàn và Import từ Link Google Sheet
+async function importFromGoogleSheet() {
+  const link = document.getElementById('mktSheetLink').value.trim();
+  if(!link) return UI.error("Vui lòng dán link Google Sheet!");
+  
+  // Trích xuất ID của Sheet từ URL
+  const match = link.match(/\/d\/([a-zA-Z0-9-_]+)/);
+  if(!match) return UI.error("Link Google Sheet không hợp lệ!");
+  const sheetId = match[1];
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+  
+  const btn = document.getElementById('btnImportMkt');
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang kéo...'; btn.disabled = true;
+  
+  try {
+     const res = await fetch(csvUrl);
+     if(!res.ok) throw new Error("Không thể đọc Sheet. Hãy chắc chắn bạn đã mở quyền 'Bất kỳ ai có liên kết'!");
+     const csvText = await res.text();
+     
+     // Hàm đọc CSV bỏ qua dấu phẩy trong ngoặc kép
+     const rows = []; let row = [], col = '', quote = false;
+     for (let i = 0; i < csvText.length; i++) {
+         let cc = csvText[i], nc = csvText[i+1];
+         if (cc == '"' && quote && nc == '"') { col += cc; i++; continue; }
+         if (cc == '"') { quote = !quote; continue; }
+         if (cc == ',' && !quote) { row.push(col.trim()); col = ''; continue; }
+         if (cc == '\n' && !quote) { row.push(col.trim()); rows.push(row); row = []; col = ''; continue; }
+         col += cc;
+     }
+     row.push(col.trim()); rows.push(row);
+
+     const payload = [];
+     // Bỏ qua dòng tiêu đề (i=1)
+     for(let i=1; i<rows.length; i++) {
+        const r = rows[i];
+        if(r.length < 3 || !r[1] || !r[2]) continue; // Bỏ qua nếu ko có Tên (Cột B) và SĐT (Cột C)
+        payload.push({
+           user_id: window.currentUser.id,
+           name: r[1], 
+           phone: r[2],
+           project: r[3] || 'Chưa xác định', 
+           source: r[4] || 'Chưa xác định',
+           ghi_chu: r[5] || '' // CẬP NHẬT: Quét thêm cột thứ 6 để lấy ghi chú
+        });
+     }
+     if(payload.length === 0) throw new Error("Không tìm thấy dữ liệu hợp lệ!");
+     
+     const { error } = await window.sbClient.from('crm_marketing_data').insert(payload);
+     if(error) throw error;
+     
+     UI.success(`Đã import thành công ${payload.length} data!`);
+     document.getElementById('mktSheetLink').value = '';
+     loadMarketingFilters(); loadMarketingData();
+  } catch(e) { UI.error(e.message); } 
+  finally { btn.innerHTML = '<i class="ti ti-cloud-download me-2"></i>Kéo Data'; btn.disabled = false; }
+}
+
+// Thêm/Sửa Thủ công
+async function openMarketingModal(id = '') {
+  document.getElementById('frmMarketing').reset(); 
+  document.getElementById('mId').value = id;
+  document.getElementById('mNote').value = ''; // Reset ô ghi chú
+  
+  if(id) {
+    const { data } = await window.sbClient.from('crm_marketing_data').select('*').eq('id', id).single();
+    if(data) {
+      document.getElementById('mName').value = data.name; 
+      document.getElementById('mPhone').value = data.phone;
+      document.getElementById('mProject').value = data.project || ''; 
+      document.getElementById('mSource').value = data.source || '';
+      document.getElementById('mNote').value = data.ghi_chu || ''; // Đổ dữ liệu ghi chú
+    }
+  }
+  (bootstrap.Modal.getInstance(document.getElementById('modal-marketing')) || new bootstrap.Modal(document.getElementById('modal-marketing'))).show();
+}
+
+async function saveMarketingData() {
+  const btn = document.getElementById('btnSaveMkt'); 
+  const id = document.getElementById('mId').value;
+  const payload = { 
+    name: document.getElementById('mName').value.trim(), 
+    phone: document.getElementById('mPhone').value.trim(), 
+    project: document.getElementById('mProject').value.trim(), 
+    source: document.getElementById('mSource').value.trim(),
+    ghi_chu: document.getElementById('mNote').value.trim() // Thêm Ghi chú vào Payload
+  };
+  
+  btn.disabled = true;
+  try {
+    if(id) await window.sbClient.from('crm_marketing_data').update(payload).eq('id', id);
+    else { payload.user_id = window.currentUser.id; await window.sbClient.from('crm_marketing_data').insert([payload]); }
+    UI.success('Đã lưu Data!'); 
+    bootstrap.Modal.getInstance(document.getElementById('modal-marketing')).hide();
+    loadMarketingFilters(); 
+    loadMarketingData();
+  } catch(e) { UI.error(e.message); } finally { btn.disabled = false; }
+}
+
+async function deleteMarketing(id) {
+  Swal.fire({ title: 'Xóa data này?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#e11d48', confirmButtonText: 'Đồng ý' }).then(async (result) => {
+    if (result.isConfirmed) { await window.sbClient.from('crm_marketing_data').delete().eq('id', id); loadMarketingFilters(); loadMarketingData(); }
+  });
+}
+// ==========================================
+// 5. MODULE DASHBOARD CRM (BẢN CHỐNG ĐẠN)
+// ==========================================
+async function loadCrmDashboard() {
+  try {
+    const [resProj, resCust, resMkt] = await Promise.all([
+      window.sbClient.from('crm_projects').select('id', { count: 'exact', head: true }),
+      window.sbClient.from('crm_customers').select('id', { count: 'exact', head: true }),
+      window.sbClient.from('crm_marketing_data').select('id', { count: 'exact', head: true })
+    ]);
+
+    const countProj = resProj.count || 0;
+    const countCust = resCust.count || 0;
+    const countMkt = resMkt.count || 0;
+
+    // Đổ số liệu tổng (An toàn: Có thẻ mới đổ dữ liệu)
+    if (document.getElementById('crmDashProjects')) document.getElementById('crmDashProjects').innerText = countProj;
+    if (document.getElementById('crmDashCustomers')) document.getElementById('crmDashCustomers').innerText = countCust;
+    if (document.getElementById('crmDashMarketing')) document.getElementById('crmDashMarketing').innerText = countMkt;
+
+    // ----------------------------------------------------
+    // XỬ LÝ KHỐI 1: KHO MARKETING (TOP 10 DỰ ÁN + NGUỒN)
+    // ----------------------------------------------------
+    const { data: mktData } = await window.sbClient.from('crm_marketing_data').select('project, source');
+    const mktProjCounts = {};
+    const mktSourceCounts = {};
+    
+    if (mktData) {
+      mktData.forEach(d => {
+        const p = d.project || 'Chưa xác định';
+        const s = d.source || 'Chưa xác định';
+        mktProjCounts[p] = (mktProjCounts[p] || 0) + 1;
+        mktSourceCounts[s] = (mktSourceCounts[s] || 0) + 1;
+      });
+    }
+    
+    // 1. Render Top 10 Dự án
+    const projSorted = Object.entries(mktProjCounts).sort((a,b) => b[1] - a[1]).slice(0, 10);
+    let projHtml = '';
+    if (projSorted.length === 0) projHtml = '<div class="text-muted">Kho dữ liệu trống</div>';
+    else {
+       projSorted.forEach(([name, val]) => {
+          const pct = countMkt ? (val / countMkt) * 100 : 0;
+          projHtml += `
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="text-dark fw-medium" style="font-size: 13px;">${name}</span>
+                <span class="fw-bold" style="color: var(--tblr-primary);">${new Intl.NumberFormat('vi-VN').format(val)} <span class="text-muted fw-normal" style="font-size: 11px;">số</span></span>
+              </div>
+              <div class="progress" style="height: 6px; background: #f1f5f9; border-radius: 10px;">
+                <div class="progress-bar" style="width: ${pct}%; background: var(--tblr-primary); border-radius: 10px;"></div>
+              </div>
+            </div>
+          `;
+       });
+    }
+    if (document.getElementById('crmDashMktProjects')) document.getElementById('crmDashMktProjects').innerHTML = projHtml;
+
+    // 2. Render Nguồn
+    const sourceSorted = Object.entries(mktSourceCounts).sort((a,b) => b[1] - a[1]);
+    let sourceHtml = '';
+    if (sourceSorted.length === 0) sourceHtml = '<div class="text-muted">Kho dữ liệu trống</div>';
+    else {
+       sourceSorted.forEach(([name, val]) => {
+          const pct = countMkt ? (val / countMkt) * 100 : 0;
+          sourceHtml += `
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="text-dark fw-medium" style="font-size: 13px;">${name}</span>
+                <span class="fw-bold text-info">${new Intl.NumberFormat('vi-VN').format(val)} <span class="text-muted fw-normal" style="font-size: 11px;">số</span></span>
+              </div>
+              <div class="progress" style="height: 6px; background: #f1f5f9; border-radius: 10px;">
+                <div class="progress-bar bg-info" style="width: ${pct}%; border-radius: 10px;"></div>
+              </div>
+            </div>
+          `;
+       });
+    }
+    if (document.getElementById('crmDashMktSources')) document.getElementById('crmDashMktSources').innerHTML = sourceHtml;
+
+    // ----------------------------------------------------
+    // XỬ LÝ KHỐI 2: PHỄU TRẠNG THÁI KHÁCH HÀNG
+    // ----------------------------------------------------
+    const { data: custData } = await window.sbClient.from('crm_customers').select('status');
+    const custCounts = {};
+    if (custData) {
+      custData.forEach(d => {
+        const s = d.status || 'Chưa cập nhật';
+        custCounts[s] = (custCounts[s] || 0) + 1;
+      });
+    }
+    const custSorted = Object.entries(custCounts).sort((a,b) => b[1] - a[1]);
+    
+    let custHtml = '';
+    if (custSorted.length === 0) {
+       custHtml = '<div class="text-muted text-center py-4">Chưa có khách hàng</div>';
+    } else {
+       custSorted.forEach(([name, val], index) => {
+          const pct = countCust ? (val / countCust) * 100 : 0;
+          const colors = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
+          const color = colors[index % colors.length];
+
+          custHtml += `
+            <div class="mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <div class="d-flex align-items-center gap-2">
+                  <span style="width: 8px; height: 8px; border-radius: 50%; background: ${color};"></span>
+                  <span class="text-dark fw-medium" style="font-size: 13px;">${name}</span>
+                </div>
+                <span class="fw-bold" style="color: ${color};">${val}</span>
+              </div>
+              <div class="progress" style="height: 6px; background: #f1f5f9; border-radius: 10px;">
+                <div class="progress-bar" style="width: ${pct}%; background: ${color}; border-radius: 10px;"></div>
+              </div>
+            </div>
+          `;
+       });
+    }
+    if (document.getElementById('crmDashFunnel')) document.getElementById('crmDashFunnel').innerHTML = custHtml;
+
+  } catch (error) {
+    console.error("Lỗi tải Dashboard CRM:", error);
+    if (document.getElementById('crmDashMktProjects')) {
+       document.getElementById('crmDashMktProjects').innerHTML = '<div class="text-danger">Lỗi tải dữ liệu</div>';
+    }
+  }
+}
+</script>
